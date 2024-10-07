@@ -7,7 +7,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
 export class UserRepository extends BaseRepository<
-  User,
+  User | Object,
   CreateUserDto,
   UpdateUserDto
 > {
@@ -31,17 +31,39 @@ export class UserRepository extends BaseRepository<
     });
   }
 
-  public async findById(id: string): Promise<User> {
-    return await this.prismaService.user
-      .findUnique({
-        where: {
-          id,
+  public async findById(id: string) {
+  return await this.prismaService.user
+    .findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        developer: {
+          select: {
+            id: true,  
+            name: true,
+			stack: true,
+			telegram: true,
+			timeJoin: true,
+          },
         },
-      })
-      .catch((error) => {
-        throw new InternalServerErrorException(error.message);
-      });
-  }
+        sale: {
+          select: {
+            id: true,
+            name: true,
+			timeJoin: true,
+          },
+        },
+      },
+    })
+    .catch((error) => {
+      throw new InternalServerErrorException(error.message);
+    });
+}
+
 
   public async update(id: string, updates: UpdateUserDto): Promise<User> {
     return await this.prismaService.user

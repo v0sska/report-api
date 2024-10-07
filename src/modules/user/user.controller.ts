@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -16,6 +17,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { DataResponse } from '@/common/types/data-response.type';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/common/guards/auth.guard';
+import { Request } from 'express';
 
 @ApiTags('users')
 @Controller('users')
@@ -46,9 +48,10 @@ export class UserController {
     };
   }
 
-  @Get('/:id')
-  public async findById(@Param('id') id: string): Promise<DataResponse<User>> {
-    const user = await this.userService.findById(id);
+  @Get('/me')
+  public async findById(@Req() request: Request): Promise<DataResponse<Object>> {
+	const userId = request['user'];
+    const user = await this.userService.findById(userId);
 
     return {
       message: 'User fetched successfully',

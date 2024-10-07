@@ -13,7 +13,7 @@ import config from 'src/common/configs';
     JwtModule.register({
       global: true,
       secret: config.server.jwt,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '7d' },
     }),
   ],
   providers: [AuthService, UserService, PrismaService],
