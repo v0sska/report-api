@@ -29,6 +29,16 @@ export class WorkAccountService {
     return workaccount;
   }
 
+  public async findBySaleId(saleId: string): Promise<WorkAccount[]> {
+	const workaccount = await this.workaccountRepository.findBySaleId(saleId);
+
+	if (!workaccount) {
+	  throw new NotFoundException(EXCEPTION.WORKACCOUNT_NOT_FOUND);
+	}
+
+	return workaccount;
+  }
+
   public async update(
     id: string,
     updates: UpdateWorkAccountDto,
