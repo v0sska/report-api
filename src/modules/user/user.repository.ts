@@ -40,7 +40,6 @@ export class UserRepository extends BaseRepository<
       select: {
         id: true,
         email: true,
-        name: true,
         developer: {
           select: {
             id: true,  
