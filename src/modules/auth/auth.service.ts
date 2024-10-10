@@ -55,8 +55,13 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(payload);
 
+	const position = findUserByEmail.developer ? 'developer' : 'sale';
+	
     return {
-      user: userMapper(findUserByEmail),
+      user: {
+		...userMapper(findUserByEmail),
+		position: position,
+	},
       token,
     };
   }
