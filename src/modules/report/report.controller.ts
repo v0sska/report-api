@@ -61,6 +61,19 @@ export class ReportController {
     };
   }
 
+  @Get('/developer/:developerId')
+  public async findByDeveloperId(
+	@Param('developerId') developerId: string,
+  ): Promise<DataResponse<Report[]>> {
+	const report = await this.reportService.findByDeveloperId(developerId);
+
+	return {
+	  message: 'Report fetched successfully',
+	  data: report,
+	  status: HttpStatus.OK,
+	};
+  }
+
   @Patch('/:id')
   public async update(
     @Param('id') id: string,

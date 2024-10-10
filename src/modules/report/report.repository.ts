@@ -31,6 +31,17 @@ export class ReportRepository extends BaseRepository<
     });
   }
 
+  public async findByDeveloperId(developerId: string): Promise<Report[]> {
+	return await this.prismaService.report.findMany({
+		where: {
+			developerId: developerId,
+		},
+	})
+	.catch((error) => {
+		throw new InternalServerErrorException(error.message);
+	});
+  }
+
   public async findById(id: string): Promise<Report> {
     return await this.prismaService.report
       .findUnique({

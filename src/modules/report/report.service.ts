@@ -27,6 +27,16 @@ export class ReportService {
     return report;
   }
 
+  public async findByDeveloperId(developerId: string): Promise<Report[]> {
+	const report = await this.reportRepository.findByDeveloperId(developerId);
+
+	if (!report) {
+	  throw new NotFoundException(EXCEPTION.REPORT_NOT_FOUND);
+	}
+
+	return report;
+  }
+
   public async update(id: string, updates: UpdateReportDto): Promise<Report> {
     const report = await this.reportRepository.update(id, updates);
 
