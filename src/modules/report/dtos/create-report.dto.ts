@@ -14,12 +14,10 @@ export class CreateReportDto {
 
   @IsNotEmpty()
   @ApiProperty()
-  @IsDateString()
   startWork: string;
 
   @IsNotEmpty()
   @ApiProperty()
-  @IsDateString()
   endWork: string;
 
   @IsString()
