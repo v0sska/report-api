@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ReportService } from './report.service';
 import { Report } from '@prisma/client';
