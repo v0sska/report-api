@@ -56,4 +56,14 @@ export class ReportService {
 
     return report;
   }
+
+  public async findByDate(date: string, customerId: string): Promise<Report> {
+	const report = await this.reportRepository.findByDate(date, customerId);
+
+	if (!report) {
+	  throw new NotFoundException(EXCEPTION.REPORT_NOT_FOUND);
+	}
+
+	return report;
+  }
 }

@@ -48,6 +48,20 @@ export class ReportController {
     };
   }
 
+  @Get('/date')
+  public async findByDate(
+	@Query('date') date: string, 
+	@Query('customerId') customerId: string
+): Promise<DataResponse<Report>> {
+	const report = await this.reportService.findByDate(date, customerId);
+
+	return {
+	  message: 'Report fetched successfully',
+	  data: report,
+	  status: HttpStatus.OK,
+    };
+ }
+
   @Get('/:id')
   public async findById(
     @Param('id') id: string,

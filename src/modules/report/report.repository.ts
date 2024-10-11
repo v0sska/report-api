@@ -78,4 +78,17 @@ export class ReportRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
+  public async findByDate(date: string, customerId: string): Promise<Report> {
+	return await this.prismaService.report
+	  .findFirst({
+		where: {
+		  date: date,
+		  customerId: customerId,
+		},
+	  })
+	  .catch((error) => {
+		throw new InternalServerErrorException(error.message);
+	  });
+  }
 }
