@@ -91,4 +91,34 @@ export class ReportRepository extends BaseRepository<
 		throw new InternalServerErrorException(error.message);
 	  });
   }
+
+  public async findByDates(customerId: string, startDate: string, endDate: string): Promise<Report[]> {
+		const transaction = await this.prismaService.$transaction(async (tx) => {
+			const reports: Report[] = [];
+			let currentDate = new Date(startDate);
+
+			const endDateObj = new Date(endDate);
+
+			while (currentDate <= endDateObj) {
+			const dateString = currentDate.toISOString().split('T')[0];
+
+			const report = await tx.report.findFirst({
+				where: {
+				customerId: customerId,
+				date: dateString,
+				},
+			});
+
+			if (report) {
+				reports.push(report);
+			}
+
+			currentDate.setDate(currentDate.getDate() + 1);
+			}
+
+			return reports;
+		});
+
+		return transaction;
+	}
 }

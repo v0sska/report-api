@@ -66,4 +66,8 @@ export class ReportService {
 
 	return report;
   }
+
+  public async findByDates(customerId: string, startDate: string, endDate: string): Promise<Report[]> {
+	return await this.reportRepository.findByDates(customerId, startDate, endDate);
+  }
 }

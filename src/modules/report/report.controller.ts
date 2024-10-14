@@ -49,6 +49,21 @@ export class ReportController {
     };
   }
 
+  @Get('/dates')
+  public async findByDates(
+	@Query('customerId') customerId: string,
+	@Query('startDate') startDate: string,
+	@Query('endDate') endDate: string
+): Promise<DataResponse<Report[]>> {
+	const report = await this.reportService.findByDates(customerId, startDate, endDate);
+
+	return {
+	  message: 'Report fetched successfully',
+	  data: report,
+	  status: HttpStatus.OK,
+	};
+  }
+
   @Get('/date')
   public async findByDate(
 	@Query('date') date: string, 
