@@ -4,14 +4,18 @@ import {
   HttpStatus,
   Param,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {DevelopersOnCustomersService} from './developers-on-customers.service';
 import { DevelopersOnCustomers } from '@prisma/client';
 import { DataResponse } from '@/common/types/data-response.type';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@/common/guards/auth.guard';
 
 @ApiTags('assign-developers-on-customers')
 @Controller('assign')
+@UseGuards(AuthGuard)
+@ApiBearerAuth()
 export class DevelopersOnCustomersController {
   public constructor(private readonly developersoncustomersService: DevelopersOnCustomersService) {}
 
