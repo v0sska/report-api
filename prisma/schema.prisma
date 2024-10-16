@@ -66,6 +66,7 @@ model Customer {
 	rate Int
 	trackInWeek Int @map("track_in_week")
 	nameProject String @map("name_project")
+	isOnAppwork Boolean @default(true) @map("is_on_appwork")
 	report Report[]
 
 	@@map("customers")

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsDateString, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsDateString, IsNumber, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCustomerDto {
@@ -26,4 +26,9 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   @ApiProperty()
   nameProject: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  isOnUpwork: boolean;
 }
