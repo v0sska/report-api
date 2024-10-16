@@ -1,9 +1,10 @@
 import { SaleRepository } from './sale.repository';
-import { Sale } from '@prisma/client';
+import { DevelopersOnCustomers, Sale } from '@prisma/client';
 import { CreateSaleDto } from './dtos/create-sale.dto';
 import { UpdateSaleDto } from './dtos/update-sale.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { EXCEPTION } from '@/common/constants/exception.constants';
+import { CreateDevelopersOnCustomersDto } from '../developers-on-customers/dtos/create-developers-on-customers.dto';
 
 @Injectable()
 export class SaleService {
@@ -50,5 +51,9 @@ export class SaleService {
     }
 
     return sale;
+  }
+
+  public async assignDeveloperToCustomer(dto: CreateDevelopersOnCustomersDto): Promise<DevelopersOnCustomers> {
+	return await this.saleRepository.assignDeveloperToCustomer(dto);
   }
 }

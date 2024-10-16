@@ -10,12 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SaleService } from './sale.service';
-import { Sale } from '@prisma/client';
+import { DevelopersOnCustomers, Sale } from '@prisma/client';
 import { CreateSaleDto } from './dtos/create-sale.dto';
 import { UpdateSaleDto } from './dtos/update-sale.dto';
 import { DataResponse } from '@/common/types/data-response.type';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/common/guards/auth.guard';
+import { CreateDevelopersOnCustomersDto } from '../developers-on-customers/dtos/create-developers-on-customers.dto';
 
 @ApiTags('sales')
 @Controller('sales')
@@ -80,5 +81,16 @@ export class SaleController {
       data: sale,
       status: HttpStatus.OK,
     };
+  }
+
+  @Post('assign-developer')
+  public async assignDeveloperToCustomer(@Body() dto: CreateDevelopersOnCustomersDto): Promise<DataResponse<DevelopersOnCustomers>> {
+	const developersOnCustomers = await this.saleService.assignDeveloperToCustomer(dto);
+
+	return {
+	  message: 'Developer assigned to customer successfully',
+	  data: developersOnCustomers,
+	  status: HttpStatus.CREATED,
+	};
   }
 }

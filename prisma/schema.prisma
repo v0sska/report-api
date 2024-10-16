@@ -32,6 +32,7 @@ model Developer {
 	userId  String    @unique
   	user    User   @relation(fields: [userId], references: [id])
 	report Report[]
+	customer DevelopersOnCustomers[]
 
 	@@map("developers")
 }
@@ -68,6 +69,7 @@ model Customer {
 	nameProject String @map("name_project")
 	isOnUpwork Boolean @default(true) @map("is_on_appwork")
 	report Report[]
+	developer DevelopersOnCustomers[]
 
 	@@map("customers")
 }
@@ -85,4 +87,13 @@ model Report {
 	date String?
 
 	@@map("reports")
+}
+
+model DevelopersOnCustomers { 
+	developer Developer @relation(fields: [developerId], references: [id])
+	developerId String 
+	customer Customer @relation(fields: [customerId], references: [id])
+	customerId String
+
+	@@id([developerId, customerId])
 }

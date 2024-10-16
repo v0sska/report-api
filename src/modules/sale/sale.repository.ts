@@ -1,9 +1,10 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
-import { Sale } from '@prisma/client';
+import { Sale, DevelopersOnCustomers } from '@prisma/client';
 import { CreateSaleDto } from './dtos/create-sale.dto';
 import { UpdateSaleDto } from './dtos/update-sale.dto';
 import { PrismaService } from '@/database/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { CreateDevelopersOnCustomersDto } from '../developers-on-customers/dtos/create-developers-on-customers.dto';
 
 @Injectable()
 export class SaleRepository extends BaseRepository<
@@ -67,4 +68,15 @@ export class SaleRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
+  public async assignDeveloperToCustomer(dto: CreateDevelopersOnCustomersDto): Promise<DevelopersOnCustomers> {
+	return await this.prismaService.developersOnCustomers
+	  .create({
+		data: dto,
+	  })
+	  .catch((error) => {
+		throw new InternalServerErrorException(error.message);
+	  });
+  }
+
 }

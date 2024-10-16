@@ -7,4 +7,5 @@ export const EXCEPTION = {
   WORKACCOUNT_NOT_FOUND: 'WorkAccount not found',
   CUSTOMER_NOT_FOUND: 'Customer not found',
   REPORT_NOT_FOUND: 'Report not found',
+  DEVELOPERS_ON_CUSTOMERS_NOT_FOUND: 'Assign not found',
 };
