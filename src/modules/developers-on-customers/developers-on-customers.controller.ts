@@ -1,8 +1,9 @@
 import {
+  Body,
   Controller,
   Get,
   HttpStatus,
-  Param,
+  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { DevelopersOnCustomers } from '@prisma/client';
 import { DataResponse } from '@/common/types/data-response.type';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/common/guards/auth.guard';
+import { UpdateDevelopersOnCustomersDto } from './dtos/update-developers-on-customers.dto';
 
 @ApiTags('assign-developers-on-customers')
 @Controller('assign')
@@ -48,6 +50,21 @@ export class DevelopersOnCustomersController {
 
 	return {
 	  message: 'DevelopersOnCustomers fetched successfully',
+	  data: developersOnCustomers,
+	  status: HttpStatus.OK,
+	};
+  }
+
+  @Patch('/')
+  public async updateAssignCustomer(
+	@Query('customer-id') customerId: string,
+	@Query('developer-id') developerId: string,
+	@Body() updates: UpdateDevelopersOnCustomersDto,
+  ): Promise<DataResponse<DevelopersOnCustomers>> {
+	const developersOnCustomers = await this.developersoncustomersService.updateAssignCustomer(customerId, developerId, updates);
+
+	return {
+	  message: 'DevelopersOnCustomers updated successfully',
 	  data: developersOnCustomers,
 	  status: HttpStatus.OK,
 	};

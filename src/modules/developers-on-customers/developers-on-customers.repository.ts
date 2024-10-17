@@ -34,4 +34,19 @@ export class DevelopersOnCustomersRepository  {
 	  throw new InternalServerErrorException(error.message);
 	});
   }
+
+  public async updateAssignCustomer(customerId: string, developerId: string, updates: UpdateDevelopersOnCustomersDto): Promise<DevelopersOnCustomers> {
+	return await this.prismaService.developersOnCustomers.update({
+		where: {
+		developerId_customerId: {
+			developerId: developerId,
+			customerId: customerId,
+		},
+		},
+		data: updates,
+	})
+	.catch((error) => {
+		throw new InternalServerErrorException(error.message);
+	})
+  }
 }
