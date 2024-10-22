@@ -50,7 +50,7 @@ export class ReportRepository extends BaseRepository<
   }
 
   public async find(): Promise<Report[]> {
-    return await this.prismaService.report.findMany({include: {income: true}}).catch((error) => {
+    return await this.prismaService.report.findMany().catch((error) => {
       throw new InternalServerErrorException(error.message);
     });
   }
