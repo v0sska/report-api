@@ -1,5 +1,5 @@
 import { SaleRepository } from './sale.repository';
-import { DevelopersOnCustomers, Sale } from '@prisma/client';
+import { DevelopersOnCustomers, Income, Sale } from '@prisma/client';
 import { CreateSaleDto } from './dtos/create-sale.dto';
 import { UpdateSaleDto } from './dtos/update-sale.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -55,5 +55,15 @@ export class SaleService {
 
   public async assignDeveloperToCustomer(dto: CreateDevelopersOnCustomersDto): Promise<DevelopersOnCustomers> {
 	return await this.saleRepository.assignDeveloperToCustomer(dto);
+  }
+
+  public async updateIncome(id: string, isPay: boolean): Promise<Income> {
+	const income = await this.saleRepository.updateIncomeById(id, isPay);
+
+	if (!income) {
+	  throw new NotFoundException(EXCEPTION.INCOME_NOT_FOUND);
+	}
+
+	return income;
   }
 }

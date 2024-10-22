@@ -8,4 +8,5 @@ export const EXCEPTION = {
   CUSTOMER_NOT_FOUND: 'Customer not found',
   REPORT_NOT_FOUND: 'Report not found',
   DEVELOPERS_ON_CUSTOMERS_NOT_FOUND: 'Assign not found',
+  INCOME_NOT_FOUND: 'Income not found',
 };

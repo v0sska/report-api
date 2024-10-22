@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SaleService } from './sale.service';
-import { DevelopersOnCustomers, Sale } from '@prisma/client';
+import { DevelopersOnCustomers, Income, Sale } from '@prisma/client';
 import { CreateSaleDto } from './dtos/create-sale.dto';
 import { UpdateSaleDto } from './dtos/update-sale.dto';
 import { DataResponse } from '@/common/types/data-response.type';
@@ -91,6 +91,17 @@ export class SaleController {
 	  message: 'Developer assigned to customer successfully',
 	  data: developersOnCustomers,
 	  status: HttpStatus.CREATED,
+	};
+  }
+
+  @Patch('/income/:id')
+  public async updateIncome(@Param('id') id: string, @Body() body : {isPay: boolean}): Promise<DataResponse<Income>> {
+	const income = await this.saleService.updateIncome(id, body.isPay);
+
+	return {
+	  message: 'Income updated successfully',
+	  data: income,
+	  status: HttpStatus.OK,
 	};
   }
 }

@@ -16,17 +16,41 @@ export class ReportRepository extends BaseRepository<
   }
 
   public async create(dto: CreateReportDto): Promise<Report> {
-    return await this.prismaService.report
-      .create({
-        data: dto,
-      })
-      .catch((error) => {
-        throw new InternalServerErrorException(error.message);
-      });
+	const data = await this.prismaService.$transaction(async (tx) => {
+		const report = await tx.report.create({
+			data: dto,
+		});
+
+		const customer = await tx.customer.findUnique({
+			where: {
+			id: dto.customerId,
+			},
+		});
+
+		if (!customer) {
+			throw new InternalServerErrorException('Customer not found');
+		}
+
+		const payedAmount = customer.isOnUpwork
+			? customer.rate * report.track * 0.9
+			: customer.rate * report.track;
+
+		await tx.income.create({
+			data: {
+			date: dto.date,
+			reportId: report.id,
+			payed: payedAmount,
+			},
+		});
+
+		return report;
+	});
+
+	return data;
   }
 
   public async find(): Promise<Report[]> {
-    return await this.prismaService.report.findMany().catch((error) => {
+    return await this.prismaService.report.findMany({include: {income: true}}).catch((error) => {
       throw new InternalServerErrorException(error.message);
     });
   }
@@ -86,6 +110,9 @@ export class ReportRepository extends BaseRepository<
 		  date: date,
 		  customerId: customerId,
 		},
+		include: {
+			income: true,
+		}
 	  })
 	  .catch((error) => {
 		throw new InternalServerErrorException(error.message);

@@ -85,6 +85,7 @@ model Report {
 	developerId String
 	developer    Developer   @relation(fields: [developerId], references: [id])
 	date String?
+	income Income?
 
 	@@map("reports")
 }
@@ -93,7 +94,18 @@ model DevelopersOnCustomers {
 	developer Developer @relation(fields: [developerId], references: [id])
 	developerId String 
 	customer Customer @relation(fields: [customerId], references: [id])
-	customerId String
+	customerId String 
 
 	@@id([developerId, customerId])
+}
+
+model Income {
+	id String  @id @default(uuid())
+	date String? 
+	isPay Boolean @default(false) @map("is_pay")
+	reportId String @unique
+  	report    Report   @relation(fields: [reportId], references: [id])
+	payed Int
+
+	@@map("incomes")
 }

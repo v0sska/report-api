@@ -1,5 +1,5 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
-import { Sale, DevelopersOnCustomers } from '@prisma/client';
+import { Sale, DevelopersOnCustomers, Income } from '@prisma/client';
 import { CreateSaleDto } from './dtos/create-sale.dto';
 import { UpdateSaleDto } from './dtos/update-sale.dto';
 import { PrismaService } from '@/database/prisma.service';
@@ -77,6 +77,21 @@ export class SaleRepository extends BaseRepository<
 	  .catch((error) => {
 		throw new InternalServerErrorException(error.message);
 	  });
+  }
+
+  public async updateIncomeById(id: string, isPay: boolean): Promise<Income> {
+	return await this.prismaService.income
+	.update({
+		where: {
+			id: id,
+		},
+		data: {
+			isPay: isPay,
+		}
+	})
+	.catch((error) => {
+		throw new InternalServerErrorException(error.message);
+	});
   }
 
 }
