@@ -134,6 +134,9 @@ export class ReportRepository extends BaseRepository<
 				customerId: customerId,
 				date: dateString,
 				},
+				include: {
+					income: true,
+				}
 			});
 
 			if (report) {
@@ -142,7 +145,6 @@ export class ReportRepository extends BaseRepository<
 
 			currentDate.setDate(currentDate.getDate() + 1);
 			}
-
 			return reports;
 		});
 
