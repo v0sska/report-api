@@ -7,7 +7,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {DevelopersOnCustomersService} from './developers-on-customers.service';
+import { DevelopersOnCustomersService } from './developers-on-customers.service';
 import { DevelopersOnCustomers } from '@prisma/client';
 import { DataResponse } from '@/common/types/data-response.type';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -19,11 +19,14 @@ import { UpdateDevelopersOnCustomersDto } from './dtos/update-developers-on-cust
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
 export class DevelopersOnCustomersController {
-  public constructor(private readonly developersoncustomersService: DevelopersOnCustomersService) {}
+  public constructor(
+    private readonly developersoncustomersService: DevelopersOnCustomersService,
+  ) {}
 
   @Get('/')
   public async find(): Promise<DataResponse<DevelopersOnCustomers[]>> {
-    const developersoncustomers = await this.developersoncustomersService.find();
+    const developersoncustomers =
+      await this.developersoncustomersService.find();
 
     return {
       message: 'DevelopersOnCustomers fetched successfully',
@@ -33,9 +36,11 @@ export class DevelopersOnCustomersController {
   }
 
   @Get('/customer')
-  public async findByDeveloperId(@Query('customer-id') id: string): Promise<DataResponse<DevelopersOnCustomers[]>> {
-	const developersOnCustomers = await this.developersoncustomersService.findByCustomerId(id);
-
+  public async findByDeveloperId(
+    @Query('customer-id') id: string,
+  ): Promise<DataResponse<DevelopersOnCustomers[]>> {
+    const developersOnCustomers =
+      await this.developersoncustomersService.findByCustomerId(id);
 
     return {
       message: 'DevelopersOnCustomers fetched successfully',
@@ -45,28 +50,36 @@ export class DevelopersOnCustomersController {
   }
 
   @Get('/developer')
-  public async findByCustomerId(@Query('developer-id') id: string): Promise<DataResponse<DevelopersOnCustomers[]>> {
-    const developersOnCustomers = await this.developersoncustomersService.findByDeveloperId(id);
+  public async findByCustomerId(
+    @Query('developer-id') id: string,
+  ): Promise<DataResponse<DevelopersOnCustomers[]>> {
+    const developersOnCustomers =
+      await this.developersoncustomersService.findByDeveloperId(id);
 
-	return {
-	  message: 'DevelopersOnCustomers fetched successfully',
-	  data: developersOnCustomers,
-	  status: HttpStatus.OK,
-	};
+    return {
+      message: 'DevelopersOnCustomers fetched successfully',
+      data: developersOnCustomers,
+      status: HttpStatus.OK,
+    };
   }
 
   @Patch('/')
   public async updateAssignCustomer(
-	@Query('customer-id') customerId: string,
-	@Query('developer-id') developerId: string,
-	@Body() updates: UpdateDevelopersOnCustomersDto,
+    @Query('customer-id') customerId: string,
+    @Query('developer-id') developerId: string,
+    @Body() updates: UpdateDevelopersOnCustomersDto,
   ): Promise<DataResponse<DevelopersOnCustomers>> {
-	const developersOnCustomers = await this.developersoncustomersService.updateAssignCustomer(customerId, developerId, updates);
+    const developersOnCustomers =
+      await this.developersoncustomersService.updateAssignCustomer(
+        customerId,
+        developerId,
+        updates,
+      );
 
-	return {
-	  message: 'DevelopersOnCustomers updated successfully',
-	  data: developersOnCustomers,
-	  status: HttpStatus.OK,
-	};
+    return {
+      message: 'DevelopersOnCustomers updated successfully',
+      data: developersOnCustomers,
+      status: HttpStatus.OK,
+    };
   }
 }

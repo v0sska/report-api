@@ -53,17 +53,19 @@ export class SaleService {
     return sale;
   }
 
-  public async assignDeveloperToCustomer(dto: CreateDevelopersOnCustomersDto): Promise<DevelopersOnCustomers> {
-	return await this.saleRepository.assignDeveloperToCustomer(dto);
+  public async assignDeveloperToCustomer(
+    dto: CreateDevelopersOnCustomersDto,
+  ): Promise<DevelopersOnCustomers> {
+    return await this.saleRepository.assignDeveloperToCustomer(dto);
   }
 
   public async updateIncome(id: string, isPay: boolean): Promise<Income> {
-	const income = await this.saleRepository.updateIncomeById(id, isPay);
+    const income = await this.saleRepository.updateIncomeById(id, isPay);
 
-	if (!income) {
-	  throw new NotFoundException(EXCEPTION.INCOME_NOT_FOUND);
-	}
+    if (!income) {
+      throw new NotFoundException(EXCEPTION.INCOME_NOT_FOUND);
+    }
 
-	return income;
+    return income;
   }
 }

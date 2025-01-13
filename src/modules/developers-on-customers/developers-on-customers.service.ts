@@ -6,39 +6,56 @@ import { UpdateDevelopersOnCustomersDto } from './dtos/update-developers-on-cust
 
 @Injectable()
 export class DevelopersOnCustomersService {
-	public constructor(private readonly developersoncustomersRepository: DevelopersOnCustomersRepository) {}
+  public constructor(
+    private readonly developersoncustomersRepository: DevelopersOnCustomersRepository,
+  ) {}
 
-	public async find(): Promise<DevelopersOnCustomers[]> {
-		return await this.developersoncustomersRepository.find();
-	}
+  public async find(): Promise<DevelopersOnCustomers[]> {
+    return await this.developersoncustomersRepository.find();
+  }
 
-	public async findByDeveloperId(developerId: string): Promise<DevelopersOnCustomers[]> {
-		const developersoncustomers = await this.developersoncustomersRepository.findByDeveloperId(developerId);
+  public async findByDeveloperId(
+    developerId: string,
+  ): Promise<DevelopersOnCustomers[]> {
+    const developersoncustomers =
+      await this.developersoncustomersRepository.findByDeveloperId(developerId);
 
-		if (!developersoncustomers) {
-			throw new NotFoundException(EXCEPTION.DEVELOPERS_ON_CUSTOMERS_NOT_FOUND);
-		}
+    if (!developersoncustomers) {
+      throw new NotFoundException(EXCEPTION.DEVELOPERS_ON_CUSTOMERS_NOT_FOUND);
+    }
 
-		return developersoncustomers;
-	}
+    return developersoncustomers;
+  }
 
-	public async findByCustomerId(customerId: string): Promise<DevelopersOnCustomers[]> {
-		const developersoncustomers = await this.developersoncustomersRepository.findByCustomerId(customerId);
+  public async findByCustomerId(
+    customerId: string,
+  ): Promise<DevelopersOnCustomers[]> {
+    const developersoncustomers =
+      await this.developersoncustomersRepository.findByCustomerId(customerId);
 
-		if (!developersoncustomers) {
-			throw new NotFoundException(EXCEPTION.DEVELOPERS_ON_CUSTOMERS_NOT_FOUND);
-		}
+    if (!developersoncustomers) {
+      throw new NotFoundException(EXCEPTION.DEVELOPERS_ON_CUSTOMERS_NOT_FOUND);
+    }
 
-		return developersoncustomers;
-	}
+    return developersoncustomers;
+  }
 
-	public async updateAssignCustomer(customerId: string, developerId: string, updates: UpdateDevelopersOnCustomersDto): Promise<DevelopersOnCustomers> {
-		const developersoncustomers = await this.developersoncustomersRepository.updateAssignCustomer(customerId, developerId, updates);
+  public async updateAssignCustomer(
+    customerId: string,
+    developerId: string,
+    updates: UpdateDevelopersOnCustomersDto,
+  ): Promise<DevelopersOnCustomers> {
+    const developersoncustomers =
+      await this.developersoncustomersRepository.updateAssignCustomer(
+        customerId,
+        developerId,
+        updates,
+      );
 
-		if (!developersoncustomers) {
-			throw new NotFoundException(EXCEPTION.DEVELOPERS_ON_CUSTOMERS_NOT_FOUND);
-		}
+    if (!developersoncustomers) {
+      throw new NotFoundException(EXCEPTION.DEVELOPERS_ON_CUSTOMERS_NOT_FOUND);
+    }
 
-		return developersoncustomers;
-	}
+    return developersoncustomers;
+  }
 }

@@ -50,15 +50,15 @@ export class WorkAccountController {
 
   @Get('/sale/:saleId')
   public async findBySaleId(
-	@Param('saleId') saleId: string,
+    @Param('saleId') saleId: string,
   ): Promise<DataResponse<WorkAccount[]>> {
-	const workaccount = await this.workaccountService.findBySaleId(saleId);
+    const workaccount = await this.workaccountService.findBySaleId(saleId);
 
-	return {
-	  message: 'WorkAccount fetched successfully',
-	  data: workaccount,
-	  status: HttpStatus.OK,
-	};
+    return {
+      message: 'WorkAccount fetched successfully',
+      data: workaccount,
+      status: HttpStatus.OK,
+    };
   }
 
   @Get('/:id')

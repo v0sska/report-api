@@ -49,8 +49,10 @@ export class UserController {
   }
 
   @Get('/me')
-  public async findById(@Req() request: Request): Promise<DataResponse<Object>> {
-	const userId = request['user'];
+  public async findById(
+    @Req() request: Request,
+  ): Promise<DataResponse<Object>> {
+    const userId = request['user'];
     const user = await this.userService.findById(userId);
 
     return {

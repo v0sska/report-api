@@ -28,13 +28,13 @@ export class ReportService {
   }
 
   public async findByDeveloperId(developerId: string): Promise<Report[]> {
-	const report = await this.reportRepository.findByDeveloperId(developerId);
+    const report = await this.reportRepository.findByDeveloperId(developerId);
 
-	if (!report) {
-	  throw new NotFoundException(EXCEPTION.REPORT_NOT_FOUND);
-	}
+    if (!report) {
+      throw new NotFoundException(EXCEPTION.REPORT_NOT_FOUND);
+    }
 
-	return report;
+    return report;
   }
 
   public async update(id: string, updates: UpdateReportDto): Promise<Report> {
@@ -58,16 +58,24 @@ export class ReportService {
   }
 
   public async findByDate(date: string, customerId: string): Promise<Report> {
-	const report = await this.reportRepository.findByDate(date, customerId);
+    const report = await this.reportRepository.findByDate(date, customerId);
 
-	if (!report) {
-	  throw new NotFoundException(EXCEPTION.REPORT_NOT_FOUND);
-	}
+    if (!report) {
+      throw new NotFoundException(EXCEPTION.REPORT_NOT_FOUND);
+    }
 
-	return report;
+    return report;
   }
 
-  public async findByDates(customerId: string, startDate: string, endDate: string): Promise<Report[]> {
-	return await this.reportRepository.findByDates(customerId, startDate, endDate);
+  public async findByDates(
+    customerId: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<Report[]> {
+    return await this.reportRepository.findByDates(
+      customerId,
+      startDate,
+      endDate,
+    );
   }
 }

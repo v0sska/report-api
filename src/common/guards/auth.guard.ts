@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import config from '../configs';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const { token, refreshToken } = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -24,16 +24,60 @@ export class AuthGuard implements CanActivate {
       });
 
       request['user'] = payload.sub;
-
     } catch {
-      throw new UnauthorizedException();
+      if (!refreshToken) {
+        throw new UnauthorizedException();
+      }
+      try {
+        const payload = await this.jwtService.verifyAsync(refreshToken, {
+          secret: config.server.jwt,
+        });
+
+        const newToken = await this.jwtService.signAsync(
+          { sub: payload.sub },
+          {
+            expiresIn: '1h',
+          },
+        );
+
+        const newRefreshToken = await this.jwtService.signAsync(
+          { sub: payload.sub },
+          {
+            expiresIn: '7d',
+          },
+        );
+
+        (request as Request & { res: Response }).res.cookie('token', newToken, {
+          httpOnly: true,
+          sameSite: 'none',
+        });
+
+        (request as Request & { res: Response }).res.cookie(
+          'refreshToken',
+          newRefreshToken,
+          {
+            httpOnly: true,
+            sameSite: 'none',
+          },
+        );
+
+        request['user'] = payload.sub;
+      } catch {
+        throw new UnauthorizedException();
+      }
     }
 
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+  private extractTokenFromHeader(
+    request: Request,
+  ): { token: string; refreshToken: string } | undefined {
+    const refreshToken = request.cookies['refreshToken'];
+    const token = request.cookies['token'];
+    if (refreshToken && token) {
+      return { refreshToken, token };
+    }
+    return undefined;
   }
 }

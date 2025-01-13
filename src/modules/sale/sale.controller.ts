@@ -84,24 +84,30 @@ export class SaleController {
   }
 
   @Post('assign-developer')
-  public async assignDeveloperToCustomer(@Body() dto: CreateDevelopersOnCustomersDto): Promise<DataResponse<DevelopersOnCustomers>> {
-	const developersOnCustomers = await this.saleService.assignDeveloperToCustomer(dto);
+  public async assignDeveloperToCustomer(
+    @Body() dto: CreateDevelopersOnCustomersDto,
+  ): Promise<DataResponse<DevelopersOnCustomers>> {
+    const developersOnCustomers =
+      await this.saleService.assignDeveloperToCustomer(dto);
 
-	return {
-	  message: 'Developer assigned to customer successfully',
-	  data: developersOnCustomers,
-	  status: HttpStatus.CREATED,
-	};
+    return {
+      message: 'Developer assigned to customer successfully',
+      data: developersOnCustomers,
+      status: HttpStatus.CREATED,
+    };
   }
 
   @Patch('/income/:id')
-  public async updateIncome(@Param('id') id: string, @Body() body : {isPay: boolean}): Promise<DataResponse<Income>> {
-	const income = await this.saleService.updateIncome(id, body.isPay);
+  public async updateIncome(
+    @Param('id') id: string,
+    @Body() body: { isPay: boolean },
+  ): Promise<DataResponse<Income>> {
+    const income = await this.saleService.updateIncome(id, body.isPay);
 
-	return {
-	  message: 'Income updated successfully',
-	  data: income,
-	  status: HttpStatus.OK,
-	};
+    return {
+      message: 'Income updated successfully',
+      data: income,
+      status: HttpStatus.OK,
+    };
   }
 }

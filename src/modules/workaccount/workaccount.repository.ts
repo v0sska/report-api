@@ -26,13 +26,15 @@ export class WorkAccountRepository extends BaseRepository<
   }
 
   public async find(): Promise<WorkAccount[]> {
-    return await this.prismaService.workAccount.findMany({
-		include: {
-			customer: true,
-		}
-	}).catch((error) => {
-      throw new InternalServerErrorException(error.message);
-    });
+    return await this.prismaService.workAccount
+      .findMany({
+        include: {
+          customer: true,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async findById(id: string): Promise<WorkAccount> {
@@ -76,16 +78,17 @@ export class WorkAccountRepository extends BaseRepository<
   }
 
   public async findBySaleId(saleId: string): Promise<WorkAccount[]> {
-	return await this.prismaService.workAccount.findMany({
-	  where: {
-		saleId,
-	  },
-	  include: {
-		customer: true,
-	  }
-	})
-	.catch((error) => {
-		throw new InternalServerErrorException(error.message);
-	});
+    return await this.prismaService.workAccount
+      .findMany({
+        where: {
+          saleId,
+        },
+        include: {
+          customer: true,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 }

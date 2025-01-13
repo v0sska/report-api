@@ -19,7 +19,7 @@ import { DbModule } from './database/db.module';
     DeveloperModule,
     UserModule,
     AuthModule,
-	DbModule,
+    DbModule,
   ],
   controllers: [],
   providers: [],
