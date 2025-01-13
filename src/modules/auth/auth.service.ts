@@ -31,10 +31,16 @@ export class AuthService {
     const payload = { sub: user.id };
 
     const token = await this.jwtService.signAsync(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
 
     return {
       user: userMapper(user),
-      token,
+      tokens: {
+        token,
+        refreshToken,
+      },
     };
   }
 
@@ -54,15 +60,21 @@ export class AuthService {
     const payload = { sub: findUserByEmail.id };
 
     const token = await this.jwtService.signAsync(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
 
-	const position = findUserByEmail.developer ? 'developer' : 'sale';
-	
+    const position = findUserByEmail.developer ? 'developer' : 'sale';
+
     return {
       user: {
-		...userMapper(findUserByEmail),
-		position: position,
-	},
-      token,
+        ...userMapper(findUserByEmail),
+        position: position,
+      },
+      tokens: {
+        token,
+        refreshToken,
+      },
     };
   }
 }

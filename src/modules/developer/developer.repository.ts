@@ -37,9 +37,9 @@ export class DeveloperRepository extends BaseRepository<
         where: {
           id,
         },
-		include: {
-			report: true,
-		}
+        include: {
+          report: true,
+        },
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);

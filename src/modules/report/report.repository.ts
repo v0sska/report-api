@@ -16,37 +16,37 @@ export class ReportRepository extends BaseRepository<
   }
 
   public async create(dto: CreateReportDto): Promise<Report> {
-	const data = await this.prismaService.$transaction(async (tx) => {
-		const report = await tx.report.create({
-			data: dto,
-		});
+    const data = await this.prismaService.$transaction(async (tx) => {
+      const report = await tx.report.create({
+        data: dto,
+      });
 
-		const customer = await tx.customer.findUnique({
-			where: {
-			id: dto.customerId,
-			},
-		});
+      const customer = await tx.customer.findUnique({
+        where: {
+          id: dto.customerId,
+        },
+      });
 
-		if (!customer) {
-			throw new InternalServerErrorException('Customer not found');
-		}
+      if (!customer) {
+        throw new InternalServerErrorException('Customer not found');
+      }
 
-		const payedAmount = customer.isOnUpwork
-			? customer.rate * report.track * 0.9
-			: customer.rate * report.track;
+      const payedAmount = customer.isOnUpwork
+        ? customer.rate * report.track * 0.9
+        : customer.rate * report.track;
 
-		await tx.income.create({
-			data: {
-			date: dto.date,
-			reportId: report.id,
-			payed: payedAmount,
-			},
-		});
+      await tx.income.create({
+        data: {
+          date: dto.date,
+          reportId: report.id,
+          payed: payedAmount,
+        },
+      });
 
-		return report;
-	});
+      return report;
+    });
 
-	return data;
+    return data;
   }
 
   public async find(): Promise<Report[]> {
@@ -56,14 +56,15 @@ export class ReportRepository extends BaseRepository<
   }
 
   public async findByDeveloperId(developerId: string): Promise<Report[]> {
-	return await this.prismaService.report.findMany({
-		where: {
-			developerId: developerId,
-		},
-	})
-	.catch((error) => {
-		throw new InternalServerErrorException(error.message);
-	});
+    return await this.prismaService.report
+      .findMany({
+        where: {
+          developerId: developerId,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async findById(id: string): Promise<Report> {
@@ -104,50 +105,54 @@ export class ReportRepository extends BaseRepository<
   }
 
   public async findByDate(date: string, customerId: string): Promise<Report> {
-	return await this.prismaService.report
-	  .findFirst({
-		where: {
-		  date: date,
-		  customerId: customerId,
-		},
-		include: {
-			income: true,
-		}
-	  })
-	  .catch((error) => {
-		throw new InternalServerErrorException(error.message);
-	  });
+    return await this.prismaService.report
+      .findFirst({
+        where: {
+          date: date,
+          customerId: customerId,
+        },
+        include: {
+          income: true,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
-  public async findByDates(customerId: string, startDate: string, endDate: string): Promise<Report[]> {
-		const transaction = await this.prismaService.$transaction(async (tx) => {
-			const reports: Report[] = [];
-			let currentDate = new Date(startDate);
+  public async findByDates(
+    customerId: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<Report[]> {
+    const transaction = await this.prismaService.$transaction(async (tx) => {
+      const reports: Report[] = [];
+      let currentDate = new Date(startDate);
 
-			const endDateObj = new Date(endDate);
+      const endDateObj = new Date(endDate);
 
-			while (currentDate <= endDateObj) {
-			const dateString = currentDate.toISOString().split('T')[0];
+      while (currentDate <= endDateObj) {
+        const dateString = currentDate.toISOString().split('T')[0];
 
-			const report = await tx.report.findFirst({
-				where: {
-				customerId: customerId,
-				date: dateString,
-				},
-				include: {
-					income: true,
-				}
-			});
+        const report = await tx.report.findFirst({
+          where: {
+            customerId: customerId,
+            date: dateString,
+          },
+          include: {
+            income: true,
+          },
+        });
 
-			if (report) {
-				reports.push(report);
-			}
+        if (report) {
+          reports.push(report);
+        }
 
-			currentDate.setDate(currentDate.getDate() + 1);
-			}
-			return reports;
-		});
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return reports;
+    });
 
-		return transaction;
-	}
+    return transaction;
+  }
 }

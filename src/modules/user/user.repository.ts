@@ -32,37 +32,36 @@ export class UserRepository extends BaseRepository<
   }
 
   public async findById(id: string) {
-  return await this.prismaService.user
-    .findUnique({
-      where: {
-        id,
-      },
-      select: {
-        id: true,
-        email: true,
-        developer: {
-          select: {
-            id: true,  
-            name: true,
-			stack: true,
-			telegram: true,
-			timeJoin: true,
+    return await this.prismaService.user
+      .findUnique({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          email: true,
+          developer: {
+            select: {
+              id: true,
+              name: true,
+              stack: true,
+              telegram: true,
+              timeJoin: true,
+            },
+          },
+          sale: {
+            select: {
+              id: true,
+              name: true,
+              timeJoin: true,
+            },
           },
         },
-        sale: {
-          select: {
-            id: true,
-            name: true,
-			timeJoin: true,
-          },
-        },
-      },
-    })
-    .catch((error) => {
-      throw new InternalServerErrorException(error.message);
-    });
-}
-
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
 
   public async update(id: string, updates: UpdateUserDto): Promise<User> {
     return await this.prismaService.user
@@ -95,27 +94,27 @@ export class UserRepository extends BaseRepository<
         where: {
           email,
         },
-		select: {
-        id: true,
-        email: true,
-		password: true,
-        developer: {
-          select: {
-            id: true,  
-            name: true,
-			stack: true,
-			telegram: true,
-			timeJoin: true,
+        select: {
+          id: true,
+          email: true,
+          password: true,
+          developer: {
+            select: {
+              id: true,
+              name: true,
+              stack: true,
+              telegram: true,
+              timeJoin: true,
+            },
+          },
+          sale: {
+            select: {
+              id: true,
+              name: true,
+              timeJoin: true,
+            },
           },
         },
-        sale: {
-          select: {
-            id: true,
-            name: true,
-			timeJoin: true,
-          },
-        },
-      },
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);

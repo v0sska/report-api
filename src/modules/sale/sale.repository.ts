@@ -69,29 +69,30 @@ export class SaleRepository extends BaseRepository<
       });
   }
 
-  public async assignDeveloperToCustomer(dto: CreateDevelopersOnCustomersDto): Promise<DevelopersOnCustomers> {
-	return await this.prismaService.developersOnCustomers
-	  .create({
-		data: dto,
-	  })
-	  .catch((error) => {
-		throw new InternalServerErrorException(error.message);
-	  });
+  public async assignDeveloperToCustomer(
+    dto: CreateDevelopersOnCustomersDto,
+  ): Promise<DevelopersOnCustomers> {
+    return await this.prismaService.developersOnCustomers
+      .create({
+        data: dto,
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async updateIncomeById(id: string, isPay: boolean): Promise<Income> {
-	return await this.prismaService.income
-	.update({
-		where: {
-			id: id,
-		},
-		data: {
-			isPay: isPay,
-		}
-	})
-	.catch((error) => {
-		throw new InternalServerErrorException(error.message);
-	});
+    return await this.prismaService.income
+      .update({
+        where: {
+          id: id,
+        },
+        data: {
+          isPay: isPay,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
-
 }

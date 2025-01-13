@@ -51,32 +51,36 @@ export class ReportController {
 
   @Get('/dates')
   public async findByDates(
-	@Query('customerId') customerId: string,
-	@Query('startDate') startDate: string,
-	@Query('endDate') endDate: string
-): Promise<DataResponse<Report[]>> {
-	const report = await this.reportService.findByDates(customerId, startDate, endDate);
+    @Query('customerId') customerId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ): Promise<DataResponse<Report[]>> {
+    const report = await this.reportService.findByDates(
+      customerId,
+      startDate,
+      endDate,
+    );
 
-	return {
-	  message: 'Report fetched successfully',
-	  data: report,
-	  status: HttpStatus.OK,
-	};
+    return {
+      message: 'Report fetched successfully',
+      data: report,
+      status: HttpStatus.OK,
+    };
   }
 
   @Get('/date')
   public async findByDate(
-	@Query('date') date: string, 
-	@Query('customerId') customerId: string
-): Promise<DataResponse<Report>> {
-	const report = await this.reportService.findByDate(date, customerId);
+    @Query('date') date: string,
+    @Query('customerId') customerId: string,
+  ): Promise<DataResponse<Report>> {
+    const report = await this.reportService.findByDate(date, customerId);
 
-	return {
-	  message: 'Report fetched successfully',
-	  data: report,
-	  status: HttpStatus.OK,
+    return {
+      message: 'Report fetched successfully',
+      data: report,
+      status: HttpStatus.OK,
     };
- }
+  }
 
   @Get('/:id')
   public async findById(
@@ -93,15 +97,15 @@ export class ReportController {
 
   @Get('/developer/:developerId')
   public async findByDeveloperId(
-	@Param('developerId') developerId: string,
+    @Param('developerId') developerId: string,
   ): Promise<DataResponse<Report[]>> {
-	const report = await this.reportService.findByDeveloperId(developerId);
+    const report = await this.reportService.findByDeveloperId(developerId);
 
-	return {
-	  message: 'Report fetched successfully',
-	  data: report,
-	  status: HttpStatus.OK,
-	};
+    return {
+      message: 'Report fetched successfully',
+      data: report,
+      status: HttpStatus.OK,
+    };
   }
 
   @Patch('/:id')
