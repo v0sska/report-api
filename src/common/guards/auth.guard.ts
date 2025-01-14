@@ -41,7 +41,10 @@ export class AuthGuard implements CanActivate {
         });
 
         const newToken = await this.jwtService.signAsync(
-          { sub: payload.sub },
+          {
+            sub: payload.sub,
+            role: payload.role,
+          },
           {
             expiresIn: '1h',
           },
