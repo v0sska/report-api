@@ -20,7 +20,7 @@ export class RoleGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const newToken = Reflect.getMetadata('newToken', request);
-    const token = newToken || this.extractTokenFromCookie(request);
+    const token = this.extractTokenFromCookie(request) || newToken;
     if (!token) {
       console.log('no token');
       throw new UnauthorizedException();
