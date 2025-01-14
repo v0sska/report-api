@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15
-    container_name: report-api
+    container_name: report-api-db
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: johndoe
@@ -12,6 +12,22 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    image: myapp:latest
+    container_name: report-api
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      CRYPTO_SECRET: ${CRYPTO_SECRET}
+      SERVER_URL: ${SERVER_URL}
+      FRONTEND_URL: ${FRONTEND_URL}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:
