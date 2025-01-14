@@ -4,6 +4,10 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { EXCEPTION } from '@/common/constants/exception.constants';
+import { userMapper } from '@/common/utils/user-mapper.util';
+import { USER_STATUS } from '@/common/constants/user-status.constants';
+import config from '@/common/configs';
+import { CryptoUtil } from '@/common/utils/crypto.util';
 
 @Injectable()
 export class UserService {
@@ -13,8 +17,24 @@ export class UserService {
     return await this.userRepository.create(dto);
   }
 
-  public async find(): Promise<User[]> {
-    return await this.userRepository.find();
+  public async createWithInvite(dto: CreateUserDto): Promise<User & { inviteUrl: string }> {
+    const inviteToken = CryptoUtil.generateUUID();
+    const user = await this.userRepository.create({ ...dto, status: USER_STATUS.PENDING, inviteToken: inviteToken });
+
+    return {
+      ...user,
+      inviteUrl: `${config.server.frontendUrl}/login-via-invitation?token=${inviteToken}`,
+    };
+  }
+
+  public async find(): Promise<Omit<User, 'password' | 'inviteToken'>[]> {
+    const users = await this.userRepository.find();
+
+    const mappedUsers = users.map((user) => {
+      return userMapper(user);
+    });
+
+    return mappedUsers;
   }
 
   public async findById(id: string) {

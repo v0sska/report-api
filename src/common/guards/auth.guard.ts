@@ -14,16 +14,19 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const { token, refreshToken } = this.extractTokenFromHeader(request);
-    if (!token) {
+    const tokens = this.extractTokenFromCookie(request);
+  
+    if (!tokens || (!tokens.token && !tokens.refreshToken)) {
       throw new UnauthorizedException();
     }
+  
+    const { token, refreshToken } = tokens;
+  
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: config.server.jwt,
       });
-
-      request['user'] = payload.sub;
+      request['user'] = { id: payload.sub, role: payload.role };
     } catch {
       if (!refreshToken) {
         throw new UnauthorizedException();
@@ -32,50 +35,54 @@ export class AuthGuard implements CanActivate {
         const payload = await this.jwtService.verifyAsync(refreshToken, {
           secret: config.server.jwt,
         });
-
+  
         const newToken = await this.jwtService.signAsync(
           { sub: payload.sub },
           {
             expiresIn: '1h',
           },
         );
-
+  
         const newRefreshToken = await this.jwtService.signAsync(
           { sub: payload.sub },
           {
             expiresIn: '7d',
           },
         );
-
+  
         (request as Request & { res: Response }).res.cookie('token', newToken, {
-          httpOnly: true,
-          sameSite: 'none',
+          httpOnly: false,
+          sameSite: 'lax',
+          maxAge: 3600000,
+          expires: new Date(Date.now() + 3600000),
         });
-
+  
         (request as Request & { res: Response }).res.cookie(
           'refreshToken',
           newRefreshToken,
           {
-            httpOnly: true,
-            sameSite: 'none',
+            httpOnly: false,
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           },
         );
-
-        request['user'] = payload.sub;
+  
+        request['user'] = { id: payload.sub, role: payload.role };
       } catch {
         throw new UnauthorizedException();
       }
     }
-
+  
     return true;
   }
 
-  private extractTokenFromHeader(
+  private extractTokenFromCookie(
     request: Request,
   ): { token: string; refreshToken: string } | undefined {
     const refreshToken = request.cookies['refreshToken'];
     const token = request.cookies['token'];
-    if (refreshToken && token) {
+    if (refreshToken || token) {
       return { refreshToken, token };
     }
     return undefined;

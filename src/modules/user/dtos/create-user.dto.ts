@@ -1,5 +1,14 @@
-import { IsString, IsNotEmpty, MinLength, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  MinLength,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ROLE, RoleValues } from '@/common/constants/role.constants';
+import { StatusValues } from '@/common/constants/user-status.constants';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -8,9 +17,20 @@ export class CreateUserDto {
   @ApiProperty()
   email: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @MinLength(8)
   @ApiProperty()
-  password: string;
+  password?: string;
+
+  @IsNotEmpty()
+  @IsEnum(ROLE)
+  @ApiProperty({
+    enum: ROLE,
+  })
+  role: RoleValues;
+
+  status?: StatusValues;
+
+  inviteToken?: string;
 }
