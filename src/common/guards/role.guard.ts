@@ -8,14 +8,19 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import config from '../configs';
 import { Request } from 'express';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  public constructor(private jwtService: JwtService) {}
+  public constructor(
+    private jwtService: JwtService,
+    private reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromCookie(request);
+    const newToken = Reflect.getMetadata('newToken', request);
+    const token = newToken || this.extractTokenFromCookie(request);
     if (!token) {
       console.log('no token');
       throw new UnauthorizedException();

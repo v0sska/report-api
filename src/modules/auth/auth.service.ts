@@ -56,7 +56,7 @@ export class AuthService {
       throw new BadRequestException(EXCEPTION.USER_NOT_FOUND);
     }
 
-    if(user.status === USER_STATUS.ACTIVE) {
+    if (user.status === USER_STATUS.ACTIVE) {
       throw new BadRequestException(EXCEPTION.USER_ALREADY_EXISTS);
     }
 
@@ -82,7 +82,7 @@ export class AuthService {
       user: userMapper(updatedUser),
       tokens: {
         token,
-        refreshToken
+        refreshToken,
       },
     };
   }

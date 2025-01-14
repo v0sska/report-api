@@ -7,7 +7,7 @@ import config from './common/configs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   app.enableCors({
     origin: config.server.frontendUrl,
     credentials: true,

@@ -17,9 +17,15 @@ export class UserService {
     return await this.userRepository.create(dto);
   }
 
-  public async createWithInvite(dto: CreateUserDto): Promise<User & { inviteUrl: string }> {
+  public async createWithInvite(
+    dto: CreateUserDto,
+  ): Promise<User & { inviteUrl: string }> {
     const inviteToken = CryptoUtil.generateUUID();
-    const user = await this.userRepository.create({ ...dto, status: USER_STATUS.PENDING, inviteToken: inviteToken });
+    const user = await this.userRepository.create({
+      ...dto,
+      status: USER_STATUS.PENDING,
+      inviteToken: inviteToken,
+    });
 
     return {
       ...user,

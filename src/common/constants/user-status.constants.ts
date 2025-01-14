@@ -1,6 +1,6 @@
 export const USER_STATUS = {
-    ACTIVE: 'Active',
-    PENDING: 'Pending',
+  ACTIVE: 'Active',
+  PENDING: 'Pending',
 } as const;
 
 export type StatusKeys = keyof typeof USER_STATUS;

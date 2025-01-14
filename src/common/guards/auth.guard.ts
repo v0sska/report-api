@@ -7,21 +7,25 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import config from '../configs';
 import { Request, Response } from 'express';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  public constructor(private jwtService: JwtService) {}
+  public constructor(
+    private jwtService: JwtService,
+    private reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const tokens = this.extractTokenFromCookie(request);
-  
+
     if (!tokens || (!tokens.token && !tokens.refreshToken)) {
       throw new UnauthorizedException();
     }
-  
+
     const { token, refreshToken } = tokens;
-  
+
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: config.server.jwt,
@@ -35,45 +39,28 @@ export class AuthGuard implements CanActivate {
         const payload = await this.jwtService.verifyAsync(refreshToken, {
           secret: config.server.jwt,
         });
-  
+
         const newToken = await this.jwtService.signAsync(
           { sub: payload.sub },
           {
             expiresIn: '1h',
           },
         );
-  
-        const newRefreshToken = await this.jwtService.signAsync(
-          { sub: payload.sub },
-          {
-            expiresIn: '7d',
-          },
-        );
-  
+
         (request as Request & { res: Response }).res.cookie('token', newToken, {
           httpOnly: false,
           sameSite: 'lax',
           maxAge: 3600000,
           expires: new Date(Date.now() + 3600000),
         });
-  
-        (request as Request & { res: Response }).res.cookie(
-          'refreshToken',
-          newRefreshToken,
-          {
-            httpOnly: false,
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          },
-        );
-  
+
+        Reflect.defineMetadata('newToken', newToken, request);
         request['user'] = { id: payload.sub, role: payload.role };
       } catch {
         throw new UnauthorizedException();
       }
     }
-  
+
     return true;
   }
 
