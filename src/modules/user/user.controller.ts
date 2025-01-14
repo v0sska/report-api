@@ -27,7 +27,9 @@ export class UserController {
 
   @Post('/')
   @UseGuards(RoleGuard)
-  public async create(@Body() dto: CreateUserDto): Promise<DataResponse<User & { inviteUrl: string } | User>> {
+  public async create(
+    @Body() dto: CreateUserDto,
+  ): Promise<DataResponse<(User & { inviteUrl: string }) | User>> {
     const data = await this.userService.createWithInvite(dto);
 
     return {
@@ -39,7 +41,9 @@ export class UserController {
 
   @Get('/')
   @UseGuards(RoleGuard)
-  public async find(): Promise<DataResponse<Omit<User, 'password' | 'inviteToken'>[]>> {
+  public async find(): Promise<
+    DataResponse<Omit<User, 'password' | 'inviteToken'>[]>
+  > {
     const user = await this.userService.find();
     return {
       message: 'User fetched successfully',
