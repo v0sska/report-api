@@ -37,26 +37,6 @@ export class UserRepository extends BaseRepository<
         where: {
           id,
         },
-        select: {
-          id: true,
-          email: true,
-          developer: {
-            select: {
-              id: true,
-              name: true,
-              stack: true,
-              telegram: true,
-              timeJoin: true,
-            },
-          },
-          sale: {
-            select: {
-              id: true,
-              name: true,
-              timeJoin: true,
-            },
-          },
-        },
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);
@@ -93,27 +73,6 @@ export class UserRepository extends BaseRepository<
       .findUnique({
         where: {
           email,
-        },
-        select: {
-          id: true,
-          email: true,
-          password: true,
-          developer: {
-            select: {
-              id: true,
-              name: true,
-              stack: true,
-              telegram: true,
-              timeJoin: true,
-            },
-          },
-          sale: {
-            select: {
-              id: true,
-              name: true,
-              timeJoin: true,
-            },
-          },
         },
       })
       .catch((error) => {

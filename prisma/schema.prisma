@@ -16,9 +16,10 @@ datasource db {
 model User {
     id String  @id @default(uuid()) 
 	email String @unique
-	password String
-	developer Developer?
-	sale Sale?
+	password String?
+	role String
+	status String @default("Active")
+	inviteToken String?
 
 	@@map("users")
 }
@@ -29,8 +30,6 @@ model Developer {
 	stack String
 	telegram String @unique
 	timeJoin DateTime?
-	userId  String    @unique
-  	user    User   @relation(fields: [userId], references: [id])
 	report Report[]
 	customer DevelopersOnCustomers[]
 
@@ -41,8 +40,6 @@ model Sale {
     id String  @id @default(uuid())
     name String 
 	timeJoin DateTime?
-	userId  String    @unique
-  	user    User   @relation(fields: [userId], references: [id])
 	workAccount WorkAccount[]
 
 	@@map("sales")

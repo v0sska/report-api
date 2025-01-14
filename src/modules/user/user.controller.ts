@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -17,7 +16,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { DataResponse } from '@/common/types/data-response.type';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/common/guards/auth.guard';
-import { Request } from 'express';
+import { RoleGuard } from '@/common/guards/role.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -27,20 +26,21 @@ export class UserController {
   public constructor(private readonly userService: UserService) {}
 
   @Post('/')
-  public async create(@Body() dto: CreateUserDto): Promise<DataResponse<User>> {
-    const user = await this.userService.create(dto);
+  @UseGuards(RoleGuard)
+  public async create(@Body() dto: CreateUserDto): Promise<DataResponse<User & { inviteUrl: string } | User>> {
+    const data = await this.userService.createWithInvite(dto);
 
     return {
       message: 'User created successfully',
-      data: user,
+      data: data,
       status: HttpStatus.CREATED,
     };
   }
 
   @Get('/')
-  public async find(): Promise<DataResponse<User[]>> {
+  @UseGuards(RoleGuard)
+  public async find(): Promise<DataResponse<Omit<User, 'password' | 'inviteToken'>[]>> {
     const user = await this.userService.find();
-
     return {
       message: 'User fetched successfully',
       data: user,
@@ -48,11 +48,10 @@ export class UserController {
     };
   }
 
-  @Get('/me')
+  @Get('/:id')
   public async findById(
-    @Req() request: Request,
+    @Param('id') userId: string,
   ): Promise<DataResponse<Object>> {
-    const userId = request['user'];
     const user = await this.userService.findById(userId);
 
     return {
@@ -77,6 +76,7 @@ export class UserController {
   }
 
   @Delete('/:id')
+  @UseGuards(RoleGuard)
   public async delete(@Param('id') id: string): Promise<DataResponse<User>> {
     const user = await this.userService.delete(id);
 
