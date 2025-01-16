@@ -1,6 +1,6 @@
 export const ROLE = {
   ADMIN: 'Admin',
-  DEVELOPER: 'Developer',
+  EMPLOYEE: 'Employee',
   SDO: 'SalesDepartmentOfficer',
   PMDO: 'PMDepartmentOfficer',
   SALE: 'Sale',
