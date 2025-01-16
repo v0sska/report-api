@@ -20,6 +20,13 @@ export class RoleGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const newToken = Reflect.getMetadata('newToken', request);
+    const route = request.route?.path;
+    const method = request.method;
+
+    const adminPath = [
+      {path: '/api/users', method: 'POST'},
+    ]
+
     const token = this.extractTokenFromCookie(request) || newToken;
     if (!token) {
       console.log('no token');
@@ -28,9 +35,29 @@ export class RoleGuard implements CanActivate {
     const payload = await this.jwtService.verifyAsync(token, {
       secret: config.server.jwt,
     });
-    if (payload.role !== 'Admin' && payload.role !== 'SuperAdmin') {
+
+    const isAdminPath = adminPath.some(
+      (item) => item.path === route && item.method === method,
+    );
+
+    if (
+      isAdminPath && 
+      payload.role !== 'Admin' && 
+      payload.role !== 'SuperAdmin' && 
+      payload.role !== 'SalesDepartmentOfficer'
+    ) {
       throw new BadRequestException('Permission denied');
     }
+
+    if (
+      payload.role !== 'Admin' && 
+      payload.role !== 'SuperAdmin' && 
+      payload.role !== 'SalesDepartmentOfficer' &&
+      payload.role !== 'PMDepartmentOfficer'
+    ) {
+      throw new BadRequestException('Permission denied');
+    }
+
     return true;
   }
 
