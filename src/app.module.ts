@@ -8,9 +8,11 @@ import { DeveloperModule } from '@/modules/developer/developer.module';
 import { UserModule } from '@/modules/user/user.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { DbModule } from './database/db.module';
+import { EmployeeModule } from './modules/employee/employee.module';
 
 @Module({
   imports: [
+    EmployeeModule,
     DevelopersOnCustomersModule,
     ReportModule,
     CustomerModule,

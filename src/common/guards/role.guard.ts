@@ -23,9 +23,7 @@ export class RoleGuard implements CanActivate {
     const route = request.route?.path;
     const method = request.method;
 
-    const adminPath = [
-      {path: '/api/users', method: 'POST'},
-    ]
+    const adminPath = [{ path: '/api/users', method: 'POST' }];
 
     const token = this.extractTokenFromCookie(request) || newToken;
     if (!token) {
@@ -41,17 +39,17 @@ export class RoleGuard implements CanActivate {
     );
 
     if (
-      isAdminPath && 
-      payload.role !== 'Admin' && 
-      payload.role !== 'SuperAdmin' && 
+      isAdminPath &&
+      payload.role !== 'Admin' &&
+      payload.role !== 'SuperAdmin' &&
       payload.role !== 'SalesDepartmentOfficer'
     ) {
       throw new BadRequestException('Permission denied');
     }
 
     if (
-      payload.role !== 'Admin' && 
-      payload.role !== 'SuperAdmin' && 
+      payload.role !== 'Admin' &&
+      payload.role !== 'SuperAdmin' &&
       payload.role !== 'SalesDepartmentOfficer' &&
       payload.role !== 'PMDepartmentOfficer'
     ) {

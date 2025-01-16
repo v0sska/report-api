@@ -14,14 +14,27 @@ datasource db {
 }
 
 model User {
-    id String  @id @default(uuid()) 
-	email String @unique
-	password String?
-	role String
-	status String @default("Active")
-	inviteToken String?
+    id          String   @id @default(uuid())
+    email       String   @unique
+    password    String?
+    role        String
+    status      String   @default("Active")
+    inviteToken String?
+    employee    Employee?
 
-	@@map("users")
+    @@map("users")
+}
+
+model Employee {
+    id                String  @id @default(uuid())
+    firstName         String  @map("first_name")
+    lastName          String  @map("last_name")
+    projectEngagement String  @map("project_engagement") @default("Available")
+    position          String
+    rate              Int
+    userId            String? @unique 
+    user              User?   @relation(fields: [userId], references: [id])
+    @@map("employees")
 }
 
 model Developer {
