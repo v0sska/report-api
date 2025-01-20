@@ -1,9 +1,9 @@
 export const ROLE = {
   ADMIN: 'Admin',
-  DEVELOPER: 'Developer',
+  EMPLOYEE: 'Employee',
   SDO: 'SalesDepartmentOfficer',
   PMDO: 'PMDepartmentOfficer',
-  SALE: 'Sale',
+  SALES: 'Sales',
   QA: 'QA',
   SUPER_ADMIN: 'SuperAdmin',
   PROJECT_MANAGER: 'ProjectManager',

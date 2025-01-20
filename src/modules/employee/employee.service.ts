@@ -27,6 +27,16 @@ export class EmployeeService {
     return employee;
   }
 
+  public async findByUserId(userId: string): Promise<Employee> {
+    const employee = await this.employeeRepository.findByUserId(userId);
+
+    if (!employee) {
+      throw new BadRequestException(EXCEPTION.EMPLOYEE_NOT_FOUND);
+    }
+
+    return employee;
+  }
+
   public async update(
     id: string,
     updates: UpdateEmployeeDto,

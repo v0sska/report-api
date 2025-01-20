@@ -40,6 +40,18 @@ export class EmployeeRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
+  public async findByUserId(userId: string): Promise<Employee> {
+    return await this.prismaService.employee
+      .findUnique({
+        where: {
+          userId,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
   public async update(
     id: string,
     updates: UpdateEmployeeDto,

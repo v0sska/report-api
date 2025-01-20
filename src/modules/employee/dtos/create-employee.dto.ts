@@ -21,7 +21,7 @@ export class CreateEmployeeDto {
   @ApiProperty({
     enum: PROJECT_ENGAGMENT,
   })
-  role: ProjectEngagmentValues;
+  projectEngagement: ProjectEngagmentValues;
 
   @ApiProperty()
   @IsNotEmpty()

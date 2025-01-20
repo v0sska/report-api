@@ -1,26 +1,26 @@
-import { IsString, IsNotEmpty, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateDeveloperDto {
+export class CreateSalesDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  name: string;
+  firstName: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  stack: string;
+  lastName: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  telegram: string;
+  position: string;
 
-  @IsDateString()
+  @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
-  timeJoin: Date;
+  rate: number;
 
   @IsString()
   @IsNotEmpty()

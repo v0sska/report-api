@@ -1,22 +1,22 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
-import { Customer } from '@prisma/client';
-import { CreateCustomerDto } from './dtos/create-customer.dto';
-import { UpdateCustomerDto } from './dtos/update-customer.dto';
+import { Sales } from '@prisma/client';
+import { CreateSalesDto } from './dtos/create-sales.dto';
+import { UpdateSalesDto } from './dtos/update-sales.dto';
 import { PrismaService } from '@/database/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
-export class CustomerRepository extends BaseRepository<
-  Customer,
-  CreateCustomerDto,
-  UpdateCustomerDto
+export class SalesRepository extends BaseRepository<
+  Sales,
+  CreateSalesDto,
+  UpdateSalesDto
 > {
   public constructor(private readonly prismaService: PrismaService) {
     super();
   }
 
-  public async create(dto: CreateCustomerDto): Promise<Customer> {
-    return await this.prismaService.customer
+  public async create(dto: CreateSalesDto): Promise<Sales> {
+    return await this.prismaService.sales
       .create({
         data: dto,
       })
@@ -25,14 +25,14 @@ export class CustomerRepository extends BaseRepository<
       });
   }
 
-  public async find(): Promise<Customer[]> {
-    return await this.prismaService.customer.findMany().catch((error) => {
+  public async find(): Promise<Sales[]> {
+    return await this.prismaService.sales.findMany().catch((error) => {
       throw new InternalServerErrorException(error.message);
     });
   }
 
-  public async findById(id: string): Promise<Customer> {
-    return await this.prismaService.customer
+  public async findById(id: string): Promise<Sales> {
+    return await this.prismaService.sales
       .findUnique({
         where: {
           id,
@@ -43,11 +43,20 @@ export class CustomerRepository extends BaseRepository<
       });
   }
 
-  public async update(
-    id: string,
-    updates: UpdateCustomerDto,
-  ): Promise<Customer> {
-    return await this.prismaService.customer
+  public async findByUserId(userId: string): Promise<Sales> {
+    return await this.prismaService.sales
+      .findUnique({
+        where: {
+          userId,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
+  public async update(id: string, updates: UpdateSalesDto): Promise<Sales> {
+    return await this.prismaService.sales
       .update({
         where: {
           id,
@@ -59,8 +68,8 @@ export class CustomerRepository extends BaseRepository<
       });
   }
 
-  public async delete(id: string): Promise<Customer> {
-    return await this.prismaService.customer
+  public async delete(id: string): Promise<Sales> {
+    return await this.prismaService.sales
       .delete({
         where: {
           id,

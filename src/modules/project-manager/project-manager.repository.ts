@@ -1,22 +1,22 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
-import { Developer } from '@prisma/client';
-import { CreateDeveloperDto } from './dtos/create-developer.dto';
-import { UpdateDeveloperDto } from './dtos/update-developer.dto';
+import { ProjectManager } from '@prisma/client';
+import { CreateProjectManagerDto } from './dtos/create-project-manager.dto';
+import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
 import { PrismaService } from '@/database/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
-export class DeveloperRepository extends BaseRepository<
-  Developer,
-  CreateDeveloperDto,
-  UpdateDeveloperDto
+export class ProjectManagerRepository extends BaseRepository<
+  ProjectManager,
+  CreateProjectManagerDto,
+  UpdateProjectManagerDto
 > {
   public constructor(private readonly prismaService: PrismaService) {
     super();
   }
 
-  public async create(dto: CreateDeveloperDto): Promise<Developer> {
-    return await this.prismaService.developer
+  public async create(dto: CreateProjectManagerDto): Promise<ProjectManager> {
+    return await this.prismaService.projectManager
       .create({
         data: dto,
       })
@@ -24,33 +24,27 @@ export class DeveloperRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
-
-  public async find(): Promise<Developer[]> {
-    return await this.prismaService.developer.findMany().catch((error) => {
+  public async find(): Promise<ProjectManager[]> {
+    return await this.prismaService.projectManager.findMany().catch((error) => {
       throw new InternalServerErrorException(error.message);
     });
   }
-
-  public async findById(id: string): Promise<Developer> {
-    return await this.prismaService.developer
+  public async findById(id: string): Promise<ProjectManager> {
+    return await this.prismaService.projectManager
       .findUnique({
         where: {
           id,
-        },
-        include: {
-          report: true,
         },
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);
       });
   }
-
   public async update(
     id: string,
-    updates: UpdateDeveloperDto,
-  ): Promise<Developer> {
-    return await this.prismaService.developer
+    updates: UpdateProjectManagerDto,
+  ): Promise<ProjectManager> {
+    return await this.prismaService.projectManager
       .update({
         where: {
           id,
@@ -61,9 +55,8 @@ export class DeveloperRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
-
-  public async delete(id: string): Promise<Developer> {
-    return await this.prismaService.developer
+  public async delete(id: string): Promise<ProjectManager> {
+    return await this.prismaService.projectManager
       .delete({
         where: {
           id,

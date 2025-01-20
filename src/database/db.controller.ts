@@ -9,11 +9,8 @@ export class DbController {
 
   @Delete('/drop-data')
   public async deleteAllData() {
-    await this.prismaService.report.deleteMany();
-    await this.prismaService.customer.deleteMany();
-    await this.prismaService.workAccount.deleteMany();
-    await this.prismaService.developer.deleteMany();
-    await this.prismaService.sale.deleteMany();
+    await this.prismaService.sales.deleteMany();
+    await this.prismaService.employee.deleteMany();
     await this.prismaService.user.deleteMany();
 
     return {

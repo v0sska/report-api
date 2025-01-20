@@ -27,16 +27,13 @@ export class RoleGuard implements CanActivate {
 
     const token = this.extractTokenFromCookie(request) || newToken;
     if (!token) {
-      console.log('no token');
       throw new UnauthorizedException();
     }
     const payload = await this.jwtService.verifyAsync(token, {
       secret: config.server.jwt,
     });
 
-    const isAdminPath = adminPath.some(
-      (item) => item.path === route && item.method === method,
-    );
+    const isAdminPath = this.isBlockedRoute(route, method, adminPath);
 
     if (
       isAdminPath &&
@@ -65,5 +62,13 @@ export class RoleGuard implements CanActivate {
       return token;
     }
     return undefined;
+  }
+
+  private isBlockedRoute(
+    route: string,
+    method: string,
+    routes: { path: string; method: string }[],
+  ): boolean {
+    return routes.some((item) => item.path === route && item.method === method);
   }
 }

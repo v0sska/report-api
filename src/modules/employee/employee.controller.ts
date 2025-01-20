@@ -1,13 +1,26 @@
-import { Body, Controller, HttpStatus, Patch, Post, Get, Param, Delete } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Patch,
+  Post,
+  Get,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dtos/create-employee.dto';
 import { DataResponse } from '@/common/types/data-response.type';
 import { Employee } from '@prisma/client';
 import { UpdateEmployeeDto } from './dtos/update-employee.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
 
 @Controller('employee')
 @ApiTags('employee')
+@UseGuards(AuthGuard)
+@ApiCookieAuth()
 export class EmployeeController {
   public constructor(private readonly employeeService: EmployeeService) {}
 
@@ -29,6 +42,19 @@ export class EmployeeController {
     @Param('id') id: string,
   ): Promise<DataResponse<Employee>> {
     const employee = await this.employeeService.findById(id);
+
+    return {
+      message: 'Employee retrieved successfully',
+      data: employee,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get('user/:userId')
+  public async findByUserId(
+    @Param('userId') userId: string,
+  ): Promise<DataResponse<Employee>> {
+    const employee = await this.employeeService.findByUserId(userId);
 
     return {
       message: 'Employee retrieved successfully',
