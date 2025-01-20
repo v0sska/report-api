@@ -14,6 +14,7 @@ COPY --chown=node:node prisma ./prisma
 COPY --chown=node:node .env ./
 
 RUN npm run prisma:generate
+RUN npm run prisma:push
 RUN npm run build
 
 EXPOSE 3000
