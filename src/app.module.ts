@@ -1,22 +1,16 @@
 import { Module } from '@nestjs/common';
-import { DevelopersOnCustomersModule } from '@/modules/developers-on-customers/developers-on-customers.module';
-import { ReportModule } from '@/modules/report/report.module';
-import { CustomerModule } from '@/modules/customer/customer.module';
-import { WorkAccountModule } from '@/modules/workaccount/workaccount.module';
-import { SaleModule } from '@/modules/sale/sale.module';
-import { DeveloperModule } from '@/modules/developer/developer.module';
+import { SalesModule } from '@/modules/sales/sales.module';
 import { UserModule } from '@/modules/user/user.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { DbModule } from './database/db.module';
+import { EmployeeModule } from './modules/employee/employee.module';
+import { ProjectManagerModule } from './modules/project-manager/project-manager.module';
 
 @Module({
   imports: [
-    DevelopersOnCustomersModule,
-    ReportModule,
-    CustomerModule,
-    WorkAccountModule,
-    SaleModule,
-    DeveloperModule,
+    ProjectManagerModule,
+    EmployeeModule,
+    SalesModule,
     UserModule,
     AuthModule,
     DbModule,

@@ -14,14 +14,14 @@ import { User } from '@prisma/client';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { DataResponse } from '@/common/types/data-response.type';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { RoleGuard } from '@/common/guards/role.guard';
 
 @ApiTags('users')
 @Controller('users')
 @UseGuards(AuthGuard)
-@ApiBearerAuth()
+@ApiCookieAuth()
 export class UserController {
   public constructor(private readonly userService: UserService) {}
 

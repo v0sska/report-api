@@ -21,6 +21,7 @@ async function bootstrap() {
     .setDescription('The report API description')
     .setVersion('1.0')
     .addBearerAuth()
+    .addCookieAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

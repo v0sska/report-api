@@ -14,95 +14,52 @@ datasource db {
 }
 
 model User {
-    id String  @id @default(uuid()) 
-	email String @unique
-	password String?
-	role String
-	status String @default("Active")
-	inviteToken String?
+    id          String   @id @default(uuid())
+    email       String   @unique
+    password    String?
+    role        String
+    status      String   @default("Active")
+    inviteToken String?
+    employee    Employee?
+	  sales 	    Sales?
+    projectManager ProjectManager?
 
-	@@map("users")
+    @@map("users")
 }
 
-model Developer {
-    id String  @id @default(uuid())
-    name String 
-	stack String
-	telegram String @unique
-	timeJoin DateTime?
-	report Report[]
-	customer DevelopersOnCustomers[]
-
-	@@map("developers")
+model Employee {
+    id                String  @id @default(uuid())
+    firstName         String  @map("first_name")
+    lastName          String  @map("last_name")
+    projectEngagement String  @map("project_engagement") @default("Available")
+    position          String
+    rate              Int
+    userId            String? @unique 
+    user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    @@map("employees")
 }
 
-model Sale {
-    id String  @id @default(uuid())
-    name String 
-	timeJoin DateTime?
-	workAccount WorkAccount[]
+model Sales {
+   	id                String  @id @default(uuid())
+    firstName         String  @map("first_name")
+    lastName          String  @map("last_name")
+    position          String
+    rate              Int
+    userId            String? @unique 
+    user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 	@@map("sales")
 }
 
-model WorkAccount {
-    id String  @id @default(uuid())
-    name String 
-	saleId  String
-	isBlocked Boolean @default(false) @map("is_blocked")
-  	sale    Sale   @relation(fields: [saleId], references: [id])
-	customer Customer[]
 
-	@@map("work_accounts")
-}
+model ProjectManager {
+  id         String   @id @default(uuid())
+  firstName  String   @map("first_name")
+  lastName   String   @map("last_name")
+  position   String
+  rate       Int
+  userId     String?  @unique
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-model Customer {
-    id String  @id @default(uuid())
-    name String 
-	accountId  String 
-  	workAccount    WorkAccount   @relation(fields: [accountId], references: [id])
-	rate Int
-	trackInWeek Int @map("track_in_week")
-	nameProject String @map("name_project")
-	isOnUpwork Boolean @default(true) @map("is_on_appwork")
-	report Report[]
-	developer DevelopersOnCustomers[]
-
-	@@map("customers")
-}
-
-model Report {
-    id String  @id @default(uuid())
-    track Int 
-	report String
-	startWork String?
-	endWork String?
-	customerId  String 
-  	customer    Customer   @relation(fields: [customerId], references: [id])
-	developerId String
-	developer    Developer   @relation(fields: [developerId], references: [id])
-	date String?
-	income Income?
-
-	@@map("reports")
-}
-
-model DevelopersOnCustomers { 
-	developer Developer @relation(fields: [developerId], references: [id])
-	developerId String 
-	customer Customer @relation(fields: [customerId], references: [id])
-	customerId String 
-
-	@@id([developerId, customerId])
-}
-
-model Income {
-	id String  @id @default(uuid())
-	date String? 
-	isPay Boolean @default(false) @map("is_pay")
-	reportId String @unique
-  	report    Report   @relation(fields: [reportId], references: [id])
-	payed Int
-
-	@@map("incomes")
+  @@map("project_managers")
 }

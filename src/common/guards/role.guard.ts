@@ -23,35 +23,30 @@ export class RoleGuard implements CanActivate {
     const route = request.route?.path;
     const method = request.method;
 
-    const adminPath = [
-      {path: '/api/users', method: 'POST'},
-    ]
+    const adminPath = [{ path: '/api/users', method: 'POST' }];
 
     const token = this.extractTokenFromCookie(request) || newToken;
     if (!token) {
-      console.log('no token');
       throw new UnauthorizedException();
     }
     const payload = await this.jwtService.verifyAsync(token, {
       secret: config.server.jwt,
     });
 
-    const isAdminPath = adminPath.some(
-      (item) => item.path === route && item.method === method,
-    );
+    const isAdminPath = this.isBlockedRoute(route, method, adminPath);
 
     if (
-      isAdminPath && 
-      payload.role !== 'Admin' && 
-      payload.role !== 'SuperAdmin' && 
+      isAdminPath &&
+      payload.role !== 'Admin' &&
+      payload.role !== 'SuperAdmin' &&
       payload.role !== 'SalesDepartmentOfficer'
     ) {
       throw new BadRequestException('Permission denied');
     }
 
     if (
-      payload.role !== 'Admin' && 
-      payload.role !== 'SuperAdmin' && 
+      payload.role !== 'Admin' &&
+      payload.role !== 'SuperAdmin' &&
       payload.role !== 'SalesDepartmentOfficer' &&
       payload.role !== 'PMDepartmentOfficer'
     ) {
@@ -67,5 +62,13 @@ export class RoleGuard implements CanActivate {
       return token;
     }
     return undefined;
+  }
+
+  private isBlockedRoute(
+    route: string,
+    method: string,
+    routes: { path: string; method: string }[],
+  ): boolean {
+    return routes.some((item) => item.path === route && item.method === method);
   }
 }

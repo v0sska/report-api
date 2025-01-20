@@ -3,7 +3,7 @@ export const ROLE = {
   EMPLOYEE: 'Employee',
   SDO: 'SalesDepartmentOfficer',
   PMDO: 'PMDepartmentOfficer',
-  SALE: 'Sale',
+  SALES: 'Sales',
   QA: 'QA',
   SUPER_ADMIN: 'SuperAdmin',
   PROJECT_MANAGER: 'ProjectManager',
