@@ -9,12 +9,13 @@ import { USER_STATUS } from '@/common/constants/user-status.constants';
 import config from '@/common/configs';
 import { CryptoUtil } from '@/common/utils/crypto.util';
 import { SmtpUtil } from '@/modules/smtp/smtp.util';
+import { EmailService } from '../smtp/emal.service';
 
 @Injectable()
 export class UserService {
   public constructor(
     private readonly userRepository: UserRepository,
-    private readonly smtpUtil: SmtpUtil,
+    private readonly emailService: EmailService,
   ) {}
 
   public async create(dto: CreateUserDto): Promise<User> {
@@ -33,7 +34,7 @@ export class UserService {
 
     const inviteUrl = `${config.server.frontendUrl}/login-via-invitation?token=${inviteToken}`;
 
-    await this.smtpUtil.sendInviteEmail(
+    await this.emailService.sendInviteEmail(
       dto.email,
       'Invitation to join the team',
       dto.role,
@@ -56,7 +57,7 @@ export class UserService {
     return mappedUsers;
   }
 
-  public async findById(id: string) {
+  public async findById(id: string): Promise<User> {
     const user = await this.userRepository.findById(id);
 
     if (!user) {

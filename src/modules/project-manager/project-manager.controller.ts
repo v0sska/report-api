@@ -18,7 +18,7 @@ import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
 import { AuthGuard } from '@/common/guards/auth.guard';
 
 @Controller('project-manager')
-@ApiTags('Project Manager')
+@ApiTags('project-manager')
 @UseGuards(AuthGuard)
 @ApiCookieAuth()
 export class ProjectManagerController {

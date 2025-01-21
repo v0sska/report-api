@@ -11,4 +11,5 @@ export const EXCEPTION = {
   INCOME_NOT_FOUND: 'Income not found',
   EMPLOYEE_NOT_FOUND: 'Employee not found',
   PROJECT_MANAGER_NOT_FOUND: 'Project manager not found',
+  PROJECT_NOT_FOUND: 'Project not found',
 };

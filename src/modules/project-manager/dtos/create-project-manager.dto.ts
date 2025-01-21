@@ -21,4 +21,9 @@ export class CreateProjectManagerDto {
   @IsNumber()
   @ApiProperty()
   rate: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  userId: string;
 }
