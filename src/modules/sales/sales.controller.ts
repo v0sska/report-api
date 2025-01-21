@@ -20,7 +20,6 @@ import { AuthGuard } from '@/common/guards/auth.guard';
 @ApiTags('sales')
 @Controller('sales')
 @UseGuards(AuthGuard)
-@UseGuards(AuthGuard)
 @ApiCookieAuth()
 export class SaleController {
   public constructor(private readonly saleService: SalesService) {}

@@ -1,14 +1,11 @@
-import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
 import config from '../../common/configs';
-import { EmailTemplateUtil } from '@/common/utils/email-temlates.util';
 
-@Injectable()
 export class SmtpUtil {
   private transporter: Transporter;
 
-  public constructor() {
+  protected constructor() {
     this.transporter = nodemailer.createTransport({
       host: config.smtp.host,
       port: Number(config.smtp.port),
@@ -20,7 +17,7 @@ export class SmtpUtil {
     });
   }
 
-  private async sendMail(
+  protected async sendMail(
     to: string,
     subject: string,
     html: string,
@@ -35,19 +32,5 @@ export class SmtpUtil {
     } catch (error) {
       console.log('Error sending email', error);
     }
-  }
-
-  public async sendInviteEmail(
-    to: string,
-    subject: string,
-    role: string,
-    inviteLink: string,
-  ) {
-    const htmlTemplate = EmailTemplateUtil.inviteTemplate(
-      role,
-      inviteLink,
-      subject,
-    );
-    await this.sendMail(to, subject, htmlTemplate);
   }
 }

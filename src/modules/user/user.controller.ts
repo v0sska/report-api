@@ -55,7 +55,7 @@ export class UserController {
   @Get('/:id')
   public async findById(
     @Param('id') userId: string,
-  ): Promise<DataResponse<Object>> {
+  ): Promise<DataResponse<User>> {
     const user = await this.userService.findById(userId);
 
     return {
