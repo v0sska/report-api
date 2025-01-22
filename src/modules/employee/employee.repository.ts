@@ -1,7 +1,11 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
+
 import { PrismaService } from '@/database/prisma.service';
+
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+
 import { Employee } from '@prisma/client';
+
 import { CreateEmployeeDto } from './dtos/create-employee.dto';
 import { UpdateEmployeeDto } from './dtos/update-employee.dto';
 
@@ -24,11 +28,13 @@ export class EmployeeRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
   public async find(): Promise<Employee[]> {
     return await this.prismaService.employee.findMany().catch((error) => {
       throw new InternalServerErrorException(error.message);
     });
   }
+
   public async findById(id: string): Promise<Employee> {
     return await this.prismaService.employee
       .findUnique({
@@ -52,6 +58,7 @@ export class EmployeeRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
   public async update(
     id: string,
     updates: UpdateEmployeeDto,

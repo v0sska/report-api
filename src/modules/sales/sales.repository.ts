@@ -1,8 +1,12 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
+
 import { Sales } from '@prisma/client';
+
 import { CreateSalesDto } from './dtos/create-sales.dto';
 import { UpdateSalesDto } from './dtos/update-sales.dto';
+
 import { PrismaService } from '@/database/prisma.service';
+
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()

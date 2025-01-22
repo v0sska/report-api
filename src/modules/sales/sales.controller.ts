@@ -9,13 +9,21 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+
 import { SalesService } from './sales.service';
+
 import { Sales } from '@prisma/client';
+
 import { CreateSalesDto } from './dtos/create-sales.dto';
 import { UpdateSalesDto } from './dtos/update-sales.dto';
+
 import { DataResponse } from '@/common/types/data-response.type';
+
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+
 import { AuthGuard } from '@/common/guards/auth.guard';
+
+import { MESSAGES } from '@/common/constants/messages.contants';
 
 @ApiTags('sales')
 @Controller('sales')
@@ -31,7 +39,7 @@ export class SaleController {
     const sale = await this.saleService.create(dto);
 
     return {
-      message: 'Sale created successfully',
+      message: MESSAGES.CREATED,
       data: sale,
       status: HttpStatus.CREATED,
     };
@@ -42,7 +50,7 @@ export class SaleController {
     const sale = await this.saleService.find();
 
     return {
-      message: 'Sale fetched successfully',
+      message: MESSAGES.FETCHED,
       data: sale,
       status: HttpStatus.OK,
     };
@@ -53,7 +61,7 @@ export class SaleController {
     const sale = await this.saleService.findById(id);
 
     return {
-      message: 'Sale fetched successfully',
+      message: MESSAGES.FETCHED,
       data: sale,
       status: HttpStatus.OK,
     };
@@ -66,7 +74,7 @@ export class SaleController {
     const sale = await this.saleService.findByUserId(userId);
 
     return {
-      message: 'Sale fetched successfully',
+      message: MESSAGES.FETCHED,
       data: sale,
       status: HttpStatus.OK,
     };
@@ -80,7 +88,7 @@ export class SaleController {
     const sale = await this.saleService.update(id, dto);
 
     return {
-      message: 'Sale updated successfully',
+      message: MESSAGES.UPDATED,
       data: sale,
       status: HttpStatus.OK,
     };
@@ -91,7 +99,7 @@ export class SaleController {
     const sale = await this.saleService.delete(id);
 
     return {
-      message: 'Sale deleted successfully',
+      message: MESSAGES.DELETED,
       data: sale,
       status: HttpStatus.OK,
     };

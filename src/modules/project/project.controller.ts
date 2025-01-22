@@ -9,7 +9,9 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+
 import { ProjectService } from './project.service';
+
 import {
   Employee,
   EmployeeOnProject,
@@ -17,13 +19,19 @@ import {
   ProjectManager,
   ProjectManagerOnProject,
 } from '@prisma/client';
+
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
-import { DataResponse } from '@/common/types/data-response.type';
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@/common/guards/auth.guard';
 import { AssignEmployeeDto } from './dtos/assign-employee.dto';
 import { AssignProjectManagerDto } from './dtos/assign-project-manager.dto';
+
+import { DataResponse } from '@/common/types/data-response.type';
+
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+
+import { AuthGuard } from '@/common/guards/auth.guard';
+
+import { MESSAGES } from '@/common/constants/messages.contants';
 
 @ApiTags('projects')
 @Controller('projects')
@@ -39,20 +47,9 @@ export class ProjectController {
     const project = await this.projectService.create(dto);
 
     return {
-      message: 'Project created successfully',
+      message: MESSAGES.CREATED,
       data: project,
       status: HttpStatus.CREATED,
-    };
-  }
-
-  @Get()
-  public async find(): Promise<DataResponse<Project[]>> {
-    const project = await this.projectService.find();
-
-    return {
-      message: 'Project fetched successfully',
-      data: project,
-      status: HttpStatus.OK,
     };
   }
 
@@ -63,7 +60,7 @@ export class ProjectController {
     const project = await this.projectService.assignEmployeeToProject(dto);
 
     return {
-      message: 'Employee assigned to project successfully',
+      message: MESSAGES.ASSIGNED,
       data: project,
       status: HttpStatus.OK,
     };
@@ -77,7 +74,18 @@ export class ProjectController {
       await this.projectService.assignProjectManagerToProject(dto);
 
     return {
-      message: 'Project Manager assigned to project successfully',
+      message: MESSAGES.ASSIGNED,
+      data: project,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get()
+  public async find(): Promise<DataResponse<Project[]>> {
+    const project = await this.projectService.find();
+
+    return {
+      message: MESSAGES.FETCHED,
       data: project,
       status: HttpStatus.OK,
     };
@@ -91,7 +99,7 @@ export class ProjectController {
       await this.projectService.findEmployeesByProjectId(projectId);
 
     return {
-      message: 'Employees fetched successfully',
+      message: MESSAGES.FETCHED,
       data: employees,
       status: HttpStatus.OK,
     };
@@ -105,7 +113,7 @@ export class ProjectController {
       await this.projectService.findProjectManagersByProjectId(projectId);
 
     return {
-      message: 'Project Manager fetched successfully',
+      message: MESSAGES.FETCHED,
       data: projectManager,
       status: HttpStatus.OK,
     };
@@ -119,7 +127,7 @@ export class ProjectController {
       await this.projectService.findProjectByEmployeeId(employeeId);
 
     return {
-      message: 'Projects fetched successfully',
+      message: MESSAGES.FETCHED,
       data: projects,
       status: HttpStatus.OK,
     };
@@ -133,7 +141,7 @@ export class ProjectController {
       await this.projectService.findProjectByProjectManagerId(projectManagerId);
 
     return {
-      message: 'Projects fetched successfully',
+      message: MESSAGES.FETCHED,
       data: projects,
       status: HttpStatus.OK,
     };
@@ -146,7 +154,7 @@ export class ProjectController {
     const project = await this.projectService.findById(id);
 
     return {
-      message: 'Project fetched successfully',
+      message: MESSAGES.FETCHED,
       data: project,
       status: HttpStatus.OK,
     };
@@ -160,7 +168,7 @@ export class ProjectController {
     const project = await this.projectService.update(id, dto);
 
     return {
-      message: 'Project updated successfully',
+      message: MESSAGES.UPDATED,
       data: project,
       status: HttpStatus.OK,
     };
@@ -171,7 +179,7 @@ export class ProjectController {
     const project = await this.projectService.delete(id);
 
     return {
-      message: 'Project deleted successfully',
+      message: MESSAGES.DELETED,
       data: project,
       status: HttpStatus.OK,
     };

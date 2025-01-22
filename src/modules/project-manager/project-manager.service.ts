@@ -1,9 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+
 import { ProjectManagerRepository } from './project-manager.repository';
+
 import { CreateProjectManagerDto } from './dtos/create-project-manager.dto';
-import { ProjectManager } from '@prisma/client';
-import { EXCEPTION } from '@/common/constants/exception.constants';
 import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
+
+import { ProjectManager } from '@prisma/client';
+
+import { EXCEPTION } from '@/common/constants/exception.constants';
 
 @Injectable()
 export class ProjectManagerService {

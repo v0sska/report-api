@@ -9,13 +9,21 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
+
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+
 import { EmployeeService } from './employee.service';
+
 import { CreateEmployeeDto } from './dtos/create-employee.dto';
-import { DataResponse } from '@/common/types/data-response.type';
-import { Employee } from '@prisma/client';
 import { UpdateEmployeeDto } from './dtos/update-employee.dto';
+
+import { DataResponse } from '@/common/types/data-response.type';
+
+import { Employee } from '@prisma/client';
+
 import { AuthGuard } from '@/common/guards/auth.guard';
+
+import { MESSAGES } from '@/common/constants/messages.contants';
 
 @Controller('employee')
 @ApiTags('employee')
@@ -31,7 +39,7 @@ export class EmployeeController {
     const employee = await this.employeeService.create(dto);
 
     return {
-      message: 'Employee created successfully',
+      message: MESSAGES.CREATED,
       data: employee,
       status: HttpStatus.CREATED,
     };
@@ -44,7 +52,7 @@ export class EmployeeController {
     const employee = await this.employeeService.findById(id);
 
     return {
-      message: 'Employee retrieved successfully',
+      message: MESSAGES.FETCHED,
       data: employee,
       status: HttpStatus.OK,
     };
@@ -57,7 +65,7 @@ export class EmployeeController {
     const employee = await this.employeeService.findByUserId(userId);
 
     return {
-      message: 'Employee retrieved successfully',
+      message: MESSAGES.FETCHED,
       data: employee,
       status: HttpStatus.OK,
     };
@@ -68,7 +76,7 @@ export class EmployeeController {
     const employees = await this.employeeService.find();
 
     return {
-      message: 'Employees retrieved successfully',
+      message: MESSAGES.FETCHED,
       data: employees,
       status: HttpStatus.OK,
     };
@@ -82,7 +90,7 @@ export class EmployeeController {
     const employee = await this.employeeService.update(id, dto);
 
     return {
-      message: 'Employee updated successfully',
+      message: MESSAGES.UPDATED,
       data: employee,
       status: HttpStatus.OK,
     };
@@ -95,7 +103,7 @@ export class EmployeeController {
     const employee = await this.employeeService.delete(id);
 
     return {
-      message: 'Employee removed successfully',
+      message: MESSAGES.DELETED,
       data: employee,
       status: HttpStatus.OK,
     };

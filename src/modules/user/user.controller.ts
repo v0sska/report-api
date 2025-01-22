@@ -9,14 +9,22 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+
 import { UserService } from './user.service';
+
 import { User } from '@prisma/client';
+
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+
 import { DataResponse } from '@/common/types/data-response.type';
+
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { RoleGuard } from '@/common/guards/role.guard';
+
+import { MESSAGES } from '@/common/constants/messages.contants';
 
 @ApiTags('users')
 @Controller('users')
@@ -33,7 +41,7 @@ export class UserController {
     const data = await this.userService.createWithInvite(dto);
 
     return {
-      message: 'User created successfully',
+      message: MESSAGES.CREATED,
       data: data,
       status: HttpStatus.CREATED,
     };
@@ -46,7 +54,7 @@ export class UserController {
   > {
     const user = await this.userService.find();
     return {
-      message: 'User fetched successfully',
+      message: MESSAGES.FETCHED,
       data: user,
       status: HttpStatus.OK,
     };
@@ -59,7 +67,7 @@ export class UserController {
     const user = await this.userService.findById(userId);
 
     return {
-      message: 'User fetched successfully',
+      message: MESSAGES.FETCHED,
       data: user,
       status: HttpStatus.OK,
     };
@@ -73,7 +81,7 @@ export class UserController {
     const user = await this.userService.update(id, dto);
 
     return {
-      message: 'User updated successfully',
+      message: MESSAGES.UPDATED,
       data: user,
       status: HttpStatus.OK,
     };
@@ -85,7 +93,7 @@ export class UserController {
     const user = await this.userService.delete(id);
 
     return {
-      message: 'User deleted successfully',
+      message: MESSAGES.DELETED,
       data: user,
       status: HttpStatus.OK,
     };

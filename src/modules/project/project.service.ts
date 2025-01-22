@@ -1,4 +1,5 @@
 import { ProjectRepository } from './project.repository';
+
 import {
   Employee,
   EmployeeOnProject,
@@ -6,16 +7,19 @@ import {
   ProjectManager,
   ProjectManagerOnProject,
 } from '@prisma/client';
+
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
+import { AssignProjectManagerDto } from './dtos/assign-project-manager.dto';
+import { AssignEmployeeDto } from './dtos/assign-employee.dto';
+
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { EXCEPTION } from '@/common/constants/exception.constants';
-import { AssignProjectManagerDto } from './dtos/assign-project-manager.dto';
-import { AssignEmployeeDto } from './dtos/assign-employee.dto';
 
 @Injectable()
 export class ProjectService {
