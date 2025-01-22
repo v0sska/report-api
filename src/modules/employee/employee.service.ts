@@ -1,9 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+
 import { EmployeeRepository } from './employee.repository';
+
 import { Employee } from '@prisma/client';
+
 import { CreateEmployeeDto } from './dtos/create-employee.dto';
-import { EXCEPTION } from '@/common/constants/exception.constants';
 import { UpdateEmployeeDto } from './dtos/update-employee.dto';
+
+import { EXCEPTION } from '@/common/constants/exception.constants';
 
 @Injectable()
 export class EmployeeService {

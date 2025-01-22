@@ -9,13 +9,21 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+
 import { ProjectManagerService } from './project-manager.service';
+
 import { CreateProjectManagerDto } from './dtos/create-project-manager.dto';
-import { DataResponse } from '@/common/types/data-response.type';
-import { ProjectManager } from '@prisma/client';
 import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
+
+import { DataResponse } from '@/common/types/data-response.type';
+
+import { ProjectManager } from '@prisma/client';
+
 import { AuthGuard } from '@/common/guards/auth.guard';
+
+import { MESSAGES } from '@/common/constants/messages.contants';
 
 @Controller('project-manager')
 @ApiTags('project-manager')
@@ -33,7 +41,7 @@ export class ProjectManagerController {
     const projectManager = await this.projectManagerService.create(dto);
 
     return {
-      message: 'Project Manager created successfully',
+      message: MESSAGES.CREATED,
       data: projectManager,
       status: HttpStatus.CREATED,
     };
@@ -44,7 +52,7 @@ export class ProjectManagerController {
     const projectManagers = await this.projectManagerService.find();
 
     return {
-      message: 'Project Managers retrieved successfully',
+      message: MESSAGES.FETCHED,
       data: projectManagers,
       status: HttpStatus.OK,
     };
@@ -57,7 +65,7 @@ export class ProjectManagerController {
     const projectManager = await this.projectManagerService.findById(id);
 
     return {
-      message: 'Project Manager retrieved successfully',
+      message: MESSAGES.FETCHED,
       data: projectManager,
       status: HttpStatus.OK,
     };
@@ -71,7 +79,7 @@ export class ProjectManagerController {
     const projectManager = await this.projectManagerService.update(id, updates);
 
     return {
-      message: 'Project Manager updated successfully',
+      message: MESSAGES.UPDATED,
       data: projectManager,
       status: HttpStatus.OK,
     };
@@ -84,7 +92,7 @@ export class ProjectManagerController {
     const projectManager = await this.projectManagerService.delete(id);
 
     return {
-      message: 'Project Manager deleted successfully',
+      message: MESSAGES.DELETED,
       data: projectManager,
       status: HttpStatus.OK,
     };

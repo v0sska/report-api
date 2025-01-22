@@ -1,4 +1,5 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
+
 import {
   Employee,
   EmployeeOnProject,
@@ -6,12 +7,15 @@ import {
   ProjectManager,
   ProjectManagerOnProject,
 } from '@prisma/client';
+
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
-import { PrismaService } from '@/database/prisma.service';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { AssignEmployeeDto } from './dtos/assign-employee.dto';
 import { AssignProjectManagerDto } from './dtos/assign-project-manager.dto';
+
+import { PrismaService } from '@/database/prisma.service';
+
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
 export class ProjectRepository extends BaseRepository<
@@ -27,24 +31,6 @@ export class ProjectRepository extends BaseRepository<
     return await this.prismaService.project
       .create({
         data: dto,
-      })
-      .catch((error) => {
-        throw new InternalServerErrorException(error.message);
-      });
-  }
-
-  public async find(): Promise<Project[]> {
-    return await this.prismaService.project.findMany().catch((error) => {
-      throw new InternalServerErrorException(error.message);
-    });
-  }
-
-  public async findById(id: string): Promise<Project> {
-    return await this.prismaService.project
-      .findUnique({
-        where: {
-          id,
-        },
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);
@@ -69,6 +55,24 @@ export class ProjectRepository extends BaseRepository<
     return await this.prismaService.projectManagerOnProject
       .create({
         data: dto,
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
+  public async find(): Promise<Project[]> {
+    return await this.prismaService.project.findMany().catch((error) => {
+      throw new InternalServerErrorException(error.message);
+    });
+  }
+
+  public async findById(id: string): Promise<Project> {
+    return await this.prismaService.project
+      .findUnique({
+        where: {
+          id,
+        },
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);

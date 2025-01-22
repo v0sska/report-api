@@ -1,15 +1,20 @@
 import { UserRepository } from './user.repository';
+import { CryptoUtil } from '@/common/utils/crypto.util';
+import { EmailService } from '../smtp/emal.service';
+
 import { User } from '@prisma/client';
+
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EXCEPTION } from '@/common/constants/exception.constants';
+
 import { userMapper } from '@/common/utils/user-mapper.util';
+
+import { EXCEPTION } from '@/common/constants/exception.constants';
 import { USER_STATUS } from '@/common/constants/user-status.constants';
+
 import config from '@/common/configs';
-import { CryptoUtil } from '@/common/utils/crypto.util';
-import { SmtpUtil } from '@/modules/smtp/smtp.util';
-import { EmailService } from '../smtp/emal.service';
 
 @Injectable()
 export class UserService {
@@ -67,6 +72,10 @@ export class UserService {
     return user;
   }
 
+  public async findByEmail(email: string) {
+    return await this.userRepository.findByEmail(email);
+  }
+
   public async update(id: string, updates: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.update(id, updates);
 
@@ -85,9 +94,5 @@ export class UserService {
     }
 
     return user;
-  }
-
-  public async findByEmail(email: string) {
-    return await this.userRepository.findByEmail(email);
   }
 }

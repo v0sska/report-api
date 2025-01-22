@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { SalesService } from './sales.service';
 import { SalesRepository } from './sales.repository';
 import { SaleController } from './sales.controller';

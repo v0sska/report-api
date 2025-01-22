@@ -1,8 +1,12 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
+
 import { User } from '@prisma/client';
+
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+
 import { PrismaService } from '@/database/prisma.service';
+
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
@@ -43,6 +47,18 @@ export class UserRepository extends BaseRepository<
       });
   }
 
+  public async findByEmail(email: string) {
+    return await this.prismaService.user
+      .findUnique({
+        where: {
+          email,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
   public async update(id: string, updates: UpdateUserDto): Promise<User> {
     return await this.prismaService.user
       .update({
@@ -61,18 +77,6 @@ export class UserRepository extends BaseRepository<
       .delete({
         where: {
           id,
-        },
-      })
-      .catch((error) => {
-        throw new InternalServerErrorException(error.message);
-      });
-  }
-
-  public async findByEmail(email: string) {
-    return await this.prismaService.user
-      .findUnique({
-        where: {
-          email,
         },
       })
       .catch((error) => {

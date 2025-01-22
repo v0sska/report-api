@@ -55,6 +55,7 @@ export class ProjectManagerRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
   public async delete(id: string): Promise<ProjectManager> {
     return await this.prismaService.projectManager
       .delete({

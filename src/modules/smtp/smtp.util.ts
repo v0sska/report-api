@@ -1,5 +1,6 @@
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
+
 import config from '../../common/configs';
 
 export class SmtpUtil {

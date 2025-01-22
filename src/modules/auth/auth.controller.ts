@@ -1,10 +1,16 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+
 import { ApiTags } from '@nestjs/swagger';
+
 import { AuthService } from './auth.service';
+
 import { CreateUserDto } from '../user/dtos/create-user.dto';
 import { LoginUserDto } from './dtos/login-user.dto';
-import { Response } from 'express';
 import { AcceptInviteDto } from './dtos/accept-invite.dto';
+
+import { Response } from 'express';
+
+import { MESSAGES } from '@/common/constants/messages.contants';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -33,7 +39,7 @@ export class AuthController {
     });
 
     return {
-      message: 'User created successfully',
+      message: MESSAGES.CREATED,
       data: user,
       status: HttpStatus.CREATED,
     };
@@ -61,7 +67,7 @@ export class AuthController {
     });
 
     return {
-      message: 'User created successfully',
+      message: MESSAGES.CREATED,
       data: user,
       status: HttpStatus.CREATED,
     };
@@ -89,7 +95,7 @@ export class AuthController {
     });
 
     return {
-      message: 'User logged in successfully',
+      message: MESSAGES.LOGED,
       data: user,
       status: HttpStatus.OK,
     };

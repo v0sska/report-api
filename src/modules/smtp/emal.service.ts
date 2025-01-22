@@ -1,5 +1,6 @@
 import { EmailTemplateUtil } from '@/common/utils/email-temlates.util';
 import { SmtpUtil } from './smtp.util';
+
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

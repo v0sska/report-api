@@ -1,8 +1,12 @@
 import { SalesRepository } from './sales.repository';
+
 import { Sales } from '@prisma/client';
+
 import { CreateSalesDto } from './dtos/create-sales.dto';
 import { UpdateSalesDto } from './dtos/update-sales.dto';
+
 import { Injectable, NotFoundException } from '@nestjs/common';
+
 import { EXCEPTION } from '@/common/constants/exception.constants';
 
 @Injectable()
