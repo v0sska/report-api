@@ -100,4 +100,24 @@ export class AuthController {
       status: HttpStatus.OK,
     };
   }
+
+  @Post('logout')
+  public async logout(@Res({ passthrough: true }) response: Response) {
+    response.cookie('token', '', {
+      httpOnly: false,
+      sameSite: 'lax',
+      expires: new Date(0),
+    });
+
+    response.cookie('refreshToken', '', {
+      httpOnly: false,
+      sameSite: 'lax',
+      expires: new Date(0),
+    });
+
+    return {
+      message: MESSAGES.LOGOUT,
+      status: HttpStatus.OK,
+    };
+  }
 }

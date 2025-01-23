@@ -5,4 +5,5 @@ export const MESSAGES = {
   DELETED: 'Successfully deleted',
   ASSIGNED: 'Successfully assigned',
   LOGED: 'Successfully loged in',
+  LOGOUT: 'Successfully loged out',
 };
