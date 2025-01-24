@@ -37,7 +37,7 @@ export class UserService {
       inviteToken: inviteToken,
     });
 
-    const inviteUrl = `${config.server.frontendUrl}/login-via-invitation?token=${inviteToken}`;
+    const inviteUrl = `${config.server.frontendUrl}?token=${inviteToken}`;
 
     await this.emailService.sendInviteEmail(
       dto.email,
