@@ -38,6 +38,13 @@ export class AuthController {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
+    response.cookie('role', user.role, {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
     return {
       message: MESSAGES.CREATED,
       data: user,
@@ -60,6 +67,13 @@ export class AuthController {
     });
 
     response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    response.cookie('role', user.role, {
       httpOnly: false,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -94,6 +108,13 @@ export class AuthController {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
+    response.cookie('role', user.role, {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
     return {
       message: MESSAGES.LOGED,
       data: user,
@@ -110,6 +131,12 @@ export class AuthController {
     });
 
     response.cookie('refreshToken', '', {
+      httpOnly: false,
+      sameSite: 'lax',
+      expires: new Date(0),
+    });
+
+    response.cookie('role', '', {
       httpOnly: false,
       sameSite: 'lax',
       expires: new Date(0),
