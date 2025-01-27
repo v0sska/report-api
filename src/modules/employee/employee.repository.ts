@@ -30,9 +30,20 @@ export class EmployeeRepository extends BaseRepository<
   }
 
   public async find(): Promise<Employee[]> {
-    return await this.prismaService.employee.findMany().catch((error) => {
-      throw new InternalServerErrorException(error.message);
-    });
+    return await this.prismaService.employee
+      .findMany({
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async findById(id: string): Promise<Employee> {
@@ -40,6 +51,9 @@ export class EmployeeRepository extends BaseRepository<
       .findUnique({
         where: {
           id,
+        },
+        include: {
+          user: true,
         },
       })
       .catch((error) => {

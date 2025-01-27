@@ -25,15 +25,29 @@ export class ProjectManagerRepository extends BaseRepository<
       });
   }
   public async find(): Promise<ProjectManager[]> {
-    return await this.prismaService.projectManager.findMany().catch((error) => {
-      throw new InternalServerErrorException(error.message);
-    });
+    return await this.prismaService.projectManager
+      .findMany({
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
   public async findById(id: string): Promise<ProjectManager> {
     return await this.prismaService.projectManager
       .findUnique({
         where: {
           id,
+        },
+        include: {
+          user: true,
         },
       })
       .catch((error) => {
