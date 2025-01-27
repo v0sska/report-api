@@ -6,6 +6,7 @@ import {
   IsEnum,
   IsOptional,
   IsNumber,
+  IsDateString,
 } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
@@ -45,6 +46,16 @@ export class CreateUserDto {
   @IsNumber()
   @ApiProperty()
   salary: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
+  phone: string;
+
+  @IsNotEmpty()
+  @IsDateString()
+  @ApiProperty()
+  dateOfBirth: Date;
 
   @IsNotEmpty()
   @IsEnum(ROLE)

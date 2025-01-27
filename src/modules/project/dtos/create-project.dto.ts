@@ -3,7 +3,7 @@ import {
   ProjectStatusValues,
 } from '@/common/constants/project-status.constants';
 
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { IsString, IsNotEmpty, IsNumber, IsEnum } from 'class-validator';
 
@@ -44,4 +44,8 @@ export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   salesId: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  projectManagerId?: string;
 }

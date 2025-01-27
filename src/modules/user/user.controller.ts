@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,6 +26,8 @@ import { AuthGuard } from '@/common/guards/auth.guard';
 import { RoleGuard } from '@/common/guards/role.guard';
 
 import { MESSAGES } from '@/common/constants/messages.contants';
+
+import { Request } from 'express';
 
 @ApiTags('users')
 @Controller('users')
@@ -60,10 +63,43 @@ export class UserController {
     };
   }
 
+  @Get('/me')
+  public async findMe(@Req() request: Request): Promise<DataResponse<Object>> {
+    const { id } = request['user'];
+
+    const user = await this.userService.findMe(id);
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: user,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get('admin/:userId')
+  public async adminFindById(
+    @Param('userId') userId: string,
+    @Req() request: Request,
+  ): Promise<DataResponse<Object>> {
+    const { role } = request['user'];
+
+    const user = await this.userService.adminFindUserById(userId, role);
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: user,
+      status: HttpStatus.OK,
+    };
+  }
+
   @Get('/:id')
   public async findById(
     @Param('id') userId: string,
-  ): Promise<DataResponse<User>> {
+  ): Promise<
+    DataResponse<
+      Omit<User, 'password' | 'inviteToken' | 'status' | 'role' | 'salary'>
+    >
+  > {
     const user = await this.userService.findById(userId);
 
     return {

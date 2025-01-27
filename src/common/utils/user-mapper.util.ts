@@ -9,6 +9,9 @@ export const userMapper = (user: User) => {
     role: user.role,
     status: user.status,
     position: user.position,
+    dateOfBirth: user.dateOfBirth,
+    firstDayInCompany: user.firstDayInCompany,
+    phone: user.phone,
     salary: user.salary,
   };
 };

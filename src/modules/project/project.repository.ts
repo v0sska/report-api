@@ -5,13 +5,11 @@ import {
   EmployeeOnProject,
   Project,
   ProjectManager,
-  ProjectManagerOnProject,
 } from '@prisma/client';
 
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { AssignEmployeeDto } from './dtos/assign-employee.dto';
-import { AssignProjectManagerDto } from './dtos/assign-project-manager.dto';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -41,18 +39,6 @@ export class ProjectRepository extends BaseRepository<
     dto: AssignEmployeeDto,
   ): Promise<EmployeeOnProject> {
     return await this.prismaService.employeeOnProject
-      .create({
-        data: dto,
-      })
-      .catch((error) => {
-        throw new InternalServerErrorException(error.message);
-      });
-  }
-
-  public async assignProjectManagerToProject(
-    dto: AssignProjectManagerDto,
-  ): Promise<ProjectManagerOnProject> {
-    return await this.prismaService.projectManagerOnProject
       .create({
         data: dto,
       })
@@ -91,22 +77,9 @@ export class ProjectRepository extends BaseRepository<
               },
             });
 
-            const projectManagerOnProjects =
-              await tx.projectManagerOnProject.findMany({
-                where: {
-                  projectManagerId: projectManager.id,
-                },
-              });
-
-            const projectIds = projectManagerOnProjects.map(
-              (pmop) => pmop.projectId,
-            );
-
             return await tx.project.findMany({
               where: {
-                id: {
-                  in: projectIds,
-                },
+                projectManagerId: projectManager.id,
               },
               select: {
                 id: true,
@@ -227,32 +200,15 @@ export class ProjectRepository extends BaseRepository<
   public async findProjectByProjectManagerId(
     projectManagerId: string,
   ): Promise<Project[]> {
-    const tx = await this.prismaService
-      .$transaction(async (tx) => {
-        const projectManagerOnProjects =
-          await tx.projectManagerOnProject.findMany({
-            where: {
-              projectManagerId,
-            },
-          });
-
-        const projectIds = projectManagerOnProjects.map(
-          (pmop) => pmop.projectId,
-        );
-
-        return await tx.project.findMany({
-          where: {
-            id: {
-              in: projectIds,
-            },
-          },
-        });
+    return await this.prismaService.project
+      .findMany({
+        where: {
+          projectManagerId: projectManagerId,
+        },
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);
       });
-
-    return tx;
   }
 
   public async findEmployeesByProjectId(
@@ -281,23 +237,20 @@ export class ProjectRepository extends BaseRepository<
 
   public async findProjectManagerByProjectId(
     projectId: string,
-  ): Promise<ProjectManager> {
-    const tx = await this.prismaService.$transaction(async (tx) => {
-      const projectManagerOnProject =
-        await tx.projectManagerOnProject.findFirst({
-          where: {
-            projectId,
-          },
-        });
-
-      return await tx.projectManager.findUnique({
+  ): Promise<ProjectManager | null> {
+    return await this.prismaService.projectManager
+      .findFirst({
         where: {
-          id: projectManagerOnProject.projectManagerId,
+          project: {
+            some: {
+              id: projectId,
+            },
+          },
         },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
       });
-    });
-
-    return tx;
   }
 
   public async update(id: string, updates: UpdateProjectDto): Promise<Project> {

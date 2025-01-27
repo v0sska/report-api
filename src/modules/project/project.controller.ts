@@ -18,13 +18,11 @@ import {
   EmployeeOnProject,
   Project,
   ProjectManager,
-  ProjectManagerOnProject,
 } from '@prisma/client';
 
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { AssignEmployeeDto } from './dtos/assign-employee.dto';
-import { AssignProjectManagerDto } from './dtos/assign-project-manager.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -61,20 +59,6 @@ export class ProjectController {
     @Body() dto: AssignEmployeeDto,
   ): Promise<DataResponse<EmployeeOnProject>> {
     const project = await this.projectService.assignEmployeeToProject(dto);
-
-    return {
-      message: MESSAGES.ASSIGNED,
-      data: project,
-      status: HttpStatus.OK,
-    };
-  }
-
-  @Post('assign/project-manager')
-  public async assignProjectManagerToProject(
-    @Body() dto: AssignProjectManagerDto,
-  ): Promise<DataResponse<ProjectManagerOnProject>> {
-    const project =
-      await this.projectService.assignProjectManagerToProject(dto);
 
     return {
       message: MESSAGES.ASSIGNED,

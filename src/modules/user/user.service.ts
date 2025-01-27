@@ -62,8 +62,35 @@ export class UserService {
     return mappedUsers;
   }
 
-  public async findById(id: string): Promise<User> {
+  public async findById(
+    id: string,
+  ): Promise<
+    Omit<User, 'password' | 'inviteToken' | 'status' | 'role' | 'salary'>
+  > {
     const user = await this.userRepository.findById(id);
+
+    if (!user) {
+      throw new NotFoundException(EXCEPTION.USER_NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  public async findMe(id: string): Promise<Object> {
+    const user = await this.userRepository.findMe(id);
+
+    if (!user) {
+      throw new NotFoundException(EXCEPTION.USER_NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  public async adminFindUserById(
+    id: string,
+    adminRole: string,
+  ): Promise<Object> {
+    const user = await this.userRepository.adminFindUserById(id, adminRole);
 
     if (!user) {
       throw new NotFoundException(EXCEPTION.USER_NOT_FOUND);

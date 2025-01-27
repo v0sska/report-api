@@ -5,12 +5,10 @@ import {
   EmployeeOnProject,
   Project,
   ProjectManager,
-  ProjectManagerOnProject,
 } from '@prisma/client';
 
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
-import { AssignProjectManagerDto } from './dtos/assign-project-manager.dto';
 import { AssignEmployeeDto } from './dtos/assign-employee.dto';
 
 import {
@@ -47,12 +45,6 @@ export class ProjectService {
     dto: AssignEmployeeDto,
   ): Promise<EmployeeOnProject> {
     return await this.projectRepository.assignEmployeeToProject(dto);
-  }
-
-  public async assignProjectManagerToProject(
-    dto: AssignProjectManagerDto,
-  ): Promise<ProjectManagerOnProject> {
-    return await this.projectRepository.assignProjectManagerToProject(dto);
   }
 
   public async findProjectManagersByProjectId(
