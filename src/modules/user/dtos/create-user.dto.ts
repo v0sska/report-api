@@ -9,7 +9,7 @@ import {
   IsDateString,
 } from 'class-validator';
 
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { ROLE, RoleValues } from '@/common/constants/role.constants';
 import { StatusValues } from '@/common/constants/user-status.constants';
@@ -49,13 +49,13 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
-  phone: string;
+  @ApiPropertyOptional()
+  phone?: string;
 
   @IsNotEmpty()
   @IsDateString()
-  @ApiProperty()
-  dateOfBirth: Date;
+  @ApiPropertyOptional()
+  dateOfBirth?: Date;
 
   @IsNotEmpty()
   @IsEnum(ROLE)

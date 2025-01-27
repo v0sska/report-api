@@ -17,9 +17,9 @@ model User {
     status      String   @default("Active")
     position    String
     salary      Int
-    phone      String
+    phone      String?
     firstDayInCompany DateTime @default(now()) @map("first_day_in_company")
-    dateOfBirth DateTime @map("date_of_birth")
+    dateOfBirth DateTime? @map("date_of_birth")
     inviteToken String?
     employee    Employee?
 	  sales 	    Sales?
