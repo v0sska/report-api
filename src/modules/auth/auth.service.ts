@@ -1,6 +1,9 @@
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { CryptoUtil } from '@/common/utils/crypto.util';
+import { EmployeeService } from '../employee/employee.service';
+import { SalesService } from '../sales/sales.service';
+import { ProjectManagerService } from '../project-manager/project-manager.service';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
 
@@ -12,12 +15,16 @@ import { userMapper } from '@/common/utils/user-mapper.util';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
 import { USER_STATUS } from '@/common/constants/user-status.constants';
+import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
 
 @Injectable()
 export class AuthService {
   public constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly employeeService: EmployeeService,
+    private readonly salesService: SalesService,
+    private readonly projectManagerService: ProjectManagerService,
   ) {}
 
   public async signUp(dto: CreateUserDto) {
@@ -71,6 +78,25 @@ export class AuthService {
       status: USER_STATUS.ACTIVE,
       inviteToken: null,
     });
+
+    switch (user.role) {
+      case 'Employee':
+        await this.employeeService.create({
+          userId: updatedUser.id,
+          projectEngagement: PROJECT_ENGAGMENT.AVAILABLE,
+        });
+        break;
+      case 'Sales':
+        await this.salesService.create({
+          userId: updatedUser.id,
+        });
+        break;
+      case 'ProjectManager':
+        await this.projectManagerService.create({
+          userId: updatedUser.id,
+        });
+        break;
+    }
 
     const payload = {
       sub: user.id,
