@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
+import { EmployeeModule } from '../employee/employee.module';
+import { ProjectManagerModule } from '../project-manager/project-manager.module';
+import { SalesModule } from '../sales/sales.module';
 
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -13,6 +16,9 @@ import config from 'src/common/configs';
 @Module({
   imports: [
     UserModule,
+    EmployeeModule,
+    ProjectManagerModule,
+    SalesModule,
     JwtModule.register({
       global: true,
       secret: config.server.jwt,

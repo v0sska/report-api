@@ -10,9 +10,13 @@ datasource db {
 model User {
     id          String   @id @default(uuid())
     email       String   @unique
+    firstName   String  @map("first_name")
+    lastName    String  @map("last_name")
     password    String?
     role        String
     status      String   @default("Active")
+    position    String
+    salary      Int
     inviteToken String?
     employee    Employee?
 	  sales 	    Sales?
@@ -23,11 +27,7 @@ model User {
 
 model Employee {
     id                String  @id @default(uuid())
-    firstName         String  @map("first_name")
-    lastName          String  @map("last_name")
     projectEngagement String  @map("project_engagement") @default("Available")
-    position          String
-    rate              Int
     userId            String? @unique 
     user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
     employeeOnProject EmployeeOnProject[]
@@ -37,10 +37,6 @@ model Employee {
 
 model Sales {
    	id                String  @id @default(uuid())
-    firstName         String  @map("first_name")
-    lastName          String  @map("last_name")
-    position          String
-    rate              Int
     userId            String? @unique 
     user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
     project           Project[]
@@ -51,10 +47,6 @@ model Sales {
 
 model ProjectManager {
   id         String   @id @default(uuid())
-  firstName  String   @map("first_name")
-  lastName   String   @map("last_name")
-  position   String
-  rate       Int
   userId     String?  @unique
   user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   projectManagerOnProject ProjectManagerOnProject[]
