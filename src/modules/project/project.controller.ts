@@ -84,11 +84,10 @@ export class ProjectController {
   }
 
   @Get()
-  public async find(@Req() request: Request): Promise<DataResponse<Project[]>> {
+  public async find(@Req() request: Request): Promise<DataResponse<Object[]>> {
+    const { id } = request['user'];
 
-    const { role } = request['user'];
-
-    const project = await this.projectService.find(role);
+    const project = await this.projectService.find(id);
 
     return {
       message: MESSAGES.FETCHED,

@@ -29,8 +29,8 @@ export class ProjectService {
     return await this.projectRepository.create(dto);
   }
 
-  public async find(role: string): Promise<Project[]> {
-    return await this.projectRepository.find(role === 'PMDepartmentOfficer');
+  public async find(userId: string): Promise<Object[]> {
+    return await this.projectRepository.find(userId);
   }
 
   public async findById(id: string): Promise<Project> {

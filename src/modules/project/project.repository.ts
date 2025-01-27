@@ -61,21 +61,129 @@ export class ProjectRepository extends BaseRepository<
       });
   }
 
-  public async find(isPMDO: boolean = false): Promise<Project[]> {
-    return await this.prismaService.project.findMany({
-      select: {
-        id: true,
-        name: true,
-        rate: isPMDO ? false : true,
-        clientName: true,
-        teamInfo: true,
-        hoursInWeek: true,
-        status: true,
-        salesId: true,
-      }
-    }).catch((error) => {
-      throw new InternalServerErrorException(error.message);
-    });
+  public async find(userId?: string): Promise<Object[]> {
+    const tx = await this.prismaService
+      .$transaction(async (tx) => {
+        const user = await tx.user.findUnique({
+          where: {
+            id: userId,
+          },
+        });
+
+        switch (user.role) {
+          case 'PMDepartmentOfficer':
+            return await tx.project.findMany({
+              select: {
+                id: true,
+                name: true,
+                clientName: true,
+                rate: false,
+                hoursInWeek: true,
+                teamInfo: true,
+                status: true,
+                salesId: true,
+              },
+            });
+          case 'ProjectManager':
+            const projectManager = await tx.projectManager.findUnique({
+              where: {
+                userId,
+              },
+            });
+
+            const projectManagerOnProjects =
+              await tx.projectManagerOnProject.findMany({
+                where: {
+                  projectManagerId: projectManager.id,
+                },
+              });
+
+            const projectIds = projectManagerOnProjects.map(
+              (pmop) => pmop.projectId,
+            );
+
+            return await tx.project.findMany({
+              where: {
+                id: {
+                  in: projectIds,
+                },
+              },
+              select: {
+                id: true,
+                name: true,
+                clientName: true,
+                rate: false,
+                hoursInWeek: true,
+                teamInfo: true,
+                status: true,
+                salesId: true,
+              },
+            });
+          case 'Employee':
+            const employee = await tx.employee.findUnique({
+              where: {
+                userId,
+              },
+            });
+
+            const employeeOnProjects = await tx.employeeOnProject.findMany({
+              where: {
+                employeeId: employee.id,
+              },
+            });
+
+            const employeeProjectIds = employeeOnProjects.map(
+              (eop) => eop.projectId,
+            );
+
+            return await tx.project.findMany({
+              where: {
+                id: {
+                  in: employeeProjectIds,
+                },
+              },
+              select: {
+                id: true,
+                name: true,
+                clientName: true,
+                rate: false,
+                hoursInWeek: true,
+                teamInfo: true,
+                status: true,
+                salesId: true,
+              },
+            });
+
+          case 'Sales':
+            const sales = await tx.sales.findUnique({
+              where: {
+                userId,
+              },
+            });
+
+            return await tx.project.findMany({
+              where: {
+                salesId: sales.id,
+              },
+              select: {
+                id: true,
+                name: true,
+                clientName: true,
+                rate: true,
+                hoursInWeek: true,
+                teamInfo: true,
+                status: true,
+                salesId: true,
+              },
+            });
+          default:
+            return await tx.project.findMany();
+        }
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+    return tx;
   }
 
   public async findById(id: string): Promise<Project> {
