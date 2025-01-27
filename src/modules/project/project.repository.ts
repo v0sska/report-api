@@ -19,7 +19,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
 export class ProjectRepository extends BaseRepository<
-  Project,
+  Project | Object,
   CreateProjectDto,
   UpdateProjectDto
 > {
@@ -61,8 +61,19 @@ export class ProjectRepository extends BaseRepository<
       });
   }
 
-  public async find(): Promise<Project[]> {
-    return await this.prismaService.project.findMany().catch((error) => {
+  public async find(isPMDO: boolean = false): Promise<Project[]> {
+    return await this.prismaService.project.findMany({
+      select: {
+        id: true,
+        name: true,
+        rate: isPMDO ? false : true,
+        clientName: true,
+        teamInfo: true,
+        hoursInWeek: true,
+        status: true,
+        salesId: true,
+      }
+    }).catch((error) => {
       throw new InternalServerErrorException(error.message);
     });
   }

@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 
@@ -32,6 +33,8 @@ import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@/common/guards/auth.guard';
 
 import { MESSAGES } from '@/common/constants/messages.contants';
+
+import { Request } from 'express';
 
 @ApiTags('projects')
 @Controller('projects')
@@ -81,8 +84,11 @@ export class ProjectController {
   }
 
   @Get()
-  public async find(): Promise<DataResponse<Project[]>> {
-    const project = await this.projectService.find();
+  public async find(@Req() request: Request): Promise<DataResponse<Project[]>> {
+
+    const { role } = request['user'];
+
+    const project = await this.projectService.find(role);
 
     return {
       message: MESSAGES.FETCHED,
