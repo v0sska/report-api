@@ -13,16 +13,11 @@ import {
 
 import { ProjectService } from './project.service';
 
-import {
-  Employee,
-  EmployeeOnProject,
-  Project,
-  ProjectManager,
-} from '@prisma/client';
+import { Employee, Project, ProjectManager } from '@prisma/client';
 
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
-import { AssignEmployeeDto } from './dtos/assign-employee.dto';
+import { AssignMembersDto } from './dtos/assign-members.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -54,11 +49,11 @@ export class ProjectController {
     };
   }
 
-  @Post('assgin/employee')
-  public async assignEmployeeToProject(
-    @Body() dto: AssignEmployeeDto,
-  ): Promise<DataResponse<EmployeeOnProject>> {
-    const project = await this.projectService.assignEmployeeToProject(dto);
+  @Post('assign')
+  public async assignMembersToProject(
+    @Body() dto: AssignMembersDto,
+  ): Promise<DataResponse<Project>> {
+    const project = await this.projectService.assignMembersToProject(dto);
 
     return {
       message: MESSAGES.ASSIGNED,

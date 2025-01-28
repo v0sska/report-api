@@ -5,7 +5,13 @@ import {
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsString, IsNotEmpty, IsNumber, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsEnum,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateProjectDto {
   @ApiProperty()
@@ -46,5 +52,7 @@ export class CreateProjectDto {
   salesId: string;
 
   @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   projectManagerId?: string;
 }
