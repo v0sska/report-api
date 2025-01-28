@@ -1,19 +1,15 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
 
-import {
-  Employee,
-  EmployeeOnProject,
-  Project,
-  ProjectManager,
-} from '@prisma/client';
+import { Employee, Project, ProjectManager } from '@prisma/client';
 
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
-import { AssignEmployeeDto } from './dtos/assign-employee.dto';
+import { AssignMembersDto } from './dtos/assign-members.dto';
 
 import { PrismaService } from '@/database/prisma.service';
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
 
 @Injectable()
 export class ProjectRepository extends BaseRepository<
@@ -35,16 +31,37 @@ export class ProjectRepository extends BaseRepository<
       });
   }
 
-  public async assignEmployeeToProject(
-    dto: AssignEmployeeDto,
-  ): Promise<EmployeeOnProject> {
-    return await this.prismaService.employeeOnProject
-      .create({
-        data: dto,
-      })
-      .catch((error) => {
-        throw new InternalServerErrorException(error.message);
+  public async assignMembersToProject(dto: AssignMembersDto): Promise<Project> {
+    return this.prismaService.$transaction(async (tx) => {
+      const employeeOnProjects = dto.employees.map((employee) => ({
+        employeeId: employee.id,
+        projectId: dto.projectId,
+      }));
+
+      await Promise.all(
+        dto.employees.map((e) =>
+          tx.employee.update({
+            where: { id: e.id },
+            data: {
+              hoursPerWeek: { increment: e.hoursInWeek },
+              projectEngagement:
+                e.hoursInWeek >= 40
+                  ? PROJECT_ENGAGMENT.FULL_TIME
+                  : PROJECT_ENGAGMENT.PART_TIME,
+            },
+          }),
+        ),
+      );
+
+      await tx.employeeOnProject.createMany({
+        data: employeeOnProjects,
       });
+
+      return tx.project.update({
+        where: { id: dto.projectId },
+        data: { projectManagerId: dto.projectManagerId },
+      });
+    });
   }
 
   public async find(userId?: string): Promise<Object[]> {
@@ -229,6 +246,9 @@ export class ProjectRepository extends BaseRepository<
             in: employeeIds,
           },
         },
+        include: {
+          user: true,
+        },
       });
     });
 
@@ -246,6 +266,9 @@ export class ProjectRepository extends BaseRepository<
               id: projectId,
             },
           },
+        },
+        include: {
+          user: true,
         },
       })
       .catch((error) => {

@@ -1,15 +1,9 @@
 import { ProjectRepository } from './project.repository';
 
-import {
-  Employee,
-  EmployeeOnProject,
-  Project,
-  ProjectManager,
-} from '@prisma/client';
+import { Employee, Project, ProjectManager } from '@prisma/client';
 
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
-import { AssignEmployeeDto } from './dtos/assign-employee.dto';
 
 import {
   BadRequestException,
@@ -18,6 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
+import { AssignMembersDto } from './dtos/assign-members.dto';
 
 @Injectable()
 export class ProjectService {
@@ -41,10 +36,14 @@ export class ProjectService {
     return project;
   }
 
-  public async assignEmployeeToProject(
-    dto: AssignEmployeeDto,
-  ): Promise<EmployeeOnProject> {
-    return await this.projectRepository.assignEmployeeToProject(dto);
+  public async assignMembersToProject(dto: AssignMembersDto): Promise<Project> {
+    const data = await this.projectRepository.assignMembersToProject(dto);
+
+    if (!data) {
+      throw new BadRequestException(EXCEPTION.PROJECT_NOT_FOUND);
+    }
+
+    return data;
   }
 
   public async findProjectManagersByProjectId(
