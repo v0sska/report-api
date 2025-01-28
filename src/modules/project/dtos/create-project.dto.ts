@@ -46,6 +46,5 @@ export class CreateProjectDto {
   salesId: string;
 
   @ApiPropertyOptional()
-  @IsString()
   projectManagerId?: string;
 }
