@@ -5,6 +5,7 @@ import { Employee, Project, ProjectManager } from '@prisma/client';
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { AssignMembersDto } from './dtos/assign-members.dto';
+import { TeamResponseDto } from './dtos/response/team.response.dto';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -37,6 +38,7 @@ export class ProjectRepository extends BaseRepository<
     return this.prismaService.$transaction(async (tx) => {
       const employeeOnProjects = dto.employees.map((employee) => ({
         employeeId: employee.id,
+        hoursWorked: employee.hoursInWeek,
         projectId: dto.projectId,
       }));
 
@@ -64,6 +66,49 @@ export class ProjectRepository extends BaseRepository<
         data: { projectManagerId: dto.projectManagerId },
       });
     });
+  }
+
+  public async removeMembersFromProject(
+    projectId: string,
+    employeeId: string,
+  ): Promise<Project> {
+    return this.prismaService
+      .$transaction(async (tx) => {
+        const employeeOnProject = await tx.employeeOnProject.delete({
+          where: {
+            employeeId_projectId: {
+              employeeId: employeeId,
+              projectId: projectId,
+            },
+          },
+        });
+
+        const employee = await tx.employee.update({
+          where: { id: employeeId },
+          data: {
+            hoursPerWeek: { decrement: employeeOnProject.hoursWorked },
+          },
+        });
+
+        await tx.employee.update({
+          where: { id: employeeId },
+          data: {
+            projectEngagement:
+              employee.hoursPerWeek > 0
+                ? PROJECT_ENGAGMENT.PART_TIME
+                : PROJECT_ENGAGMENT.AVAILABLE,
+          },
+        });
+
+        return tx.project.findUnique({
+          where: {
+            id: projectId,
+          },
+        });
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async find(userId?: string): Promise<Object[]> {
@@ -188,6 +233,76 @@ export class ProjectRepository extends BaseRepository<
       .catch((error) => {
         throw new InternalServerErrorException(error.message);
       });
+  }
+
+  public async findMembersByProjectId(
+    projectId: string,
+  ): Promise<TeamResponseDto> {
+    const tx = await this.prismaService
+      .$transaction(async (tx) => {
+        const project = await tx.project.findUnique({
+          where: {
+            id: projectId,
+          },
+        });
+
+        const employeeOnProjects = await tx.employeeOnProject.findMany({
+          where: {
+            projectId: project.id,
+          },
+        });
+
+        const employeeIds = employeeOnProjects.map((eop) => eop.employeeId);
+
+        const employees = await tx.employee.findMany({
+          where: {
+            id: {
+              in: employeeIds,
+            },
+          },
+          include: {
+            user: true,
+          },
+        });
+
+        const projectManager = await tx.projectManager.findFirst({
+          where: {
+            project: {
+              some: {
+                id: project.id,
+              },
+            },
+          },
+          include: {
+            user: true,
+          },
+        });
+
+        const sales = await tx.sales.findFirst({
+          where: {
+            project: {
+              some: {
+                id: project.id,
+              },
+            },
+          },
+          include: {
+            user: true,
+          },
+        });
+
+        return {
+          name: project.name,
+          sales: sales,
+          projectManager: projectManager,
+          employees: employees,
+        };
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+
+    return tx;
   }
 
   public async findProjectByEmployeeId(employeeId: string): Promise<Project[]> {
