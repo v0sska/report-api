@@ -9,7 +9,9 @@ import { AssignMembersDto } from './dtos/assign-members.dto';
 import { PrismaService } from '@/database/prisma.service';
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+
 import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
+import { ROLE } from '@/common/constants/role.constants';
 
 @Injectable()
 export class ProjectRepository extends BaseRepository<
@@ -74,7 +76,7 @@ export class ProjectRepository extends BaseRepository<
         });
 
         switch (user.role) {
-          case 'PMDepartmentOfficer':
+          case ROLE.PMDO:
             return await tx.project.findMany({
               select: {
                 id: true,
@@ -87,7 +89,7 @@ export class ProjectRepository extends BaseRepository<
                 salesId: true,
               },
             });
-          case 'ProjectManager':
+          case ROLE.PROJECT_MANAGER:
             const projectManager = await tx.projectManager.findUnique({
               where: {
                 userId,
@@ -109,7 +111,7 @@ export class ProjectRepository extends BaseRepository<
                 salesId: true,
               },
             });
-          case 'Employee':
+          case ROLE.EMPLOYEE:
             const employee = await tx.employee.findUnique({
               where: {
                 userId,
@@ -144,7 +146,7 @@ export class ProjectRepository extends BaseRepository<
               },
             });
 
-          case 'Sales':
+          case ROLE.SALES:
             const sales = await tx.sales.findUnique({
               where: {
                 userId,

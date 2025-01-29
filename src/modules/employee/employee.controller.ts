@@ -45,6 +45,17 @@ export class EmployeeController {
     };
   }
 
+  @Get('available')
+  public async findAvailableEmployees(): Promise<DataResponse<Employee[]>> {
+    const employees = await this.employeeService.findAvailableEmployees();
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: employees,
+      status: HttpStatus.OK,
+    };
+  }
+
   @Get(':id')
   public async findById(
     @Param('id') id: string,

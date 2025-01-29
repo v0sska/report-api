@@ -9,6 +9,8 @@ import { Employee } from '@prisma/client';
 import { CreateEmployeeDto } from './dtos/create-employee.dto';
 import { UpdateEmployeeDto } from './dtos/update-employee.dto';
 
+import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
+
 @Injectable()
 export class EmployeeRepository extends BaseRepository<
   Employee,
@@ -51,6 +53,23 @@ export class EmployeeRepository extends BaseRepository<
       .findUnique({
         where: {
           id,
+        },
+        include: {
+          user: true,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
+  public async findAvailableEmployees(): Promise<Employee[]> {
+    return await this.prismaService.employee
+      .findMany({
+        where: {
+          NOT: {
+            projectEngagement: PROJECT_ENGAGMENT.FULL_TIME,
+          },
         },
         include: {
           user: true,
