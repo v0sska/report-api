@@ -14,6 +14,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
 import { ROLE } from '@/common/constants/role.constants';
 import { PROJECT_STATUS } from '@/common/constants/project-status.constants';
+import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 @Injectable()
 export class ProjectRepository extends BaseRepository<
@@ -432,6 +433,60 @@ export class ProjectRepository extends BaseRepository<
       }
 
       return project;
+    });
+  }
+
+  public async updateEmployeeHours(
+    dto: UpdateEmployeeHoursDto,
+  ): Promise<Project> {
+    return this.prismaService.$transaction(async (tx) => {
+      await Promise.all(
+        dto.employees.map(async (e) => {
+          const employeeOnProject = await tx.employeeOnProject.findUnique({
+            where: {
+              employeeId_projectId: {
+                employeeId: e.id,
+                projectId: dto.projectId,
+              },
+            },
+          });
+
+          if (employeeOnProject) {
+            await tx.employeeOnProject.update({
+              where: {
+                employeeId_projectId: {
+                  employeeId: e.id,
+                  projectId: dto.projectId,
+                },
+              },
+              data: {
+                hoursWorked: e.hoursInWeek,
+              },
+            });
+
+            await tx.employee.update({
+              where: { id: e.id },
+              data: {
+                hoursPerWeek: {
+                  increment: e.hoursInWeek - employeeOnProject.hoursWorked,
+                },
+                projectEngagement:
+                  e.hoursInWeek >= 40
+                    ? PROJECT_ENGAGMENT.FULL_TIME
+                    : e.hoursInWeek > 0
+                      ? PROJECT_ENGAGMENT.PART_TIME
+                      : PROJECT_ENGAGMENT.AVAILABLE,
+              },
+            });
+          }
+        }),
+      );
+
+      return tx.project.findUnique({
+        where: {
+          id: dto.projectId,
+        },
+      });
     });
   }
 

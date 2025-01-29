@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
+import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 @Injectable()
 export class ProjectService {
@@ -129,6 +130,16 @@ export class ProjectService {
 
   public async update(id: string, updates: UpdateProjectDto): Promise<Project> {
     const project = await this.projectRepository.update(id, updates);
+
+    if (!project) {
+      throw new NotFoundException(EXCEPTION.PROJECT_NOT_FOUND);
+    }
+
+    return project;
+  }
+
+  public async updateEmployeeHours(dto: UpdateEmployeeHoursDto): Promise<Project> {
+    const project = await this.projectRepository.updateEmployeeHours(dto);
 
     if (!project) {
       throw new NotFoundException(EXCEPTION.PROJECT_NOT_FOUND);
