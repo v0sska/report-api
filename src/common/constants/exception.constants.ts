@@ -12,4 +12,5 @@ export const EXCEPTION = {
   EMPLOYEE_NOT_FOUND: 'Employee not found',
   PROJECT_MANAGER_NOT_FOUND: 'Project manager not found',
   PROJECT_NOT_FOUND: 'Project not found',
+  TEAM_NOT_FOUND: 'Team not found',
 };

@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { Employee, Project, ProjectManager } from '@prisma/client';
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { AssignMembersDto } from './dtos/assign-members.dto';
+import { TeamResponseDto } from './dtos/response/team.response.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -71,6 +73,20 @@ export class ProjectController {
     return {
       message: MESSAGES.FETCHED,
       data: project,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get('members/:projectId')
+  public async findMembersByProjectId(
+    @Param('projectId') projectId: string,
+  ): Promise<DataResponse<TeamResponseDto>> {
+    const employees =
+      await this.projectService.findMembersByProjectId(projectId);
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: employees,
       status: HttpStatus.OK,
     };
   }
@@ -161,6 +177,23 @@ export class ProjectController {
   @Delete(':id')
   public async delete(@Param('id') id: string): Promise<DataResponse<Project>> {
     const project = await this.projectService.delete(id);
+
+    return {
+      message: MESSAGES.DELETED,
+      data: project,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Delete('assign/remove')
+  public async removeMembersFromProject(
+    @Query('project-id') projectId: string,
+    @Query('employee-id') employeeId: string,
+  ): Promise<DataResponse<Project>> {
+    const project = await this.projectService.removeMembersFromProject(
+      projectId,
+      employeeId,
+    );
 
     return {
       message: MESSAGES.DELETED,
