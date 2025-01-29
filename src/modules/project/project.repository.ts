@@ -242,61 +242,45 @@ export class ProjectRepository extends BaseRepository<
     const tx = await this.prismaService
       .$transaction(async (tx) => {
         const project = await tx.project.findUnique({
-          where: {
-            id: projectId,
-          },
+          where: { id: projectId },
         });
 
         const employeeOnProjects = await tx.employeeOnProject.findMany({
-          where: {
-            projectId: project.id,
-          },
+          where: { projectId: project.id },
         });
 
         const employeeIds = employeeOnProjects.map((eop) => eop.employeeId);
 
         const employees = await tx.employee.findMany({
-          where: {
-            id: {
-              in: employeeIds,
-            },
-          },
-          include: {
-            user: true,
-          },
+          where: { id: { in: employeeIds } },
+          include: { user: true },
+        });
+
+        const employeesWithHours = employees.map((employee) => {
+          const employeeProject = employeeOnProjects.find(
+            (eop) => eop.employeeId === employee.id,
+          );
+          return {
+            ...employee,
+            hoursWorked: employeeProject ? employeeProject.hoursWorked : 0,
+          };
         });
 
         const projectManager = await tx.projectManager.findFirst({
-          where: {
-            project: {
-              some: {
-                id: project.id,
-              },
-            },
-          },
-          include: {
-            user: true,
-          },
+          where: { project: { some: { id: project.id } } },
+          include: { user: true },
         });
 
         const sales = await tx.sales.findFirst({
-          where: {
-            project: {
-              some: {
-                id: project.id,
-              },
-            },
-          },
-          include: {
-            user: true,
-          },
+          where: { project: { some: { id: project.id } } },
+          include: { user: true },
         });
 
         return {
           name: project.name,
-          sales: sales,
-          projectManager: projectManager,
-          employees: employees,
+          sales,
+          projectManager,
+          employees: employeesWithHours,
         };
       })
       .catch((error) => {
