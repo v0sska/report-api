@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -30,6 +31,7 @@ import { AuthGuard } from '@/common/guards/auth.guard';
 import { MESSAGES } from '@/common/constants/messages.contants';
 
 import { Request } from 'express';
+import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 @ApiTags('projects')
 @Controller('projects')
@@ -166,6 +168,19 @@ export class ProjectController {
     @Body() dto: UpdateProjectDto,
   ): Promise<DataResponse<Project>> {
     const project = await this.projectService.update(id, dto);
+
+    return {
+      message: MESSAGES.UPDATED,
+      data: project,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Put('assign')
+  public async updateEmployeeHours(
+    @Body() dto: UpdateEmployeeHoursDto,
+  ): Promise<DataResponse<Project>> {
+    const project = await this.projectService.updateEmployeeHours(dto);
 
     return {
       message: MESSAGES.UPDATED,
