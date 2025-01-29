@@ -13,6 +13,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
 import { ROLE } from '@/common/constants/role.constants';
+import { PROJECT_STATUS } from '@/common/constants/project-status.constants';
 
 @Injectable()
 export class ProjectRepository extends BaseRepository<
@@ -38,8 +39,8 @@ export class ProjectRepository extends BaseRepository<
     return this.prismaService.$transaction(async (tx) => {
       const employeeOnProjects = dto.employees.map((employee) => ({
         employeeId: employee.id,
-        hoursWorked: employee.hoursInWeek,
         projectId: dto.projectId,
+        hoursWorked: employee.hoursInWeek,
       }));
 
       await Promise.all(
@@ -394,16 +395,60 @@ export class ProjectRepository extends BaseRepository<
   }
 
   public async update(id: string, updates: UpdateProjectDto): Promise<Project> {
-    return await this.prismaService.project
-      .update({
+    return await this.prismaService.$transaction(async (tx) => {
+      const project = await tx.project.update({
         where: {
           id,
         },
         data: updates,
-      })
-      .catch((error) => {
-        throw new InternalServerErrorException(error.message);
       });
+
+      switch (updates.status) {
+        case PROJECT_STATUS.COMPLETED:
+        case PROJECT_STATUS.CANCELLED:
+          const employeeOnProject = await tx.employeeOnProject.findMany({
+            where: { projectId: project.id },
+          });
+
+          await Promise.all(
+            employeeOnProject.map((eop) =>
+              tx.employee.update({
+                where: { id: eop.employeeId },
+                data: {
+                  hoursPerWeek: { decrement: eop.hoursWorked },
+                },
+              }),
+            ),
+          );
+
+          const updatedEmployees = await tx.employee.findMany({
+            where: {
+              id: { in: employeeOnProject.map((eop) => eop.employeeId) },
+            },
+            select: { id: true, hoursPerWeek: true },
+          });
+
+          await Promise.all(
+            updatedEmployees.map((emp) =>
+              tx.employee.update({
+                where: { id: emp.id },
+                data: {
+                  projectEngagement:
+                    emp.hoursPerWeek > 0
+                      ? PROJECT_ENGAGMENT.PART_TIME
+                      : PROJECT_ENGAGMENT.AVAILABLE,
+                },
+              }),
+            ),
+          );
+          break;
+
+        default:
+          break;
+      }
+
+      return project;
+    });
   }
 
   public async delete(id: string): Promise<Project> {
