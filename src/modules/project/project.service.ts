@@ -138,7 +138,9 @@ export class ProjectService {
     return project;
   }
 
-  public async updateEmployeeHours(dto: UpdateEmployeeHoursDto): Promise<Project> {
+  public async updateEmployeeHours(
+    dto: UpdateEmployeeHoursDto,
+  ): Promise<Project> {
     const project = await this.projectRepository.updateEmployeeHours(dto);
 
     if (!project) {
