@@ -32,7 +32,7 @@ import { RequestModifyReportDto } from './dtos/request-modify-report.dto';
 
 @Controller('employee-reports')
 @ApiTags('Employee Reports')
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 export class EmployeeReportController {
   public constructor(
     private readonly employeeReportService: EmployeeReportService,
