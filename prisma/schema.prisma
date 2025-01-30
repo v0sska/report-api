@@ -24,6 +24,8 @@ model User {
     employee    Employee?
 	  sales 	    Sales?
     projectManager ProjectManager?
+    notificationFromUser Notification[] @relation(name: "FromUser")
+    notificationToUser Notification[] @relation(name: "ToUser")
 
     @@map("users")
 }
@@ -35,6 +37,7 @@ model Employee {
     userId            String? @unique 
     user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
     employeeOnProject EmployeeOnProject[]
+    employeeReport EmployeeReport[]
 
     @@map("employees")
 }
@@ -71,6 +74,7 @@ model Project {
   projectManagerId String? @map("project_manager_id")
   projectManager ProjectManager? @relation(fields: [projectManagerId], references: [id], onDelete: Cascade)
   employeeOnProject EmployeeOnProject[]
+  employeeReport EmployeeReport[]
 
 
   @@map("projects")
@@ -85,4 +89,40 @@ model EmployeeOnProject {
 
   @@id([employeeId, projectId])
   @@map("employees_on_projects")
+}
+
+model EmployeeReport {
+  id              String   @id @default(uuid())
+  employeeId      String   @map("employee_id")
+  employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  projectId       String   @map("project_id")
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  hoursWorked     Int      @map("hours_worked")
+  startTime       String   @map("start_date")
+  endTime         String   @map("end_date")
+  date            DateTime
+  text            String
+  editStatus      String   @default("Rejected") @map("edit_status")
+  deleteStatus    String   @default("Rejected") @map("delete_status")
+  updatedAt       DateTime? @map("updated_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  notification    Notification[]
+
+  @@map("employees_reports")
+}
+
+model Notification {
+  id              String   @id @default(uuid())
+  fromUserId      String   @map("from_user_id")
+  fromUser        User     @relation(name: "FromUser", fields: [fromUserId], references: [id])
+  toUserId        String   @map("to_user_id")
+  toUser          User     @relation(name: "ToUser", fields: [toUserId], references: [id])
+  title           String
+  text            String
+  reportId        String?  @map("report_id")
+  report          EmployeeReport? @relation(fields: [reportId], references: [id])
+  isNew           Boolean  @default(true) @map("is_new")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("notifications")
 }
