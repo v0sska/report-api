@@ -7,6 +7,8 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 
 import { NotificationService } from './notification.service';
@@ -22,8 +24,13 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { MESSAGES } from '@/common/constants/messages.contants';
 
+import { Request } from 'express';
+
+import { AuthGuard } from '@/common/guards/auth.guard';
+
 @ApiTags('notifications')
 @Controller('notifications')
+@UseGuards(AuthGuard)
 export class NotificationController {
   public constructor(
     private readonly notificationService: NotificationService,
@@ -67,10 +74,11 @@ export class NotificationController {
     };
   }
 
-  @Get('from/:id')
+  @Get('from')
   public async findByFromUserId(
-    @Param('id') id: string,
+    @Req() request: Request,
   ): Promise<DataResponse<Notification[]>> {
+    const { id } = request['user'];
     const notification = await this.notificationService.findByFromUserId(id);
 
     return {
@@ -80,10 +88,11 @@ export class NotificationController {
     };
   }
 
-  @Get('to/:id')
+  @Get('to')
   public async findByToUserId(
-    @Param('id') id: string,
+    @Req() request: Request,
   ): Promise<DataResponse<Notification[]>> {
+    const { id } = request['user'];
     const notification = await this.notificationService.findByToUserId(id);
 
     return {
