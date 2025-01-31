@@ -59,20 +59,36 @@ export class NotificationRepository extends BaseRepository<
       });
   }
 
-  public async findByUserId(userId: string): Promise<Notification[]> {
-    const [sentNotifications, receivedNotifications] =
-      await this.prismaService.$transaction([
-        this.prismaService.notification.findMany({
-          where: { fromUserId: userId },
-          include: { fromUser: true, toUser: true },
-        }),
-        this.prismaService.notification.findMany({
-          where: { toUserId: userId },
-          include: { fromUser: true, toUser: true },
-        }),
-      ]);
+  public async findByFromUserId(fromUserId: string): Promise<Notification[]> {
+    return await this.prismaService.notification
+      .findMany({
+        where: {
+          fromUserId: fromUserId,
+        },
+        include: {
+          toUser: true,
+          fromUser: true,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
 
-    return [...sentNotifications, ...receivedNotifications];
+  public async findBytoUserId(toUserId: string): Promise<Notification[]> {
+    return await this.prismaService.notification
+      .findMany({
+        where: {
+          toUserId: toUserId,
+        },
+        include: {
+          toUser: true,
+          fromUser: true,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async update(

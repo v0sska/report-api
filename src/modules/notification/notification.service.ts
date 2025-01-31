@@ -37,8 +37,12 @@ export class NotificationService {
     return await this.notificationRepository.findByReportId(reportId);
   }
 
-  public async findByUserId(userId: string): Promise<Notification[]> {
-    return await this.notificationRepository.findByUserId(userId);
+  public async findByFromUserId(fromUserId: string): Promise<Notification[]> {
+    return await this.notificationRepository.findByFromUserId(fromUserId);
+  }
+
+  public async findByToUserId(toUserId: string): Promise<Notification[]> {
+    return await this.notificationRepository.findBytoUserId(toUserId);
   }
 
   public async update(
