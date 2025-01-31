@@ -60,6 +60,7 @@ export class EmployeeReportRepository extends BaseRepository<
             select: {
               user: {
                 select: {
+                  id: true,
                   firstName: true,
                   lastName: true,
                 },
@@ -103,6 +104,7 @@ export class EmployeeReportRepository extends BaseRepository<
                 select: {
                   firstName: true,
                   lastName: true,
+                  id: true,
                 },
               },
             },
@@ -146,6 +148,7 @@ export class EmployeeReportRepository extends BaseRepository<
                 select: {
                   firstName: true,
                   lastName: true,
+                  id: true,
                 },
               },
             },
@@ -189,6 +192,7 @@ export class EmployeeReportRepository extends BaseRepository<
                 select: {
                   firstName: true,
                   lastName: true,
+                  id: true,
                 },
               },
             },
@@ -234,6 +238,7 @@ export class EmployeeReportRepository extends BaseRepository<
                 select: {
                   firstName: true,
                   lastName: true,
+                  id: true,
                 },
               },
             },
@@ -250,9 +255,14 @@ export class EmployeeReportRepository extends BaseRepository<
   ): Promise<EmployeeReport> {
     return this.prismaService
       .$transaction(async (tx) => {
+        const updateData =
+          dto.requestType === MODIFY_REPORT_REQUEST.EDIT
+            ? { editStatus: REPORT_STATUS.PENDING }
+            : { deleteStatus: REPORT_STATUS.PENDING };
+
         const report = await tx.employeeReport.update({
           where: { id: dto.reportId },
-          data: { editStatus: REPORT_STATUS.PENDING },
+          data: updateData,
         });
 
         const [employee, project] = await Promise.all([
