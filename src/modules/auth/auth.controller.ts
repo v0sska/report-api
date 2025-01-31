@@ -45,6 +45,13 @@ export class AuthController {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
+    response.cookie('id', user.id, {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
     response.cookie('email', user.email, {
       httpOnly: false,
       sameSite: 'lax',
@@ -101,6 +108,13 @@ export class AuthController {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
+    response.cookie('id', user.id, {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
     response.cookie('email', user.email, {
       httpOnly: false,
       sameSite: 'lax',
@@ -151,6 +165,13 @@ export class AuthController {
     });
 
     response.cookie('role', user.role, {
+      httpOnly: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    response.cookie('id', user.id, {
       httpOnly: false,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
