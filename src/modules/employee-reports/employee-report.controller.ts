@@ -20,6 +20,7 @@ import { EmployeeReportService } from './employee-report.service';
 import { CreateEmployeeReportDto } from './dtos/create-employee-report.dto';
 import { UpdateEmployeeReportDto } from './dtos/update-employee-report.dto';
 import { RequestModifyReportDto } from './dtos/request-modify-report.dto';
+import { EmployeeReportResponse } from './dtos/response/employee-report-response.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -56,7 +57,7 @@ export class EmployeeReportController {
   }
 
   @Get()
-  public async find(): Promise<DataResponse<EmployeeReport[]>> {
+  public async find(): Promise<DataResponse<EmployeeReportResponse[]>> {
     const reports = await this.employeeReportService.find();
 
     return {
@@ -70,7 +71,7 @@ export class EmployeeReportController {
   public async findByEmployeeIdAndProjectId(
     @Query('employeeId') employeeId: string,
     @Query('projectId') projectId: string,
-  ): Promise<DataResponse<EmployeeReport[]>> {
+  ): Promise<DataResponse<EmployeeReportResponse[]>> {
     const reports =
       await this.employeeReportService.findByEmployeeIdAndProjectId(
         employeeId,
@@ -87,7 +88,7 @@ export class EmployeeReportController {
   @Get('employee')
   public async findByEmployeeId(
     @Req() request: Request,
-  ): Promise<DataResponse<EmployeeReport[]>> {
+  ): Promise<DataResponse<EmployeeReportResponse[]>> {
     const { id } = request['user'];
     const reports = await this.employeeReportService.findByEmployeeId(id);
 
@@ -101,7 +102,7 @@ export class EmployeeReportController {
   @Get('project/:projectId')
   public async findByProjectId(
     @Param('projectId') projectId: string,
-  ): Promise<DataResponse<EmployeeReport[]>> {
+  ): Promise<DataResponse<EmployeeReportResponse[]>> {
     const reports = await this.employeeReportService.findByProjectId(projectId);
 
     return {
@@ -114,7 +115,7 @@ export class EmployeeReportController {
   @Get(':id')
   public async findById(
     @Param('id') id: string,
-  ): Promise<DataResponse<EmployeeReport>> {
+  ): Promise<DataResponse<EmployeeReportResponse>> {
     const report = await this.employeeReportService.findById(id);
 
     return {

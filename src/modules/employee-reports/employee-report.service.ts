@@ -6,6 +6,7 @@ import { EmployeeService } from '../employee/employee.service';
 import { CreateEmployeeReportDto } from './dtos/create-employee-report.dto';
 import { UpdateEmployeeReportDto } from './dtos/update-employee-report.dto';
 import { RequestModifyReportDto } from './dtos/request-modify-report.dto';
+import { EmployeeReportResponse } from './dtos/response/employee-report-response.dto';
 
 import { EmployeeReport } from '@prisma/client';
 
@@ -41,11 +42,11 @@ export class EmployeeReportService {
     });
   }
 
-  public async find(): Promise<EmployeeReport[]> {
+  public async find(): Promise<EmployeeReportResponse[]> {
     return await this.employeeReportRepository.find();
   }
 
-  public async findById(id: string): Promise<EmployeeReport> {
+  public async findById(id: string): Promise<EmployeeReportResponse> {
     const report = await this.employeeReportRepository.findById(id);
 
     if (!report) {
@@ -55,20 +56,24 @@ export class EmployeeReportService {
     return report;
   }
 
-  public async findByEmployeeId(userId: string): Promise<EmployeeReport[]> {
+  public async findByEmployeeId(
+    userId: string,
+  ): Promise<EmployeeReportResponse[]> {
     const employee = await this.employeeService.findByUserId(userId);
 
     return await this.employeeReportRepository.findByEmployeeId(employee.id);
   }
 
-  public async findByProjectId(projectId: string): Promise<EmployeeReport[]> {
+  public async findByProjectId(
+    projectId: string,
+  ): Promise<EmployeeReportResponse[]> {
     return await this.employeeReportRepository.findByProjectId(projectId);
   }
 
   public async findByEmployeeIdAndProjectId(
     employeeId: string,
     projectId: string,
-  ): Promise<EmployeeReport[]> {
+  ): Promise<EmployeeReportResponse[]> {
     return await this.employeeReportRepository.findByEmployeeIdAndProjectId(
       employeeId,
       projectId,
