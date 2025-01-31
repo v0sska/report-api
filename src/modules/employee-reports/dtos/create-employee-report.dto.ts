@@ -9,9 +9,6 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateEmployeeReportDto {
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
   employeeId: string;
 
   @ApiProperty()
