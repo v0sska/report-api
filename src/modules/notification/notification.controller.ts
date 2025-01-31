@@ -67,11 +67,24 @@ export class NotificationController {
     };
   }
 
-  @Get('/user/:userId')
-  public async findByUserId(
-    @Param('userId') userId: string,
+  @Get('from/:id')
+  public async findByFromUserId(
+    @Param('id') id: string,
   ): Promise<DataResponse<Notification[]>> {
-    const notification = await this.notificationService.findByUserId(userId);
+    const notification = await this.notificationService.findByFromUserId(id);
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: notification,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get('to/:id')
+  public async findByToUserId(
+    @Param('id') id: string,
+  ): Promise<DataResponse<Notification[]>> {
+    const notification = await this.notificationService.findByToUserId(id);
 
     return {
       message: MESSAGES.FETCHED,
