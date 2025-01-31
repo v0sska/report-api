@@ -19,6 +19,7 @@ import { EmployeeReportService } from './employee-report.service';
 
 import { CreateEmployeeReportDto } from './dtos/create-employee-report.dto';
 import { UpdateEmployeeReportDto } from './dtos/update-employee-report.dto';
+import { RequestModifyReportDto } from './dtos/request-modify-report.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -27,8 +28,8 @@ import { EmployeeReport } from '@prisma/client';
 import { MESSAGES } from '@/common/constants/messages.contants';
 
 import { Request } from 'express';
+
 import { AuthGuard } from '@/common/guards/auth.guard';
-import { RequestModifyReportDto } from './dtos/request-modify-report.dto';
 
 @Controller('employee-reports')
 @ApiTags('Employee Reports')
@@ -41,8 +42,11 @@ export class EmployeeReportController {
   @Post()
   public async create(
     @Body() dto: CreateEmployeeReportDto,
+    @Req() request: Request,
   ): Promise<DataResponse<EmployeeReport>> {
-    const report = await this.employeeReportService.create(dto);
+    const { id } = request['user'];
+
+    const report = await this.employeeReportService.create(dto, id);
 
     return {
       message: MESSAGES.CREATED,
@@ -80,12 +84,12 @@ export class EmployeeReportController {
     };
   }
 
-  @Get('employee/:employeeId')
+  @Get('employee')
   public async findByEmployeeId(
-    @Param('employeeId') employeeId: string,
+    @Req() request: Request,
   ): Promise<DataResponse<EmployeeReport[]>> {
-    const reports =
-      await this.employeeReportService.findByEmployeeId(employeeId);
+    const { id } = request['user'];
+    const reports = await this.employeeReportService.findByEmployeeId(id);
 
     return {
       message: MESSAGES.FETCHED,

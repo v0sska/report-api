@@ -4,8 +4,10 @@ import { EmployeeReportRepository } from './employee-report.repository';
 import { EmployeeReportService } from './employee-report.service';
 import { PrismaService } from '@/database/prisma.service';
 import { EmployeeReportController } from './employee-report.controller';
+import { EmployeeModule } from '../employee/employee.module';
 
 @Module({
+  imports: [EmployeeModule],
   controllers: [EmployeeReportController],
   providers: [EmployeeReportRepository, EmployeeReportService, PrismaService],
   exports: [EmployeeReportRepository, EmployeeReportService, PrismaService],
