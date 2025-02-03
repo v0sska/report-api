@@ -48,7 +48,7 @@ export class NotificationService {
   public async isNewNotifications(toUserId: string): Promise<boolean> {
     const notifications = await this.findByToUserId(toUserId);
 
-    return notifications.some((notification) => !notification.isNew);
+    return notifications.some((notification) => notification.isNew);
   }
 
   public async update(
