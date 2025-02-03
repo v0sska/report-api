@@ -100,17 +100,14 @@ export class EmployeeReportService {
         case REPORT_STATUS.ACCEPTED:
           if (updates.endTime) {
             const endTime = new Date(`1970-01-01T${updates.endTime}:00`);
-
-            const minutesWorked = differenceInMinutes(
-              endTime,
-              report.startTime,
-            );
+            const startTime = new Date(`1970-01-01T${report.startTime}:00`);
+            const minutesWorked = differenceInMinutes(endTime, startTime);
             const hoursWorked = minutesWorked / 60;
             updates.hoursWorked = hoursWorked;
           }
           return await this.employeeReportRepository.update(id, {
             ...updates,
-            editStatus: REPORT_STATUS.REJECTRED,
+            editStatus: REPORT_STATUS.DEFAULT,
             updatedAt: new Date(),
           });
       }
@@ -137,7 +134,8 @@ export class EmployeeReportService {
     if (
       role === ROLE.EMPLOYEE &&
       (report.deleteStatus === REPORT_STATUS.PENDING ||
-        report.deleteStatus === REPORT_STATUS.REJECTRED || report.deleteStatus === REPORT_STATUS.DEFAULT)
+        report.deleteStatus === REPORT_STATUS.REJECTRED ||
+        report.deleteStatus === REPORT_STATUS.DEFAULT)
     ) {
       throw new BadRequestException(EXCEPTION.REPORT_NOT_EDITABLE);
     }
