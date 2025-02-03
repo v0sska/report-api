@@ -68,6 +68,7 @@ export class NotificationRepository extends BaseRepository<
         include: {
           toUser: true,
           fromUser: true,
+          report: true,
         },
       })
       .catch((error) => {
@@ -84,6 +85,7 @@ export class NotificationRepository extends BaseRepository<
         include: {
           toUser: true,
           fromUser: true,
+          report: true,
         },
       })
       .catch((error) => {

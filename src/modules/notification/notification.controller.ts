@@ -60,6 +60,20 @@ export class NotificationController {
     };
   }
 
+  @Get('/new')
+  public async isNewNotifications(
+    @Req() request: Request,
+  ): Promise<DataResponse<boolean>> {
+    const { id } = request['user'];
+    const data = await this.notificationService.isNewNotifications(id);
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: data,
+      status: HttpStatus.OK,
+    };
+  }
+
   @Get('/report/:reportId')
   public async findByReportId(
     @Param('reportId') reportId: string,
