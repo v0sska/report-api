@@ -95,6 +95,7 @@ export class EmployeeReportService {
       switch (report.editStatus) {
         case REPORT_STATUS.PENDING:
         case REPORT_STATUS.REJECTRED:
+        case REPORT_STATUS.DEFAULT:
           throw new BadRequestException(EXCEPTION.REPORT_NOT_EDITABLE);
         case REPORT_STATUS.ACCEPTED:
           if (updates.endTime) {
@@ -136,7 +137,7 @@ export class EmployeeReportService {
     if (
       role === ROLE.EMPLOYEE &&
       (report.deleteStatus === REPORT_STATUS.PENDING ||
-        report.deleteStatus === REPORT_STATUS.REJECTRED)
+        report.deleteStatus === REPORT_STATUS.REJECTRED || report.deleteStatus === REPORT_STATUS.DEFAULT)
     ) {
       throw new BadRequestException(EXCEPTION.REPORT_NOT_EDITABLE);
     }

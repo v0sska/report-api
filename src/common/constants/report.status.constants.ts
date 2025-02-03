@@ -1,4 +1,5 @@
 export const REPORT_STATUS = {
+  DEFAULT: 'Default',
   REJECTRED: 'Rejected',
   PENDING: 'Pending',
   ACCEPTED: 'Accepted',
