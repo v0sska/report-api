@@ -11,6 +11,7 @@ import {
   IsNumber,
   IsEnum,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 
 export class CreateProjectDto {
@@ -50,6 +51,11 @@ export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   salesId: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsNotEmpty()
+  isOnUpwork: boolean;
 
   @ApiPropertyOptional()
   @IsOptional()

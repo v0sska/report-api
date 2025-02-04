@@ -69,6 +69,7 @@ model Project {
   hoursInWeek     Int     @map("hours_in_week")
   teamInfo        String  @map("team_info")
   status          String
+  isOnUpwork      Boolean @default(false)
   salesId          String? @map("sales_id")
   sales           Sales?  @relation(fields: [salesId], references: [id], onDelete: Cascade)
   projectManagerId String? @map("project_manager_id")
@@ -76,15 +77,14 @@ model Project {
   employeeOnProject EmployeeOnProject[]
   employeeReport EmployeeReport[]
 
-
   @@map("projects")
 }
 
 model EmployeeOnProject {
   employeeId  String @map("employee_id")
-  employee    Employee @relation(fields: [employeeId], references: [id])
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   projectId   String @map("project_id")
-  project     Project @relation(fields: [projectId], references: [id])
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   hoursWorked Int @map("hours_worked")  @default(0)
 
   @@id([employeeId, projectId])
@@ -107,6 +107,7 @@ model EmployeeReport {
   updatedAt       DateTime? @map("updated_at")
   createdAt       DateTime @default(now()) @map("created_at")
   notification    Notification[]
+  projectIncome   ProjectIncome?
 
   @@map("employees_reports")
 }
@@ -114,15 +115,29 @@ model EmployeeReport {
 model Notification {
   id              String   @id @default(uuid())
   fromUserId      String   @map("from_user_id")
-  fromUser        User     @relation(name: "FromUser", fields: [fromUserId], references: [id])
+  fromUser        User     @relation(name: "FromUser", fields: [fromUserId], references: [id], onDelete: Cascade)
   toUserId        String   @map("to_user_id")
-  toUser          User     @relation(name: "ToUser", fields: [toUserId], references: [id])
+  toUser          User     @relation(name: "ToUser", fields: [toUserId], references: [id], onDelete: Cascade)
   title           String
   text            String
   reportId        String?  @map("report_id")
-  report          EmployeeReport? @relation(fields: [reportId], references: [id])
+  report          EmployeeReport? @relation(fields: [reportId], references: [id], onDelete: Cascade)
   isNew           Boolean  @default(true) @map("is_new")
   createdAt       DateTime @default(now()) @map("created_at")
 
   @@map("notifications")
+}
+
+model ProjectIncome {
+  id String @id @default(uuid())
+  projectName String @map("project_name")
+  clientName String @map("client_name")
+  hours Int
+  amount Int
+  status String @default("Pending")
+  date DateTime
+  employeeReportId String @unique @map("employee_report_id")
+  employeeReport   EmployeeReport @relation(fields: [employeeReportId], references: [id])
+
+  @@map("project_income")
 }
