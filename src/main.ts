@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: config.server.frontendUrl,
+    origin: [config.server.frontendUrl, config.server.url],
     credentials: true,
   });
   app.setGlobalPrefix('api');

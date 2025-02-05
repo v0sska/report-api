@@ -4,6 +4,7 @@ export const config = {
     jwt: process.env.JWT_ACCESS_SECRET,
     url: process.env.SERVER_URL,
     frontendUrl: process.env.FRONTEND_URL,
+    frontendDomain: process.env.FRONTEND_DOMAIN,
   },
   smtp: {
     host: process.env.SMTP_HOST,
