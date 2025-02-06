@@ -15,4 +15,5 @@ export const EXCEPTION = {
   PROJECT_NOT_FOUND: 'Project not found',
   TEAM_NOT_FOUND: 'Team not found',
   NOTIFICATION_NOT_FOUND: 'Notification not found',
+  REPORT_ALREADY_EXISTS: 'Report already exists',
 };
