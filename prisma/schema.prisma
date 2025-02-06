@@ -137,7 +137,7 @@ model ProjectIncome {
   status String @default("Pending")
   date DateTime
   employeeReportId String @unique @map("employee_report_id")
-  employeeReport   EmployeeReport @relation(fields: [employeeReportId], references: [id])
+  employeeReport   EmployeeReport @relation(fields: [employeeReportId], references: [id], onDelete: Cascade)
 
   @@map("project_income")
 }
