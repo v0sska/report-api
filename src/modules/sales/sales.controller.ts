@@ -16,6 +16,7 @@ import { Sales } from '@prisma/client';
 
 import { CreateSalesDto } from './dtos/create-sales.dto';
 import { UpdateSalesDto } from './dtos/update-sales.dto';
+import { SalesStatiscticResponseDto } from './dtos/reponse/sale-statistic-response.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -48,6 +49,19 @@ export class SaleController {
   @Get('/')
   public async find(): Promise<DataResponse<Sales[]>> {
     const sale = await this.saleService.find();
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: sale,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get('statistic')
+  public async getSalesStatistic(): Promise<
+    DataResponse<SalesStatiscticResponseDto>
+  > {
+    const sale = await this.saleService.getSalesStatistic();
 
     return {
       message: MESSAGES.FETCHED,
