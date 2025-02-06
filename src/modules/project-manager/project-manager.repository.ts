@@ -4,6 +4,7 @@ import { CreateProjectManagerDto } from './dtos/create-project-manager.dto';
 import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
 import { PrismaService } from '@/database/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ProjectManagerStatisticResponseDto } from './dtos/response/project-manager-statistic-response.dto';
 
 @Injectable()
 export class ProjectManagerRepository extends BaseRepository<
@@ -54,6 +55,41 @@ export class ProjectManagerRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
+  public async getProjectManagerStatistic(): Promise<ProjectManagerStatisticResponseDto> {
+    const projectManagers = await this.prismaService.projectManager.findMany({
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            phone: true,
+          },
+        },
+        project: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    const formattedProjectManagers = projectManagers.map((pm) => ({
+      id: pm.id,
+      userId: pm.user.id,
+      firstName: pm.user.firstName,
+      lastName: pm.user.lastName,
+      role: pm.user.role,
+      phone: pm.user.phone,
+      projectCount: pm.project.length,
+    }));
+
+    return { projectManagers: formattedProjectManagers };
+  }
+
   public async update(
     id: string,
     updates: UpdateProjectManagerDto,

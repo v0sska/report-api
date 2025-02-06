@@ -24,6 +24,7 @@ import { ProjectManager } from '@prisma/client';
 import { AuthGuard } from '@/common/guards/auth.guard';
 
 import { MESSAGES } from '@/common/constants/messages.contants';
+import { ProjectManagerStatisticResponseDto } from './dtos/response/project-manager-statistic-response.dto';
 
 @Controller('project-manager')
 @ApiTags('project-manager')
@@ -54,6 +55,20 @@ export class ProjectManagerController {
     return {
       message: MESSAGES.FETCHED,
       data: projectManagers,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Get('statistic')
+  public async getProjectManagerStatistic(): Promise<
+    DataResponse<ProjectManagerStatisticResponseDto>
+  > {
+    const projectManagerStatistic =
+      await this.projectManagerService.getProjectManagerStatistic();
+
+    return {
+      message: MESSAGES.FETCHED,
+      data: projectManagerStatistic,
       status: HttpStatus.OK,
     };
   }
