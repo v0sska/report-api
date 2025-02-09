@@ -27,52 +27,66 @@ export class AuthController {
     const { user, tokens } = await this.authService.signUp(dto);
 
     response.cookie('token', tokens.token, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 3600000,
       expires: new Date(Date.now() + 3600000),
+      secure: true,
     });
 
     response.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('role', user.role, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('id', user.id, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('email', user.email, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('firstName', user.firstName, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('lastName', user.lastName, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     return {
@@ -90,52 +104,66 @@ export class AuthController {
     const { user, tokens } = await this.authService.acceptInvite(dto);
 
     response.cookie('token', tokens.token, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 3600000,
       expires: new Date(Date.now() + 3600000),
+      secure: true,
     });
 
     response.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('role', user.role, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('id', user.id, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('email', user.email, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('firstName', user.firstName, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('lastName', user.lastName, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     return {
@@ -153,52 +181,66 @@ export class AuthController {
     const { user, tokens } = await this.authService.signIn(dto);
 
     response.cookie('token', tokens.token, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 3600000,
       expires: new Date(Date.now() + 3600000),
+      secure: true,
     });
 
     response.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('role', user.role, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('id', user.id, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('email', user.email, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('firstName', user.firstName, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     response.cookie('lastName', user.lastName, {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      secure: true,
     });
 
     return {
@@ -211,39 +253,51 @@ export class AuthController {
   @Post('logout')
   public async logout(@Res({ passthrough: true }) response: Response) {
     response.cookie('token', '', {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       expires: new Date(0),
+      secure: true,
     });
 
     response.cookie('refreshToken', '', {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       expires: new Date(0),
+      secure: true,
     });
 
     response.cookie('role', '', {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       expires: new Date(0),
+      secure: true,
     });
 
     response.cookie('email', '', {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       expires: new Date(0),
+      secure: true,
     });
 
     response.cookie('firstName', '', {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       expires: new Date(0),
+      secure: true,
     });
 
     response.cookie('lastName', '', {
-      httpOnly: false,
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
+      domain: config.server.frontendDomain,
       expires: new Date(0),
+      secure: true,
     });
 
     return {
