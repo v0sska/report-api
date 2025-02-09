@@ -55,8 +55,9 @@ export class AuthGuard implements CanActivate {
         );
 
         (request as Request & { res: Response }).res.cookie('token', newToken, {
-          httpOnly: false,
-          sameSite: 'lax',
+          sameSite: 'none',
+          path: '/',
+          domain: config.server.frontendDomain,
           maxAge: 3600000,
           expires: new Date(Date.now() + 3600000),
         });
