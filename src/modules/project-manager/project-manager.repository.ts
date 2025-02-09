@@ -54,6 +54,22 @@ export class ProjectManagerRepository extends BaseRepository<
         throw new InternalServerErrorException(error.message);
       });
   }
+
+  public async findByUserId(userId: string): Promise<ProjectManager> {
+    return await this.prismaService.projectManager
+      .findUnique({
+        where: {
+          userId,
+        },
+        include: {
+          user: true,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
   public async update(
     id: string,
     updates: UpdateProjectManagerDto,

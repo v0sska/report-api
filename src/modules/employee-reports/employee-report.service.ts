@@ -1,7 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { EmployeeReportRepository } from './employee-report.repository';
+
 import { EmployeeService } from '../employee/employee.service';
+import { ProjectManagerService } from '../project-manager/project-manager.service';
+import { SalesService } from '../sales/sales.service';
 
 import { CreateEmployeeReportDto } from './dtos/create-employee-report.dto';
 import { UpdateEmployeeReportDto } from './dtos/update-employee-report.dto';
@@ -20,6 +23,8 @@ import { differenceInMinutes, addDays } from 'date-fns';
 export class EmployeeReportService {
   public constructor(
     private readonly employeeReportRepository: EmployeeReportRepository,
+    private readonly projectManagerService: ProjectManagerService,
+    private readonly salesService: SalesService,
     private readonly employeeService: EmployeeService,
   ) {}
 
@@ -70,8 +75,27 @@ export class EmployeeReportService {
     });
   }
 
-  public async find(): Promise<EmployeeReportResponse[]> {
-    return await this.employeeReportRepository.find();
+  public async find(
+    userId: string,
+    role: string,
+  ): Promise<EmployeeReportResponse[]> {
+    switch (role) {
+      case ROLE.EMPLOYEE:
+        return await this.findByEmployeeId(userId);
+      case ROLE.PROJECT_MANAGER:
+        const projectManager =
+          await this.projectManagerService.findByUserId(userId);
+
+        return await this.employeeReportRepository.findByProjectManagerId(
+          projectManager.id,
+        );
+      case ROLE.SALES:
+        const sales = await this.salesService.findByUserId(userId);
+
+        return await this.employeeReportRepository.findBySalesId(sales.id);
+      default:
+        return await this.employeeReportRepository.find();
+    }
   }
 
   public async findById(id: string): Promise<EmployeeReportResponse> {

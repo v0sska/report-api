@@ -33,6 +33,17 @@ export class ProjectManagerService {
     return projectManager;
   }
 
+  public async findByUserId(userId: string): Promise<ProjectManager> {
+    const projectManager =
+      await this.projectManagerRepository.findByUserId(userId);
+
+    if (!projectManager) {
+      throw new BadRequestException(EXCEPTION.PROJECT_MANAGER_NOT_FOUND);
+    }
+
+    return projectManager;
+  }
+
   public async update(
     id: string,
     updates: UpdateProjectManagerDto,
