@@ -34,7 +34,6 @@ export class ProjectManagerService {
     return projectManager;
   }
 
-
   public async findByUserId(userId: string): Promise<ProjectManager> {
     const projectManager =
       await this.projectManagerRepository.findByUserId(userId);
@@ -44,10 +43,10 @@ export class ProjectManagerService {
     }
 
     return projectManager;
+  }
 
   public async getProjectManagerStatistic(): Promise<ProjectManagerStatisticResponseDto> {
     return await this.projectManagerRepository.getProjectManagerStatistic();
-
   }
 
   public async update(

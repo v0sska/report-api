@@ -56,7 +56,6 @@ export class ProjectManagerRepository extends BaseRepository<
       });
   }
 
-
   public async findByUserId(userId: string): Promise<ProjectManager> {
     return await this.prismaService.projectManager
       .findUnique({
@@ -70,6 +69,7 @@ export class ProjectManagerRepository extends BaseRepository<
       .catch((error) => {
         throw new InternalServerErrorException(error.message);
       });
+  }
 
   public async getProjectManagerStatistic(): Promise<ProjectManagerStatisticResponseDto> {
     const projectManagers = await this.prismaService.projectManager.findMany({
@@ -103,7 +103,6 @@ export class ProjectManagerRepository extends BaseRepository<
     }));
 
     return { projectManagers: formattedProjectManagers };
-
   }
 
   public async update(
