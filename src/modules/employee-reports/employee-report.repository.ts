@@ -133,6 +133,24 @@ export class EmployeeReportRepository extends BaseRepository<
       });
   }
 
+  public async findByEmployeeIdAndDate(
+    employeeId: string,
+    date: string,
+    projectId: string,
+  ): Promise<EmployeeReport> {
+    return await this.prismaService.employeeReport
+      .findFirst({
+        where: {
+          employeeId,
+          date,
+          projectId,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
   public async findByEmployeeId(
     employeeId: string,
   ): Promise<EmployeeReportResponse[]> {

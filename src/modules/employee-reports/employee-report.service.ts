@@ -14,7 +14,7 @@ import { EXCEPTION } from '@/common/constants/exception.constants';
 import { ROLE } from '@/common/constants/role.constants';
 import { REPORT_STATUS } from '@/common/constants/report.status.constants';
 
-import { differenceInMinutes } from 'date-fns';
+import { differenceInMinutes, addDays } from 'date-fns';
 
 @Injectable()
 export class EmployeeReportService {
@@ -29,8 +29,36 @@ export class EmployeeReportService {
   ): Promise<EmployeeReport> {
     const employee = await this.employeeService.findByUserId(userId);
 
+    const report = await this.employeeReportRepository.findByEmployeeIdAndDate(
+      employee.id,
+      dto.date.toString(),
+      dto.projectId,
+    );
+
+    if (report) {
+      throw new BadRequestException(EXCEPTION.REPORT_ALREADY_EXISTS);
+    }
+
+    const reports = await this.employeeReportRepository.findByEmployeeId(
+      employee.id,
+    );
+
+    reports.forEach((report) => {
+      if (
+        report.startTime === dto.startTime &&
+        report.endTime === dto.endTime &&
+        report.date === dto.date
+      ) {
+        throw new BadRequestException(EXCEPTION.REPORT_ALREADY_EXISTS);
+      }
+    });
+
     const startTime = new Date(`1970-01-01T${dto.startTime}:00`);
-    const endTime = new Date(`1970-01-01T${dto.endTime}:00`);
+    let endTime = new Date(`1970-01-01T${dto.endTime}:00`);
+
+    if (endTime < startTime) {
+      endTime = addDays(endTime, 1);
+    }
 
     const minutesWorked = differenceInMinutes(endTime, startTime);
     const hoursWorked = minutesWorked / 60;

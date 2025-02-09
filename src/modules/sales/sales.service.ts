@@ -8,6 +8,7 @@ import { UpdateSalesDto } from './dtos/update-sales.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
+import { SalesStatiscticResponseDto } from './dtos/reponse/sale-statistic-response.dto';
 
 @Injectable()
 export class SalesService {
@@ -39,6 +40,10 @@ export class SalesService {
     }
 
     return sale;
+  }
+
+  public async getSalesStatistic(): Promise<SalesStatiscticResponseDto> {
+    return await this.saleRepository.getSalesStatistic();
   }
 
   public async update(id: string, updates: UpdateSalesDto): Promise<Sales> {
