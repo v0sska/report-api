@@ -120,6 +120,7 @@ model Notification {
   toUser          User     @relation(name: "ToUser", fields: [toUserId], references: [id], onDelete: Cascade)
   title           String
   text            String
+  status           String   @default("Pending")
   reportId        String?  @map("report_id")
   report          EmployeeReport? @relation(fields: [reportId], references: [id], onDelete: Cascade)
   isNew           Boolean  @default(true) @map("is_new")
