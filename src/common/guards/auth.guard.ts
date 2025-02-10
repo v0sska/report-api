@@ -50,16 +50,15 @@ export class AuthGuard implements CanActivate {
             role: payload.role,
           },
           {
-            expiresIn: '1h',
+            expiresIn: '2d',
           },
         );
 
         (request as Request & { res: Response }).res.cookie('token', newToken, {
-          sameSite: 'none',
-          path: '/',
-          domain: config.server.frontendDomain,
-          maxAge: 3600000,
-          expires: new Date(Date.now() + 3600000),
+          httpOnly: false,
+          sameSite: 'lax',
+          maxAge: 2 * 24 * 60 * 60 * 1000,
+          expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
         });
 
         Reflect.defineMetadata('newToken', newToken, request);

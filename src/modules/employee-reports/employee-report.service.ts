@@ -126,7 +126,6 @@ export class EmployeeReportService {
     userId: string,
     projectId: string,
   ): Promise<EmployeeReportResponse[]> {
-
     const employee = await this.employeeService.findByUserId(userId);
 
     return await this.employeeReportRepository.findByEmployeeIdAndProjectId(
