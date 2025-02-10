@@ -88,12 +88,12 @@ export class EmployeeReportController {
     };
   }
 
-  @Get('employee')
+  @Get('employee/:employeeId')
   public async findByEmployeeId(
-    @Req() request: Request,
+    @Param('employeeId') employeeId: string,
   ): Promise<DataResponse<EmployeeReportResponse[]>> {
-    const { id } = request['user'];
-    const reports = await this.employeeReportService.findByEmployeeId(id);
+    const reports =
+      await this.employeeReportService.findByEmployeeId(employeeId);
 
     return {
       message: MESSAGES.FETCHED,

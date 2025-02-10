@@ -7,6 +7,7 @@ export class StatisticResponseDto {
   totalIncomeAccepted: number;
   employees: Array<{
     id: string;
+    userId: string;
     firstName: string;
     lastName: string;
     rate: number;

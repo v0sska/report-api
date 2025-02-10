@@ -105,6 +105,7 @@ export class ProjectIncomeRepository extends BaseRepository<
           if (!employeeMap.has(employeeId)) {
             employeeMap.set(employeeId, {
               id: employeeId,
+              userId: income.employeeReport.employee.userId,
               firstName: income.employeeReport.employee.user.firstName,
               lastName: income.employeeReport.employee.user.lastName,
               rate: income.employeeReport.project.rate,
