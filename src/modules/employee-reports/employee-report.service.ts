@@ -123,11 +123,14 @@ export class EmployeeReportService {
   }
 
   public async findByEmployeeIdAndProjectId(
-    employeeId: string,
+    userId: string,
     projectId: string,
   ): Promise<EmployeeReportResponse[]> {
+
+    const employee = await this.employeeService.findByUserId(userId);
+
     return await this.employeeReportRepository.findByEmployeeIdAndProjectId(
-      employeeId,
+      employee.id,
       projectId,
     );
   }
