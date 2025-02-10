@@ -14,6 +14,7 @@ export class StatisticResponseDto {
     maxHours: number;
     incomes: Array<{
       id: string;
+      reportId: string;
       date: Date;
       hours: number;
       amount: number;

@@ -116,6 +116,7 @@ export class ProjectIncomeRepository extends BaseRepository<
 
           employeeMap.get(employeeId).incomes.push({
             id: income.id,
+            reportId: income.employeeReportId,
             date: income.date,
             hours: income.hours,
             amount: income.amount,
@@ -202,6 +203,7 @@ export class ProjectIncomeRepository extends BaseRepository<
 
         project.employees.get(employeeId).incomes.push({
           id: income.id,
+          reportId: income.employeeReportId,
           date: income.date,
           hours: income.hours,
           amount: income.amount,
