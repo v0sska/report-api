@@ -491,11 +491,35 @@ export class ProjectRepository extends BaseRepository<
   }
 
   public async delete(id: string): Promise<Project> {
-    return await this.prismaService.project
-      .delete({
-        where: {
-          id,
-        },
+    return await this.prismaService
+      .$transaction(async (tx) => {
+        const project = await tx.project.delete({
+          where: { id },
+          include: {
+            employeeOnProject: {
+              include: {
+                employee: true,
+              },
+            },
+          },
+        });
+
+        await Promise.all(
+          project.employeeOnProject.map(async (eop) => {
+            await tx.employee.update({
+              where: { id: eop.employeeId },
+              data: {
+                hoursPerWeek: { decrement: eop.hoursWorked },
+                projectEngagement:
+                  eop.hoursWorked <= eop.employee.hoursPerWeek
+                    ? PROJECT_ENGAGMENT.AVAILABLE
+                    : PROJECT_ENGAGMENT.PART_TIME,
+              },
+            });
+          }),
+        );
+
+        return project;
       })
       .catch((error) => {
         throw new InternalServerErrorException(error.message);
