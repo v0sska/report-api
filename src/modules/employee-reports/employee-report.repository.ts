@@ -195,6 +195,98 @@ export class EmployeeReportRepository extends BaseRepository<
       });
   }
 
+  public async findByProjectManagerId(
+    projectManagerId: string,
+  ): Promise<EmployeeReportResponse[]> {
+    return await this.prismaService.employeeReport
+      .findMany({
+        where: {
+          project: {
+            projectManagerId,
+          },
+        },
+        select: {
+          id: true,
+          employeeId: true,
+          projectId: true,
+          hoursWorked: true,
+          startTime: true,
+          endTime: true,
+          date: true,
+          text: true,
+          editStatus: true,
+          deleteStatus: true,
+          updatedAt: true,
+          createdAt: true,
+          project: {
+            select: {
+              name: true,
+            },
+          },
+          employee: {
+            select: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
+  public async findBySalesId(
+    salesId: string,
+  ): Promise<EmployeeReportResponse[]> {
+    return await this.prismaService.employeeReport
+      .findMany({
+        where: {
+          project: {
+            salesId,
+          },
+        },
+        select: {
+          id: true,
+          employeeId: true,
+          projectId: true,
+          hoursWorked: true,
+          startTime: true,
+          endTime: true,
+          date: true,
+          text: true,
+          editStatus: true,
+          deleteStatus: true,
+          updatedAt: true,
+          createdAt: true,
+          project: {
+            select: {
+              name: true,
+            },
+          },
+          employee: {
+            select: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
   public async findByProjectId(
     projectId: string,
   ): Promise<EmployeeReportResponse[]> {

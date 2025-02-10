@@ -57,8 +57,11 @@ export class EmployeeReportController {
   }
 
   @Get()
-  public async find(): Promise<DataResponse<EmployeeReportResponse[]>> {
-    const reports = await this.employeeReportService.find();
+  public async find(
+    @Req() request: Request,
+  ): Promise<DataResponse<EmployeeReportResponse[]>> {
+    const { id, role } = request['user'];
+    const reports = await this.employeeReportService.find(id, role);
 
     return {
       message: MESSAGES.FETCHED,
@@ -85,12 +88,12 @@ export class EmployeeReportController {
     };
   }
 
-  @Get('employee')
+  @Get('employee/:employeeId')
   public async findByEmployeeId(
-    @Req() request: Request,
+    @Param('employeeId') employeeId: string,
   ): Promise<DataResponse<EmployeeReportResponse[]>> {
-    const { id } = request['user'];
-    const reports = await this.employeeReportService.findByEmployeeId(id);
+    const reports =
+      await this.employeeReportService.findByEmployeeId(employeeId);
 
     return {
       message: MESSAGES.FETCHED,
