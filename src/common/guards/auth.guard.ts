@@ -58,8 +58,8 @@ export class AuthGuard implements CanActivate {
           sameSite: 'none',
           path: '/',
           domain: config.server.frontendDomain,
-          maxAge: 2 * 24 * 60 * 60 * 1000,
-          expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+          maxAge: 5 * 24 * 60 * 60 * 1000,
+          expires: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
         });
 
         Reflect.defineMetadata('newToken', newToken, request);
