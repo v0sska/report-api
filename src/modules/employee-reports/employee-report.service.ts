@@ -18,6 +18,8 @@ import { ROLE } from '@/common/constants/role.constants';
 import { REPORT_STATUS } from '@/common/constants/report.status.constants';
 
 import { differenceInMinutes, addDays } from 'date-fns';
+import { NotificationService } from '../notification/notification.service';
+import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
 
 @Injectable()
 export class EmployeeReportService {
@@ -26,6 +28,7 @@ export class EmployeeReportService {
     private readonly projectManagerService: ProjectManagerService,
     private readonly salesService: SalesService,
     private readonly employeeService: EmployeeService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   public async create(
@@ -140,6 +143,23 @@ export class EmployeeReportService {
     role: string,
   ): Promise<EmployeeReport> {
     const report = await this.employeeReportRepository.findById(id);
+    const notification = await this.notificationService.findPendingByReportId(report.id);
+
+    if (
+      report.editStatus === REPORT_STATUS.ACCEPTED || 
+      report.deleteStatus === REPORT_STATUS.ACCEPTED
+    ) {
+      await this.notificationService.update(notification.id, { 
+        status: NOTIFICATION_STATUS.ACCEPTED 
+      });
+    } else if (
+      report.editStatus === REPORT_STATUS.REJECTED || 
+      report.deleteStatus === REPORT_STATUS.REJECTED
+    ) {
+      await this.notificationService.update(notification.id, { 
+        status: NOTIFICATION_STATUS.REJECTED 
+      });
+    }
 
     if (!report) {
       throw new BadRequestException(EXCEPTION.REPORT_NOT_FOUND);
@@ -148,7 +168,7 @@ export class EmployeeReportService {
     if (role === ROLE.EMPLOYEE) {
       switch (report.editStatus) {
         case REPORT_STATUS.PENDING:
-        case REPORT_STATUS.REJECTRED:
+        case REPORT_STATUS.REJECTED:
         case REPORT_STATUS.DEFAULT:
           throw new BadRequestException(EXCEPTION.REPORT_NOT_EDITABLE);
         case REPORT_STATUS.ACCEPTED:
@@ -188,7 +208,7 @@ export class EmployeeReportService {
     if (
       role === ROLE.EMPLOYEE &&
       (report.deleteStatus === REPORT_STATUS.PENDING ||
-        report.deleteStatus === REPORT_STATUS.REJECTRED ||
+        report.deleteStatus === REPORT_STATUS.REJECTED ||
         report.deleteStatus === REPORT_STATUS.DEFAULT)
     ) {
       throw new BadRequestException(EXCEPTION.REPORT_NOT_EDITABLE);

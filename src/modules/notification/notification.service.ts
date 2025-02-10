@@ -33,6 +33,10 @@ export class NotificationService {
     return notification;
   }
 
+  public async findPendingByReportId(reportId: string): Promise<Notification> {
+    return await this.notificationRepository.findPendingByReportId(reportId);
+  }
+
   public async findByReportId(reportId: string): Promise<Notification[]> {
     return await this.notificationRepository.findByReportId(reportId);
   }

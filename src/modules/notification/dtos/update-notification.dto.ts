@@ -7,4 +7,6 @@ export class UpdateNotificationDto extends PartialType(CreateNotificationDto) {
   @IsOptional()
   @IsBoolean()
   isNew?: boolean;
+
+  status?: string;
 }

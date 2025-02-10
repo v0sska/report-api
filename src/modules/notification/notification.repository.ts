@@ -8,6 +8,7 @@ import { UpdateNotificationDto } from './dtos/update-notification.dto';
 import { PrismaService } from '@/database/prisma.service';
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
 
 @Injectable()
 export class NotificationRepository extends BaseRepository<
@@ -30,7 +31,11 @@ export class NotificationRepository extends BaseRepository<
   }
 
   public async find(): Promise<Notification[]> {
-    return await this.prismaService.notification.findMany().catch((error) => {
+    return await this.prismaService.notification.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      }
+    }).catch((error) => {
       throw new InternalServerErrorException(error.message);
     });
   }
@@ -40,6 +45,19 @@ export class NotificationRepository extends BaseRepository<
       .findUnique({
         where: {
           id,
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
+  public async findPendingByReportId(reportId: string): Promise<Notification> {
+    return await this.prismaService.notification
+      .findFirst({
+        where: {
+          reportId,
+          status: NOTIFICATION_STATUS.PENDING,
         },
       })
       .catch((error) => {
@@ -65,6 +83,9 @@ export class NotificationRepository extends BaseRepository<
         where: {
           fromUserId: fromUserId,
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
         include: {
           toUser: true,
           fromUser: true,
@@ -81,6 +102,9 @@ export class NotificationRepository extends BaseRepository<
       .findMany({
         where: {
           toUserId: toUserId,
+        },
+        orderBy: {
+          createdAt: 'desc',
         },
         include: {
           toUser: true,

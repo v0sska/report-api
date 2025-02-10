@@ -55,6 +55,9 @@ export class EmployeeReportRepository extends BaseRepository<
   public async find(): Promise<EmployeeReportResponse[]> {
     return await this.prismaService.employeeReport
       .findMany({
+        orderBy: {
+          date: 'desc'
+        },
         select: {
           id: true,
           employeeId: true,
@@ -159,6 +162,9 @@ export class EmployeeReportRepository extends BaseRepository<
         where: {
           employeeId,
         },
+        orderBy: {
+          date: 'desc'
+        },
         select: {
           id: true,
           employeeId: true,
@@ -204,6 +210,10 @@ export class EmployeeReportRepository extends BaseRepository<
           project: {
             projectManagerId,
           },
+          
+        },
+        orderBy: {
+          date: 'desc'
         },
         select: {
           id: true,
@@ -251,6 +261,9 @@ export class EmployeeReportRepository extends BaseRepository<
             salesId,
           },
         },
+        orderBy: {
+          date: 'desc'
+        },
         select: {
           id: true,
           employeeId: true,
@@ -294,6 +307,9 @@ export class EmployeeReportRepository extends BaseRepository<
       .findMany({
         where: {
           projectId,
+        },
+        orderBy: {
+          date: 'desc'
         },
         select: {
           id: true,
@@ -340,6 +356,9 @@ export class EmployeeReportRepository extends BaseRepository<
         where: {
           employeeId,
           projectId,
+        },
+        orderBy: {
+          date: 'desc'
         },
         select: {
           id: true,

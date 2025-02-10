@@ -1,6 +1,6 @@
 export const REPORT_STATUS = {
   DEFAULT: 'Default',
-  REJECTRED: 'Rejected',
+  REJECTED: 'Rejected',
   PENDING: 'Pending',
   ACCEPTED: 'Accepted',
 } as const;
