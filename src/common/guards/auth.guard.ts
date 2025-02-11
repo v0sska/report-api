@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate {
             role: payload.role,
           },
           {
-            expiresIn: '2d',
+            expiresIn: '5d',
           },
         );
 
