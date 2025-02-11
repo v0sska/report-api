@@ -16,6 +16,7 @@ import { userMapper } from '@/common/utils/user-mapper.util';
 import { EXCEPTION } from '@/common/constants/exception.constants';
 import { USER_STATUS } from '@/common/constants/user-status.constants';
 import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
+import { ROLE } from '@/common/constants/role.constants';
 
 @Injectable()
 export class AuthService {
@@ -80,18 +81,18 @@ export class AuthService {
     });
 
     switch (user.role) {
-      case 'Employee':
+      case ROLE.EMPLOYEE:
         await this.employeeService.create({
           userId: updatedUser.id,
           projectEngagement: PROJECT_ENGAGMENT.AVAILABLE,
         });
         break;
-      case 'Sales':
+      case ROLE.SALES:
         await this.salesService.create({
           userId: updatedUser.id,
         });
         break;
-      case 'ProjectManager':
+      case ROLE.PROJECT_MANAGER:
         await this.projectManagerService.create({
           userId: updatedUser.id,
         });

@@ -12,14 +12,18 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { INCOME_STATUS } from '@/common/constants/income-status.constants';
 
+import { ClassLoggerService } from '@/common/utils/loger.util';
+
 @Injectable()
 export class SalesRepository extends BaseRepository<
   Sales,
   CreateSalesDto,
   UpdateSalesDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(SalesRepository.name);
   }
 
   public async create(dto: CreateSalesDto): Promise<Sales> {
@@ -28,6 +32,7 @@ export class SalesRepository extends BaseRepository<
         data: dto,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -45,6 +50,7 @@ export class SalesRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -66,6 +72,7 @@ export class SalesRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -78,6 +85,7 @@ export class SalesRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -152,6 +160,7 @@ export class SalesRepository extends BaseRepository<
         return { sales: formattedSales };
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -165,6 +174,7 @@ export class SalesRepository extends BaseRepository<
         data: updates,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -177,6 +187,7 @@ export class SalesRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }

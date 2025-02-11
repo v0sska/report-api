@@ -3,9 +3,11 @@ import { Transporter } from 'nodemailer';
 
 import config from '../../common/configs';
 
+import { ClassLoggerService } from '@/common/utils/loger.util';
+
 export class SmtpUtil {
   private transporter: Transporter;
-
+  private logger: ClassLoggerService;
   protected constructor() {
     this.transporter = nodemailer.createTransport({
       host: config.smtp.host,
@@ -16,6 +18,7 @@ export class SmtpUtil {
         pass: config.smtp.pass,
       },
     });
+    this.logger = new ClassLoggerService(SmtpUtil.name);
   }
 
   protected async sendMail(
@@ -31,7 +34,7 @@ export class SmtpUtil {
         html,
       });
     } catch (error) {
-      console.log('Error sending email', error);
+      this.logger.error(error);
     }
   }
 }

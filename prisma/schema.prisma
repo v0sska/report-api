@@ -122,6 +122,7 @@ model Notification {
   text            String
   status           String   @default("Pending")
   reportId        String?  @map("report_id")
+  hideStatus      String   @default("None") @map("hide_status")
   report          EmployeeReport? @relation(fields: [reportId], references: [id], onDelete: Cascade)
   isNew           Boolean  @default(true) @map("is_new")
   createdAt       DateTime @default(now()) @map("created_at")

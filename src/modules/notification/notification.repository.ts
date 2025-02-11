@@ -10,6 +10,9 @@ import { PrismaService } from '@/database/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
+import { NOTIFICATION_HIDE_STATUS } from '@/common/constants/notification-hide-status.constants';
+
+import { ClassLoggerService } from '@/common/utils/loger.util';
 
 @Injectable()
 export class NotificationRepository extends BaseRepository<
@@ -17,8 +20,10 @@ export class NotificationRepository extends BaseRepository<
   CreateNotificationDto,
   UpdateNotificationDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(NotificationRepository.name);
   }
 
   public async create(dto: CreateNotificationDto): Promise<Notification> {
@@ -27,6 +32,7 @@ export class NotificationRepository extends BaseRepository<
         data: dto,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -39,6 +45,7 @@ export class NotificationRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -51,6 +58,7 @@ export class NotificationRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -64,6 +72,7 @@ export class NotificationRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -76,6 +85,7 @@ export class NotificationRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -85,6 +95,18 @@ export class NotificationRepository extends BaseRepository<
       .findMany({
         where: {
           fromUserId: fromUserId,
+          AND: [
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_SENDER,
+              },
+            },
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_BOTH,
+              },
+            },
+          ],
         },
         orderBy: {
           createdAt: 'desc',
@@ -96,6 +118,7 @@ export class NotificationRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -105,6 +128,18 @@ export class NotificationRepository extends BaseRepository<
       .findMany({
         where: {
           toUserId: toUserId,
+          AND: [
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_RECEIVER,
+              },
+            },
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_BOTH,
+              },
+            },
+          ],
         },
         orderBy: {
           createdAt: 'desc',
@@ -116,6 +151,7 @@ export class NotificationRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -132,6 +168,7 @@ export class NotificationRepository extends BaseRepository<
         data: updates,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -144,6 +181,7 @@ export class NotificationRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
