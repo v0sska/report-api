@@ -14,6 +14,8 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { REPORT_STATUS } from '@/common/constants/report.status.constants';
 import { NOTIFICATION_REQUEST } from '@/common/constants/notification-request.constants';
 import { MODIFY_REPORT_REQUEST } from '@/common/constants/modify-report-request';
+import { ClassLoggerService } from '@/common/utils/loger.util';
+
 
 @Injectable()
 export class EmployeeReportRepository extends BaseRepository<
@@ -21,8 +23,10 @@ export class EmployeeReportRepository extends BaseRepository<
   CreateEmployeeReportDto,
   UpdateEmployeeReportDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(EmployeeReportRepository.name);
   }
 
   public async create(dto: CreateEmployeeReportDto): Promise<EmployeeReport> {
@@ -49,6 +53,9 @@ export class EmployeeReportRepository extends BaseRepository<
       });
 
       return report;
+    }).catch((error) => {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     });
   }
 
@@ -90,6 +97,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -132,6 +140,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -150,6 +159,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -197,6 +207,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -246,6 +257,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -295,6 +307,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -342,6 +355,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -391,6 +405,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -443,6 +458,7 @@ export class EmployeeReportRepository extends BaseRepository<
         return report;
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -459,6 +475,7 @@ export class EmployeeReportRepository extends BaseRepository<
         data: updates,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -471,6 +488,7 @@ export class EmployeeReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }

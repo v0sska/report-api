@@ -16,14 +16,18 @@ import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants
 import { ROLE } from '@/common/constants/role.constants';
 import { PROJECT_STATUS } from '@/common/constants/project-status.constants';
 
+import { ClassLoggerService } from '@/common/utils/loger.util';
+
 @Injectable()
 export class ProjectRepository extends BaseRepository<
   Project | Object,
   CreateProjectDto,
   UpdateProjectDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(ProjectRepository.name);
   }
 
   public async create(dto: CreateProjectDto): Promise<Project> {
@@ -32,6 +36,7 @@ export class ProjectRepository extends BaseRepository<
         data: dto,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -67,6 +72,9 @@ export class ProjectRepository extends BaseRepository<
         where: { id: dto.projectId },
         data: { projectManagerId: dto.projectManagerId },
       });
+    }).catch((error) => {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     });
   }
 
@@ -109,6 +117,7 @@ export class ProjectRepository extends BaseRepository<
         });
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -220,6 +229,7 @@ export class ProjectRepository extends BaseRepository<
         }
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
     return tx;
@@ -248,6 +258,7 @@ export class ProjectRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -300,6 +311,7 @@ export class ProjectRepository extends BaseRepository<
         };
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
 
@@ -326,6 +338,7 @@ export class ProjectRepository extends BaseRepository<
         });
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
 
@@ -342,6 +355,7 @@ export class ProjectRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -368,6 +382,9 @@ export class ProjectRepository extends BaseRepository<
           user: true,
         },
       });
+    }).catch((error) => {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     });
 
     return tx;
@@ -390,6 +407,7 @@ export class ProjectRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -448,6 +466,9 @@ export class ProjectRepository extends BaseRepository<
       }
 
       return project;
+    }).catch((error) => {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     });
   }
 
@@ -502,6 +523,9 @@ export class ProjectRepository extends BaseRepository<
           id: dto.projectId,
         },
       });
+    }).catch((error) => {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     });
   }
 
@@ -537,6 +561,7 @@ export class ProjectRepository extends BaseRepository<
         return project;
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }

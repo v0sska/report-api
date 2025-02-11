@@ -9,6 +9,7 @@ import { ProjectManagerStatisticResponseDto } from './dtos/response/project-mana
 import { PrismaService } from '@/database/prisma.service';
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ClassLoggerService } from '@/common/utils/loger.util';
 
 @Injectable()
 export class ProjectManagerRepository extends BaseRepository<
@@ -16,8 +17,10 @@ export class ProjectManagerRepository extends BaseRepository<
   CreateProjectManagerDto,
   UpdateProjectManagerDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(ProjectManagerRepository.name);
   }
 
   public async create(dto: CreateProjectManagerDto): Promise<ProjectManager> {
@@ -26,6 +29,7 @@ export class ProjectManagerRepository extends BaseRepository<
         data: dto,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -42,6 +46,7 @@ export class ProjectManagerRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -56,6 +61,7 @@ export class ProjectManagerRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -71,6 +77,7 @@ export class ProjectManagerRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -94,6 +101,9 @@ export class ProjectManagerRepository extends BaseRepository<
           },
         },
       },
+    }).catch((error) => {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     });
 
     const formattedProjectManagers = projectManagers.map((pm) => ({
@@ -121,6 +131,7 @@ export class ProjectManagerRepository extends BaseRepository<
         data: updates,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -133,6 +144,7 @@ export class ProjectManagerRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
