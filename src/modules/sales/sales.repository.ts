@@ -4,11 +4,12 @@ import { Sales } from '@prisma/client';
 
 import { CreateSalesDto } from './dtos/create-sales.dto';
 import { UpdateSalesDto } from './dtos/update-sales.dto';
+import { SalesStatiscticResponseDto } from './dtos/reponse/sale-statistic-response.dto';
 
 import { PrismaService } from '@/database/prisma.service';
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { SalesStatiscticResponseDto } from './dtos/reponse/sale-statistic-response.dto';
+
 import { INCOME_STATUS } from '@/common/constants/income-status.constants';
 
 @Injectable()

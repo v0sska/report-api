@@ -4,11 +4,11 @@ import { ProjectManagerRepository } from './project-manager.repository';
 
 import { CreateProjectManagerDto } from './dtos/create-project-manager.dto';
 import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
+import { ProjectManagerStatisticResponseDto } from './dtos/response/project-manager-statistic-response.dto';
 
 import { ProjectManager } from '@prisma/client';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
-import { ProjectManagerStatisticResponseDto } from './dtos/response/project-manager-statistic-response.dto';
 
 @Injectable()
 export class ProjectManagerService {

@@ -1,10 +1,14 @@
 import { BaseRepository } from '@/common/types/base-repository.type';
+
 import { ProjectManager } from '@prisma/client';
+
 import { CreateProjectManagerDto } from './dtos/create-project-manager.dto';
 import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
-import { PrismaService } from '@/database/prisma.service';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ProjectManagerStatisticResponseDto } from './dtos/response/project-manager-statistic-response.dto';
+
+import { PrismaService } from '@/database/prisma.service';
+
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
 export class ProjectManagerRepository extends BaseRepository<

@@ -4,11 +4,11 @@ import { Sales } from '@prisma/client';
 
 import { CreateSalesDto } from './dtos/create-sales.dto';
 import { UpdateSalesDto } from './dtos/update-sales.dto';
+import { SalesStatiscticResponseDto } from './dtos/reponse/sale-statistic-response.dto';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
-import { SalesStatiscticResponseDto } from './dtos/reponse/sale-statistic-response.dto';
 
 @Injectable()
 export class SalesService {

@@ -56,7 +56,7 @@ export class EmployeeReportRepository extends BaseRepository<
     return await this.prismaService.employeeReport
       .findMany({
         orderBy: {
-          date: 'desc'
+          date: 'desc',
         },
         select: {
           id: true,
@@ -163,7 +163,7 @@ export class EmployeeReportRepository extends BaseRepository<
           employeeId,
         },
         orderBy: {
-          date: 'desc'
+          date: 'desc',
         },
         select: {
           id: true,
@@ -210,10 +210,9 @@ export class EmployeeReportRepository extends BaseRepository<
           project: {
             projectManagerId,
           },
-          
         },
         orderBy: {
-          date: 'desc'
+          date: 'desc',
         },
         select: {
           id: true,
@@ -262,7 +261,7 @@ export class EmployeeReportRepository extends BaseRepository<
           },
         },
         orderBy: {
-          date: 'desc'
+          date: 'desc',
         },
         select: {
           id: true,
@@ -309,7 +308,7 @@ export class EmployeeReportRepository extends BaseRepository<
           projectId,
         },
         orderBy: {
-          date: 'desc'
+          date: 'desc',
         },
         select: {
           id: true,
@@ -358,7 +357,7 @@ export class EmployeeReportRepository extends BaseRepository<
           projectId,
         },
         orderBy: {
-          date: 'desc'
+          date: 'desc',
         },
         select: {
           id: true,

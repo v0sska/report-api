@@ -21,6 +21,7 @@ import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { AssignMembersDto } from './dtos/assign-members.dto';
 import { TeamResponseDto } from './dtos/response/team.response.dto';
+import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -31,7 +32,6 @@ import { AuthGuard } from '@/common/guards/auth.guard';
 import { MESSAGES } from '@/common/constants/messages.contants';
 
 import { Request } from 'express';
-import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 @ApiTags('projects')
 @Controller('projects')

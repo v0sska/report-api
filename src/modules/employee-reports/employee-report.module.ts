@@ -11,7 +11,12 @@ import { ProjectManagerModule } from '../project-manager/project-manager.module'
 import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [EmployeeModule, SalesModule, ProjectManagerModule, NotificationModule],
+  imports: [
+    EmployeeModule,
+    SalesModule,
+    ProjectManagerModule,
+    NotificationModule,
+  ],
   controllers: [EmployeeReportController],
   providers: [EmployeeReportRepository, EmployeeReportService, PrismaService],
   exports: [EmployeeReportRepository, EmployeeReportService, PrismaService],

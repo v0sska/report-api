@@ -6,6 +6,7 @@ import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { TeamResponseDto } from './dtos/response/team.response.dto';
 import { AssignMembersDto } from './dtos/assign-members.dto';
+import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 import {
   BadRequestException,
@@ -14,7 +15,6 @@ import {
 } from '@nestjs/common';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
-import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 @Injectable()
 export class ProjectService {

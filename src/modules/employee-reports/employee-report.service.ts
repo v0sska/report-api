@@ -5,6 +5,7 @@ import { EmployeeReportRepository } from './employee-report.repository';
 import { EmployeeService } from '../employee/employee.service';
 import { ProjectManagerService } from '../project-manager/project-manager.service';
 import { SalesService } from '../sales/sales.service';
+import { NotificationService } from '../notification/notification.service';
 
 import { CreateEmployeeReportDto } from './dtos/create-employee-report.dto';
 import { UpdateEmployeeReportDto } from './dtos/update-employee-report.dto';
@@ -16,10 +17,9 @@ import { EmployeeReport } from '@prisma/client';
 import { EXCEPTION } from '@/common/constants/exception.constants';
 import { ROLE } from '@/common/constants/role.constants';
 import { REPORT_STATUS } from '@/common/constants/report.status.constants';
+import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
 
 import { differenceInMinutes, addDays } from 'date-fns';
-import { NotificationService } from '../notification/notification.service';
-import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
 
 @Injectable()
 export class EmployeeReportService {
@@ -143,21 +143,23 @@ export class EmployeeReportService {
     role: string,
   ): Promise<EmployeeReport> {
     const report = await this.employeeReportRepository.findById(id);
-    const notification = await this.notificationService.findPendingByReportId(report.id);
+    const notification = await this.notificationService.findPendingByReportId(
+      report.id,
+    );
 
     if (
-      report.editStatus === REPORT_STATUS.ACCEPTED || 
+      report.editStatus === REPORT_STATUS.ACCEPTED ||
       report.deleteStatus === REPORT_STATUS.ACCEPTED
     ) {
-      await this.notificationService.update(notification.id, { 
-        status: NOTIFICATION_STATUS.ACCEPTED 
+      await this.notificationService.update(notification.id, {
+        status: NOTIFICATION_STATUS.ACCEPTED,
       });
     } else if (
-      report.editStatus === REPORT_STATUS.REJECTED || 
+      report.editStatus === REPORT_STATUS.REJECTED ||
       report.deleteStatus === REPORT_STATUS.REJECTED
     ) {
-      await this.notificationService.update(notification.id, { 
-        status: NOTIFICATION_STATUS.REJECTED 
+      await this.notificationService.update(notification.id, {
+        status: NOTIFICATION_STATUS.REJECTED,
       });
     }
 

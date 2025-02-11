@@ -8,6 +8,7 @@ import { UpdateNotificationDto } from './dtos/update-notification.dto';
 import { PrismaService } from '@/database/prisma.service';
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+
 import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
 
 @Injectable()
@@ -31,13 +32,15 @@ export class NotificationRepository extends BaseRepository<
   }
 
   public async find(): Promise<Notification[]> {
-    return await this.prismaService.notification.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      }
-    }).catch((error) => {
-      throw new InternalServerErrorException(error.message);
-    });
+    return await this.prismaService.notification
+      .findMany({
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+      .catch((error) => {
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async findById(id: string): Promise<Notification> {

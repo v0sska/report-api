@@ -6,6 +6,7 @@ import { CreateProjectDto } from './dtos/create-project.dto';
 import { UpdateProjectDto } from './dtos/update-project.dto';
 import { AssignMembersDto } from './dtos/assign-members.dto';
 import { TeamResponseDto } from './dtos/response/team.response.dto';
+import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -14,7 +15,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
 import { ROLE } from '@/common/constants/role.constants';
 import { PROJECT_STATUS } from '@/common/constants/project-status.constants';
-import { UpdateEmployeeHoursDto } from './dtos/update-employee-hours.dto';
 
 @Injectable()
 export class ProjectRepository extends BaseRepository<
@@ -230,6 +230,14 @@ export class ProjectRepository extends BaseRepository<
       .findUnique({
         where: {
           id,
+        },
+        include: {
+          employeeReport: {
+            orderBy: {
+              date: 'desc',
+            },
+            take: 3,
+          },
         },
       })
       .catch((error) => {

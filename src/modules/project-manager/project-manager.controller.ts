@@ -16,6 +16,7 @@ import { ProjectManagerService } from './project-manager.service';
 
 import { CreateProjectManagerDto } from './dtos/create-project-manager.dto';
 import { UpdateProjectManagerDto } from './dtos/update-project-manager.dto';
+import { ProjectManagerStatisticResponseDto } from './dtos/response/project-manager-statistic-response.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -24,7 +25,6 @@ import { ProjectManager } from '@prisma/client';
 import { AuthGuard } from '@/common/guards/auth.guard';
 
 import { MESSAGES } from '@/common/constants/messages.contants';
-import { ProjectManagerStatisticResponseDto } from './dtos/response/project-manager-statistic-response.dto';
 
 @Controller('project-manager')
 @ApiTags('project-manager')
