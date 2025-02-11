@@ -236,6 +236,13 @@ export class ProjectRepository extends BaseRepository<
             orderBy: {
               date: 'desc',
             },
+            include: {
+              employee: {
+                include: {
+                  user: true,
+                },
+              },
+            },
             take: 3,
           },
         },
