@@ -22,7 +22,7 @@ import config from 'src/common/configs';
     JwtModule.register({
       global: true,
       secret: config.server.jwt,
-      signOptions: { expiresIn: '2d' },
+      signOptions: { expiresIn: '5d' },
     }),
   ],
   providers: [AuthService, UserService, PrismaService],
