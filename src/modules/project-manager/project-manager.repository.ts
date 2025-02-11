@@ -83,28 +83,30 @@ export class ProjectManagerRepository extends BaseRepository<
   }
 
   public async getProjectManagerStatistic(): Promise<ProjectManagerStatisticResponseDto> {
-    const projectManagers = await this.prismaService.projectManager.findMany({
-      select: {
-        id: true,
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            role: true,
-            phone: true,
+    const projectManagers = await this.prismaService.projectManager
+      .findMany({
+        select: {
+          id: true,
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              role: true,
+              phone: true,
+            },
+          },
+          project: {
+            select: {
+              id: true,
+            },
           },
         },
-        project: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    }).catch((error) => {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
-    });
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
+      });
 
     const formattedProjectManagers = projectManagers.map((pm) => ({
       id: pm.id,

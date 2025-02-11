@@ -16,7 +16,6 @@ import { NOTIFICATION_REQUEST } from '@/common/constants/notification-request.co
 import { MODIFY_REPORT_REQUEST } from '@/common/constants/modify-report-request';
 import { ClassLoggerService } from '@/common/utils/loger.util';
 
-
 @Injectable()
 export class EmployeeReportRepository extends BaseRepository<
   EmployeeReport | Object,
@@ -30,33 +29,35 @@ export class EmployeeReportRepository extends BaseRepository<
   }
 
   public async create(dto: CreateEmployeeReportDto): Promise<EmployeeReport> {
-    return await this.prismaService.$transaction(async (tx) => {
-      const report = await tx.employeeReport.create({
-        data: dto,
-      });
+    return await this.prismaService
+      .$transaction(async (tx) => {
+        const report = await tx.employeeReport.create({
+          data: dto,
+        });
 
-      const project = await tx.project.findUnique({
-        where: { id: report.projectId },
-      });
+        const project = await tx.project.findUnique({
+          where: { id: report.projectId },
+        });
 
-      await tx.projectIncome.create({
-        data: {
-          employeeReportId: report.id,
-          projectName: project.name,
-          clientName: project.clientName,
-          hours: report.hoursWorked,
-          amount: project.isOnUpwork
-            ? report.hoursWorked * project.rate * 0.9
-            : report.hoursWorked * project.rate,
-          date: report.date,
-        },
-      });
+        await tx.projectIncome.create({
+          data: {
+            employeeReportId: report.id,
+            projectName: project.name,
+            clientName: project.clientName,
+            hours: report.hoursWorked,
+            amount: project.isOnUpwork
+              ? report.hoursWorked * project.rate * 0.9
+              : report.hoursWorked * project.rate,
+            date: report.date,
+          },
+        });
 
-      return report;
-    }).catch((error) => {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
-    });
+        return report;
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async find(): Promise<EmployeeReportResponse[]> {
