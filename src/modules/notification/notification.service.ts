@@ -4,10 +4,12 @@ import { Notification } from '@prisma/client';
 
 import { CreateNotificationDto } from './dtos/create-notification.dto';
 import { UpdateNotificationDto } from './dtos/update-notification.dto';
+import { HideNotificationDto } from './dtos/hide-notification.dto';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
+import { NOTIFICATION_HIDE_STATUS } from '@/common/constants/notification-hide-status.constants';
 
 @Injectable()
 export class NotificationService {
@@ -35,6 +37,28 @@ export class NotificationService {
 
   public async findPendingByReportId(reportId: string): Promise<Notification> {
     return await this.notificationRepository.findPendingByReportId(reportId);
+  }
+
+  public async hideNotification(
+    dto: HideNotificationDto,
+  ): Promise<Notification> {
+    const notification = await this.notificationRepository.findById(dto.id);
+
+    if (!notification) {
+      throw new NotFoundException(EXCEPTION.NOTIFICATION_NOT_FOUND);
+    }
+
+    let hideStatus = NOTIFICATION_HIDE_STATUS.NONE;
+
+    if (notification.hideStatus !== NOTIFICATION_HIDE_STATUS.NONE) {
+      hideStatus = NOTIFICATION_HIDE_STATUS.HIDE_FROM_BOTH;
+    } else if (dto.hideFrom === notification.fromUserId) {
+      hideStatus = NOTIFICATION_HIDE_STATUS.HIDE_FROM_SENDER;
+    } else if (dto.hideFrom === notification.toUserId) {
+      hideStatus = NOTIFICATION_HIDE_STATUS.HIDE_FROM_RECEIVER;
+    }
+
+    return await this.notificationRepository.update(dto.id, { hideStatus });
   }
 
   public async findByReportId(reportId: string): Promise<Notification[]> {

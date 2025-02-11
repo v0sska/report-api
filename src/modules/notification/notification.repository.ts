@@ -10,6 +10,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
+import { NOTIFICATION_HIDE_STATUS } from '@/common/constants/notification-hide-status.constants';
 
 import { ClassLoggerService } from '@/common/utils/loger.util';
 
@@ -94,6 +95,18 @@ export class NotificationRepository extends BaseRepository<
       .findMany({
         where: {
           fromUserId: fromUserId,
+          AND: [
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_SENDER,
+              },
+            },
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_BOTH,
+              },
+            },
+          ],
         },
         orderBy: {
           createdAt: 'desc',
@@ -115,6 +128,18 @@ export class NotificationRepository extends BaseRepository<
       .findMany({
         where: {
           toUserId: toUserId,
+          AND: [
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_RECEIVER,
+              },
+            },
+            {
+              hideStatus: {
+                not: NOTIFICATION_HIDE_STATUS.HIDE_FROM_BOTH,
+              },
+            },
+          ],
         },
         orderBy: {
           createdAt: 'desc',

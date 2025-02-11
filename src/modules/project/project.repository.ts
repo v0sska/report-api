@@ -42,40 +42,42 @@ export class ProjectRepository extends BaseRepository<
   }
 
   public async assignMembersToProject(dto: AssignMembersDto): Promise<Project> {
-    return this.prismaService.$transaction(async (tx) => {
-      const employeeOnProjects = dto.employees.map((employee) => ({
-        employeeId: employee.id,
-        projectId: dto.projectId,
-        hoursWorked: employee.hoursInWeek,
-      }));
+    return this.prismaService
+      .$transaction(async (tx) => {
+        const employeeOnProjects = dto.employees.map((employee) => ({
+          employeeId: employee.id,
+          projectId: dto.projectId,
+          hoursWorked: employee.hoursInWeek,
+        }));
 
-      await Promise.all(
-        dto.employees.map((e) =>
-          tx.employee.update({
-            where: { id: e.id },
-            data: {
-              hoursPerWeek: { increment: e.hoursInWeek },
-              projectEngagement:
-                e.hoursInWeek >= 40
-                  ? PROJECT_ENGAGMENT.FULL_TIME
-                  : PROJECT_ENGAGMENT.PART_TIME,
-            },
-          }),
-        ),
-      );
+        await Promise.all(
+          dto.employees.map((e) =>
+            tx.employee.update({
+              where: { id: e.id },
+              data: {
+                hoursPerWeek: { increment: e.hoursInWeek },
+                projectEngagement:
+                  e.hoursInWeek >= 40
+                    ? PROJECT_ENGAGMENT.FULL_TIME
+                    : PROJECT_ENGAGMENT.PART_TIME,
+              },
+            }),
+          ),
+        );
 
-      await tx.employeeOnProject.createMany({
-        data: employeeOnProjects,
+        await tx.employeeOnProject.createMany({
+          data: employeeOnProjects,
+        });
+
+        return tx.project.update({
+          where: { id: dto.projectId },
+          data: { projectManagerId: dto.projectManagerId },
+        });
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
       });
-
-      return tx.project.update({
-        where: { id: dto.projectId },
-        data: { projectManagerId: dto.projectManagerId },
-      });
-    }).catch((error) => {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
-    });
   }
 
   public async removeMembersFromProject(
@@ -363,29 +365,31 @@ export class ProjectRepository extends BaseRepository<
   public async findEmployeesByProjectId(
     projectId: string,
   ): Promise<Employee[]> {
-    const tx = await this.prismaService.$transaction(async (tx) => {
-      const employeeOnProjects = await tx.employeeOnProject.findMany({
-        where: {
-          projectId,
-        },
-      });
-
-      const employeeIds = employeeOnProjects.map((eop) => eop.employeeId);
-
-      return await tx.employee.findMany({
-        where: {
-          id: {
-            in: employeeIds,
+    const tx = await this.prismaService
+      .$transaction(async (tx) => {
+        const employeeOnProjects = await tx.employeeOnProject.findMany({
+          where: {
+            projectId,
           },
-        },
-        include: {
-          user: true,
-        },
+        });
+
+        const employeeIds = employeeOnProjects.map((eop) => eop.employeeId);
+
+        return await tx.employee.findMany({
+          where: {
+            id: {
+              in: employeeIds,
+            },
+          },
+          include: {
+            user: true,
+          },
+        });
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
       });
-    }).catch((error) => {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
-    });
 
     return tx;
   }
@@ -413,120 +417,124 @@ export class ProjectRepository extends BaseRepository<
   }
 
   public async update(id: string, updates: UpdateProjectDto): Promise<Project> {
-    return await this.prismaService.$transaction(async (tx) => {
-      const project = await tx.project.update({
-        where: {
-          id,
-        },
-        data: updates,
+    return await this.prismaService
+      .$transaction(async (tx) => {
+        const project = await tx.project.update({
+          where: {
+            id,
+          },
+          data: updates,
+        });
+
+        switch (updates.status) {
+          case PROJECT_STATUS.COMPLETED:
+          case PROJECT_STATUS.CANCELLED:
+            const employeeOnProject = await tx.employeeOnProject.findMany({
+              where: { projectId: project.id },
+            });
+
+            await Promise.all(
+              employeeOnProject.map((eop) =>
+                tx.employee.update({
+                  where: { id: eop.employeeId },
+                  data: {
+                    hoursPerWeek: { decrement: eop.hoursWorked },
+                  },
+                }),
+              ),
+            );
+
+            const updatedEmployees = await tx.employee.findMany({
+              where: {
+                id: { in: employeeOnProject.map((eop) => eop.employeeId) },
+              },
+              select: { id: true, hoursPerWeek: true },
+            });
+
+            await Promise.all(
+              updatedEmployees.map((emp) =>
+                tx.employee.update({
+                  where: { id: emp.id },
+                  data: {
+                    projectEngagement:
+                      emp.hoursPerWeek > 0
+                        ? PROJECT_ENGAGMENT.PART_TIME
+                        : PROJECT_ENGAGMENT.AVAILABLE,
+                  },
+                }),
+              ),
+            );
+            break;
+
+          default:
+            break;
+        }
+
+        return project;
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
       });
-
-      switch (updates.status) {
-        case PROJECT_STATUS.COMPLETED:
-        case PROJECT_STATUS.CANCELLED:
-          const employeeOnProject = await tx.employeeOnProject.findMany({
-            where: { projectId: project.id },
-          });
-
-          await Promise.all(
-            employeeOnProject.map((eop) =>
-              tx.employee.update({
-                where: { id: eop.employeeId },
-                data: {
-                  hoursPerWeek: { decrement: eop.hoursWorked },
-                },
-              }),
-            ),
-          );
-
-          const updatedEmployees = await tx.employee.findMany({
-            where: {
-              id: { in: employeeOnProject.map((eop) => eop.employeeId) },
-            },
-            select: { id: true, hoursPerWeek: true },
-          });
-
-          await Promise.all(
-            updatedEmployees.map((emp) =>
-              tx.employee.update({
-                where: { id: emp.id },
-                data: {
-                  projectEngagement:
-                    emp.hoursPerWeek > 0
-                      ? PROJECT_ENGAGMENT.PART_TIME
-                      : PROJECT_ENGAGMENT.AVAILABLE,
-                },
-              }),
-            ),
-          );
-          break;
-
-        default:
-          break;
-      }
-
-      return project;
-    }).catch((error) => {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
-    });
   }
 
   public async updateEmployeeHours(
     dto: UpdateEmployeeHoursDto,
   ): Promise<Project> {
-    return this.prismaService.$transaction(async (tx) => {
-      await Promise.all(
-        dto.employees.map(async (e) => {
-          const employeeOnProject = await tx.employeeOnProject.findUnique({
-            where: {
-              employeeId_projectId: {
-                employeeId: e.id,
-                projectId: dto.projectId,
-              },
-            },
-          });
-
-          if (employeeOnProject) {
-            await tx.employeeOnProject.update({
+    return this.prismaService
+      .$transaction(async (tx) => {
+        await Promise.all(
+          dto.employees.map(async (e) => {
+            const employeeOnProject = await tx.employeeOnProject.findUnique({
               where: {
                 employeeId_projectId: {
                   employeeId: e.id,
                   projectId: dto.projectId,
                 },
               },
-              data: {
-                hoursWorked: e.hoursInWeek,
-              },
             });
 
-            await tx.employee.update({
-              where: { id: e.id },
-              data: {
-                hoursPerWeek: {
-                  increment: e.hoursInWeek - employeeOnProject.hoursWorked,
+            if (employeeOnProject) {
+              await tx.employeeOnProject.update({
+                where: {
+                  employeeId_projectId: {
+                    employeeId: e.id,
+                    projectId: dto.projectId,
+                  },
                 },
-                projectEngagement:
-                  e.hoursInWeek >= 40
-                    ? PROJECT_ENGAGMENT.FULL_TIME
-                    : e.hoursInWeek > 0
-                      ? PROJECT_ENGAGMENT.PART_TIME
-                      : PROJECT_ENGAGMENT.AVAILABLE,
-              },
-            });
-          }
-        }),
-      );
+                data: {
+                  hoursWorked: e.hoursInWeek,
+                },
+              });
 
-      return tx.project.findUnique({
-        where: {
-          id: dto.projectId,
-        },
+              await tx.employee.update({
+                where: { id: e.id },
+                data: {
+                  hoursPerWeek: {
+                    increment: e.hoursInWeek - employeeOnProject.hoursWorked,
+                  },
+                  projectEngagement:
+                    e.hoursInWeek >= 40
+                      ? PROJECT_ENGAGMENT.FULL_TIME
+                      : e.hoursInWeek > 0
+                        ? PROJECT_ENGAGMENT.PART_TIME
+                        : PROJECT_ENGAGMENT.AVAILABLE,
+                },
+              });
+            }
+          }),
+        );
+
+        return tx.project.findUnique({
+          where: {
+            id: dto.projectId,
+          },
+        });
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
       });
-    }).catch((error) => {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
-    });
   }
 
   public async delete(id: string): Promise<Project> {

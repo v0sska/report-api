@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { Notification } from '@prisma/client';
 
 import { CreateNotificationDto } from './dtos/create-notification.dto';
 import { UpdateNotificationDto } from './dtos/update-notification.dto';
+import { HideNotificationDto } from './dtos/hide-notification.dto';
 
 import { DataResponse } from '@/common/types/data-response.type';
 
@@ -135,6 +137,19 @@ export class NotificationController {
     @Body() dto: UpdateNotificationDto,
   ): Promise<DataResponse<Notification>> {
     const notification = await this.notificationService.update(id, dto);
+
+    return {
+      message: MESSAGES.UPDATED,
+      data: notification,
+      status: HttpStatus.OK,
+    };
+  }
+
+  @Put('hide')
+  public async hideNotification(
+    @Body() dto: HideNotificationDto,
+  ): Promise<DataResponse<Notification>> {
+    const notification = await this.notificationService.hideNotification(dto);
 
     return {
       message: MESSAGES.UPDATED,

@@ -11,4 +11,6 @@ export class UpdateNotificationDto extends PartialType(CreateNotificationDto) {
   isNew?: boolean;
 
   status?: string;
+
+  hideStatus?: string;
 }
