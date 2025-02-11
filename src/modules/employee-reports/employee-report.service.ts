@@ -47,19 +47,6 @@ export class EmployeeReportService {
       throw new BadRequestException(EXCEPTION.REPORT_ALREADY_EXISTS);
     }
 
-    const reports = await this.employeeReportRepository.findByEmployeeId(
-      employee.id,
-    );
-
-    reports.forEach((report) => {
-      if (
-        report.startTime === dto.startTime &&
-        report.endTime === dto.endTime &&
-        report.date === dto.date
-      ) {
-        throw new BadRequestException(EXCEPTION.REPORT_ALREADY_EXISTS);
-      }
-    });
 
     const startTime = new Date(`1970-01-01T${dto.startTime}:00`);
     let endTime = new Date(`1970-01-01T${dto.endTime}:00`);
