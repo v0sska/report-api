@@ -12,14 +12,18 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { INCOME_STATUS } from '@/common/constants/income-status.constants';
 
+import { ClassLoggerService } from '@/common/utils/loger.util';
+
 @Injectable()
 export class ProjectIncomeRepository extends BaseRepository<
   ProjectIncome,
   CreateProjectIncomeDto,
   UpdateProjectIncomeDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(ProjectIncomeRepository.name);
   }
 
   public async create(dto: CreateProjectIncomeDto): Promise<ProjectIncome> {
@@ -28,12 +32,14 @@ export class ProjectIncomeRepository extends BaseRepository<
         data: dto,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
 
   public async find(): Promise<ProjectIncome[]> {
     return await this.prismaService.projectIncome.findMany().catch((error) => {
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);
     });
   }
@@ -46,6 +52,7 @@ export class ProjectIncomeRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -135,6 +142,7 @@ export class ProjectIncomeRepository extends BaseRepository<
         };
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -215,6 +223,9 @@ export class ProjectIncomeRepository extends BaseRepository<
         ...project,
         employees: Array.from(project.employees.values()),
       }));
+    }).catch((error) => {
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(error.message);
     });
   }
 
@@ -230,6 +241,7 @@ export class ProjectIncomeRepository extends BaseRepository<
         data: updates,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -242,6 +254,7 @@ export class ProjectIncomeRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }

@@ -11,14 +11,18 @@ import { UpdateEmployeeDto } from './dtos/update-employee.dto';
 
 import { PROJECT_ENGAGMENT } from '@/common/constants/project-engagment.contants';
 
+import { ClassLoggerService } from '@/common/utils/loger.util';
+
 @Injectable()
 export class EmployeeRepository extends BaseRepository<
   Employee,
   CreateEmployeeDto,
   UpdateEmployeeDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(EmployeeRepository.name);
   }
 
   public async create(dto: CreateEmployeeDto): Promise<Employee> {
@@ -27,6 +31,7 @@ export class EmployeeRepository extends BaseRepository<
         data: dto,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -44,6 +49,7 @@ export class EmployeeRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -59,6 +65,7 @@ export class EmployeeRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -76,6 +83,7 @@ export class EmployeeRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -88,6 +96,7 @@ export class EmployeeRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -104,6 +113,7 @@ export class EmployeeRepository extends BaseRepository<
         data: updates,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -116,6 +126,7 @@ export class EmployeeRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
