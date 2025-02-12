@@ -33,9 +33,7 @@ export class EmployeeReportRepository extends BaseRepository<
       .$transaction(async (tx) => {
         const [hours, minutes] = dto.hoursWorked.split(':').map(Number);
         const hoursWorkedDecimal = hours + minutes / 60;
-        console.log(minutes, 'min');
-        console.log(hours, 'hours');
-        console.log(hoursWorkedDecimal, 'decimal');
+
         const report = await tx.employeeReport.create({
           data: dto,
         });
@@ -58,8 +56,6 @@ export class EmployeeReportRepository extends BaseRepository<
             date: report.date,
           },
         });
-
-        console.log('income', income);
 
         return report;
       })
