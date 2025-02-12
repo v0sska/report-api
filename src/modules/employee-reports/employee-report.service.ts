@@ -47,7 +47,6 @@ export class EmployeeReportService {
       throw new BadRequestException(EXCEPTION.REPORT_ALREADY_EXISTS);
     }
 
-
     const startTime = new Date(`1970-01-01T${dto.startTime}:00`);
     let endTime = new Date(`1970-01-01T${dto.endTime}:00`);
 
