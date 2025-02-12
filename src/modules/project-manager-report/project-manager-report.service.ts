@@ -38,14 +38,14 @@ export class ProjectManagerReportService {
     userId: string,
     role: string,
   ): Promise<ProjectManagerReport[]> {
-    const projectManager =
-      await this.projectManagerService.findByUserId(userId);
     switch (role) {
       case ROLE.ADMIN:
       case ROLE.PMDO:
       case ROLE.SUPER_ADMIN:
         return await this.projectManagerReportRepositroy.find();
       case ROLE.PROJECT_MANAGER:
+        const projectManager =
+          await this.projectManagerService.findByUserId(userId);
         return await this.projectManagerReportRepositroy.findByProjectManagerId(
           projectManager.id,
         );

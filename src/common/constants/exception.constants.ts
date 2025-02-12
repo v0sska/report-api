@@ -18,4 +18,5 @@ export const EXCEPTION = {
   REPORT_ALREADY_EXISTS: 'Report already exists',
   PROJECT_MANAGER_REPORT_NOT_FOUND: 'ProjectManagerReport not found',
   PERMISSION_DENIED: 'Permission denied',
+  SALESREPORT_NOT_FOUND: 'SalesReport not found',
 };
