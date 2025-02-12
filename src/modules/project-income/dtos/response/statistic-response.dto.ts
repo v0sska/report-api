@@ -2,9 +2,9 @@ export class StatisticResponseDto {
   projectId: string;
   projectName: string;
   clientName: string;
-  totalAmount: number;
-  totalHours: number;
-  totalIncomeAccepted: number;
+  totalAmount: string;
+  totalHours: string;
+  totalIncomeAccepted: string;
   employees: Array<{
     id: string;
     userId: string;

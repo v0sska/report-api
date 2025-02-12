@@ -2,7 +2,7 @@ export class EmployeeReportResponse {
   id: string;
   employeeId: string;
   projectId: string;
-  hoursWorked: number;
+  hoursWorked: string;
   startTime: string;
   endTime: string;
   date: Date;

@@ -31,6 +31,11 @@ export class EmployeeReportRepository extends BaseRepository<
   public async create(dto: CreateEmployeeReportDto): Promise<EmployeeReport> {
     return await this.prismaService
       .$transaction(async (tx) => {
+        const [hours, minutes] = dto.hoursWorked.split(':').map(Number);
+        const hoursWorkedDecimal = hours + minutes / 60;
+        console.log(minutes, 'min');
+        console.log(hours, 'hours');
+        console.log(hoursWorkedDecimal, 'decimal');
         const report = await tx.employeeReport.create({
           data: dto,
         });
@@ -39,18 +44,22 @@ export class EmployeeReportRepository extends BaseRepository<
           where: { id: report.projectId },
         });
 
-        await tx.projectIncome.create({
+        const incomeAmount = project.isOnUpwork
+          ? hoursWorkedDecimal * project.rate * 0.9
+          : hoursWorkedDecimal * project.rate;
+
+        const income = await tx.projectIncome.create({
           data: {
             employeeReportId: report.id,
             projectName: project.name,
             clientName: project.clientName,
             hours: report.hoursWorked,
-            amount: project.isOnUpwork
-              ? report.hoursWorked * project.rate * 0.9
-              : report.hoursWorked * project.rate,
+            amount: parseFloat(incomeAmount.toFixed(2)),
             date: report.date,
           },
         });
+
+        console.log('income', income);
 
         return report;
       })
@@ -468,12 +477,35 @@ export class EmployeeReportRepository extends BaseRepository<
     id: string,
     updates: UpdateEmployeeReportDto,
   ): Promise<EmployeeReport> {
-    return await this.prismaService.employeeReport
-      .update({
-        where: {
-          id,
-        },
-        data: updates,
+    return await this.prismaService
+      .$transaction(async (tx) => {
+        const report = await tx.employeeReport.update({
+          where: {
+            id,
+          },
+          data: updates,
+        });
+
+        if (updates.hoursWorked) {
+          const [hours, minutes] = updates.hoursWorked.split(':').map(Number);
+          const hoursWorkedDecimal = hours + minutes / 60;
+          const project = await tx.project.findUnique({
+            where: { id: report.projectId },
+          });
+
+          await tx.projectIncome.update({
+            where: {
+              employeeReportId: report.id,
+            },
+            data: {
+              hours: updates.hoursWorked,
+              amount: project.isOnUpwork
+                ? hoursWorkedDecimal * project.rate * 0.9
+                : hoursWorkedDecimal * project.rate,
+            },
+          });
+        }
+        return report;
       })
       .catch((error) => {
         this.logger.error(error.message);

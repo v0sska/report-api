@@ -129,18 +129,21 @@ export class SalesRepository extends BaseRepository<
         const formattedSales = sales.map((sale) => {
           const projects = sale.project.map((project) => {
             const amount = project.employeeReport.reduce((sum, report) => {
-              return sum + (report.projectIncome?.amount || 0);
+              const reportAmount = report.projectIncome?.amount
+                ? report.projectIncome.amount.toNumber()
+                : 0;
+              return sum + reportAmount;
             }, 0);
 
             return {
               id: project.id,
               name: project.name,
-              amount: amount,
+              amount: amount.toFixed(2),
             };
           });
 
           const projectAmountSum = projects.reduce(
-            (sum, project) => sum + project.amount,
+            (sum, project) => sum + parseFloat(project.amount),
             0,
           );
 
@@ -153,7 +156,7 @@ export class SalesRepository extends BaseRepository<
             phone: sale.user.phone,
             projectCount: projects.length,
             projects: projects,
-            projectAmountSum: projectAmountSum,
+            projectAmountSum: projectAmountSum.toFixed(2),
           };
         });
 

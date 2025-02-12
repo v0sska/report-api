@@ -16,10 +16,10 @@ export class CreateEmployeeReportDto {
   @IsNotEmpty()
   projectId: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   @IsOptional()
-  hoursWorked: number;
+  hoursWorked: string;
 
   @ApiProperty()
   @IsString()

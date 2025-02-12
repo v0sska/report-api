@@ -88,16 +88,25 @@ export class ProjectIncomeRepository extends BaseRepository<
         });
 
         const totalAmount = incomes.reduce(
-          (acc, income) => acc + income.amount,
+          (acc, income) => acc + income.amount.toNumber(),
           0,
         );
-        const totalHours = incomes.reduce(
-          (acc, income) => acc + income.hours,
-          0,
-        );
+        console.log(totalAmount, 'totalAmount');
+        const totalAmountFormatted = totalAmount.toFixed(2);
+
+        const totalHours = incomes.reduce((acc, income) => {
+          const [hours, minutes] = income.employeeReport.hoursWorked
+            .split(':')
+            .map(Number);
+          const hoursInDecimal = hours + minutes / 60;
+          return acc + hoursInDecimal;
+        }, 0);
+        const totalHoursFormatted = totalHours.toFixed(2);
+
         const totalIncomeAccepted = incomes
           .filter((income) => income.status === INCOME_STATUS.ACCEPTED)
-          .reduce((acc, income) => acc + income.amount, 0);
+          .reduce((acc, income) => acc + income.amount.toNumber(), 0);
+        const totalIncomeAcceptedFormatted = totalIncomeAccepted.toFixed(2);
 
         const employeeMap = new Map();
 
@@ -121,12 +130,17 @@ export class ProjectIncomeRepository extends BaseRepository<
             });
           }
 
+          const [hours, minutes] = income.employeeReport.hoursWorked
+            .split(':')
+            .map(Number);
+          const hoursInDecimal = hours + minutes / 60;
+
           employeeMap.get(employeeId).incomes.push({
             id: income.id,
             reportId: income.employeeReportId,
             date: income.date,
-            hours: income.hours,
-            amount: income.amount,
+            hours: hoursInDecimal,
+            amount: income.amount.toNumber(),
             status: income.status,
           });
         });
@@ -135,9 +149,9 @@ export class ProjectIncomeRepository extends BaseRepository<
           projectId: incomes[0]?.employeeReport.projectId,
           projectName: incomes[0]?.employeeReport.project.name,
           clientName: incomes[0]?.employeeReport.project.clientName,
-          totalAmount,
-          totalHours,
-          totalIncomeAccepted,
+          totalAmount: totalAmountFormatted,
+          totalHours: totalHoursFormatted,
+          totalIncomeAccepted: totalIncomeAcceptedFormatted,
           employees: Array.from(employeeMap.values()),
         };
       })
@@ -186,10 +200,22 @@ export class ProjectIncomeRepository extends BaseRepository<
 
           const project = projectMap.get(projectId);
 
-          project.totalAmount += income.amount;
-          project.totalHours += income.hours;
+          const amount = income.amount ? income.amount.toNumber() : 0;
+          const hours = income.hours;
+
+          let hoursInDecimal = 0;
+          if (typeof hours === 'string') {
+            const [h, m] = hours.split(':').map(Number);
+            hoursInDecimal = h + m / 60;
+          } else {
+            hoursInDecimal = hours;
+          }
+
+          project.totalAmount += amount;
+          project.totalHours += hoursInDecimal;
+
           if (income.status === INCOME_STATUS.ACCEPTED) {
-            project.totalIncomeAccepted += income.amount;
+            project.totalIncomeAccepted += amount;
           }
 
           if (!project.employees.has(employeeId)) {
@@ -215,13 +241,22 @@ export class ProjectIncomeRepository extends BaseRepository<
             reportId: income.employeeReportId,
             date: income.date,
             hours: income.hours,
-            amount: income.amount,
+            amount: amount,
             status: income.status,
           });
         });
 
+        const convertDecimalToTime = (decimalHours: number): string => {
+          const hours = Math.floor(decimalHours);
+          const minutes = Math.round((decimalHours - hours) * 60);
+          return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        };
+
         return Array.from(projectMap.values()).map((project) => ({
           ...project,
+          totalAmount: project.totalAmount.toFixed(2),
+          totalHours: convertDecimalToTime(project.totalHours),
+          totalIncomeAccepted: project.totalIncomeAccepted.toFixed(2),
           employees: Array.from(project.employees.values()),
         }));
       })
