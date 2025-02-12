@@ -29,9 +29,9 @@ export class ProjectManagerReportService {
     const projectManager =
       await this.projectManagerService.findByUserId(userId);
     return await this.projectManagerReportRepositroy.create({
-		...dto,
-		projectManagerId: projectManager.id,
-	});
+      ...dto,
+      projectManagerId: projectManager.id,
+    });
   }
 
   public async find(

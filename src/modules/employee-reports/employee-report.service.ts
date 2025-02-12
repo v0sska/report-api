@@ -133,20 +133,22 @@ export class EmployeeReportService {
       report.id,
     );
 
-    if (
-      report.editStatus === REPORT_STATUS.ACCEPTED ||
-      report.deleteStatus === REPORT_STATUS.ACCEPTED
-    ) {
-      await this.notificationService.update(notification.id, {
-        status: NOTIFICATION_STATUS.ACCEPTED,
-      });
-    } else if (
-      report.editStatus === REPORT_STATUS.REJECTED ||
-      report.deleteStatus === REPORT_STATUS.REJECTED
-    ) {
-      await this.notificationService.update(notification.id, {
-        status: NOTIFICATION_STATUS.REJECTED,
-      });
+    if (role === ROLE.PROJECT_MANAGER) {
+      if (
+        report.editStatus === REPORT_STATUS.ACCEPTED ||
+        report.deleteStatus === REPORT_STATUS.ACCEPTED
+      ) {
+        await this.notificationService.update(notification.id, {
+          status: NOTIFICATION_STATUS.ACCEPTED,
+        });
+      } else if (
+        report.editStatus === REPORT_STATUS.REJECTED ||
+        report.deleteStatus === REPORT_STATUS.REJECTED
+      ) {
+        await this.notificationService.update(notification.id, {
+          status: NOTIFICATION_STATUS.REJECTED,
+        });
+      }
     }
 
     if (!report) {
