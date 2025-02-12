@@ -2,6 +2,8 @@ import { BaseRepository } from '@/common/types/base-repository.type';
 
 import { SalesReport } from '@prisma/client';
 
+import { ClassLoggerService } from '@/common/utils/loger.util';
+
 import { CreateSalesReportDto } from './dtos/create-sales-report.dto';
 import { UpdateSalesReportDto } from './dtos/update-sales-report.dto';
 
@@ -15,8 +17,10 @@ export class SalesReportRepository extends BaseRepository<
   CreateSalesReportDto,
   UpdateSalesReportDto
 > {
+  private readonly logger: ClassLoggerService;
   public constructor(private readonly prismaService: PrismaService) {
     super();
+    this.logger = new ClassLoggerService(SalesReportRepository.name);
   }
 
   public async create(dto: CreateSalesReportDto): Promise<SalesReport> {
@@ -25,12 +29,22 @@ export class SalesReportRepository extends BaseRepository<
         data: dto,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
 
   public async find(): Promise<SalesReport[]> {
-    return await this.prismaService.salesReport.findMany().catch((error) => {
+    return await this.prismaService.salesReport.findMany({
+      include: {
+        sales: {
+          include: {
+            user: true,
+          }
+        }
+      }
+    }).catch((error) => {
+      this.logger.error(error.message);
       throw new InternalServerErrorException(error.message);
     });
   }
@@ -41,8 +55,16 @@ export class SalesReportRepository extends BaseRepository<
         where: {
           id,
         },
+        include: {
+          sales: {
+            include: {
+              user: true,
+            },
+          },
+        },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -53,8 +75,16 @@ export class SalesReportRepository extends BaseRepository<
         where: {
           salesId,
         },
+        include: {
+          sales: {
+            include: {
+              user: true,
+            },
+          },
+        },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -71,6 +101,7 @@ export class SalesReportRepository extends BaseRepository<
         data: updates,
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -83,6 +114,7 @@ export class SalesReportRepository extends BaseRepository<
         },
       })
       .catch((error) => {
+        this.logger.error(error.message);
         throw new InternalServerErrorException(error.message);
       });
   }
