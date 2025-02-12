@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { NotificationModule } from '@/modules/notification/notification.module';
 
+import { ProjectManagerReportModule } from '@/modules/project-manager-report/project-manager-report.module';
+import { NotificationModule } from '@/modules/notification/notification.module';
 import { ProjectModule } from '@/modules/project/project.module';
 import { SalesModule } from '@/modules/sales/sales.module';
 import { UserModule } from '@/modules/user/user.module';
@@ -13,6 +14,7 @@ import { ProjectIncomeModule } from './modules/project-income/project-income.mod
 
 @Module({
   imports: [
+    ProjectManagerReportModule,
     ProjectIncomeModule,
     NotificationModule,
     EmployeeReportModule,
