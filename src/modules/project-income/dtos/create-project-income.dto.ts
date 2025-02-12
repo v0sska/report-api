@@ -25,9 +25,9 @@ export class CreateProjectIncomeDto {
   clientName: string;
 
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  hours: number;
+  hours: string;
 
   @ApiProperty()
   @IsNumber()

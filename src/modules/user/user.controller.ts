@@ -97,7 +97,7 @@ export class UserController {
     @Param('id') userId: string,
   ): Promise<
     DataResponse<
-      Omit<User, 'password' | 'inviteToken' | 'status' | 'role' | 'salary'>
+      Omit<User, 'password' | 'inviteToken' | 'status' | 'salary'>
     >
   > {
     const user = await this.userService.findById(userId);

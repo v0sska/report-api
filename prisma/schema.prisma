@@ -47,6 +47,7 @@ model Sales {
     userId            String? @unique 
     user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
     project           Project[]
+    salesReport       SalesReport[]
 
 	@@map("sales")
 }
@@ -57,6 +58,7 @@ model ProjectManager {
   userId     String?  @unique
   user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   project    Project[]
+  projectManagerReport ProjectManagerReport[]
 
   @@map("project_managers")
 }
@@ -97,7 +99,7 @@ model EmployeeReport {
   employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   projectId       String   @map("project_id")
   project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  hoursWorked     Int      @map("hours_worked")
+  hoursWorked     String      @map("hours_worked")
   startTime       String   @map("start_date")
   endTime         String   @map("end_date")
   date            DateTime
@@ -134,12 +136,32 @@ model ProjectIncome {
   id String @id @default(uuid())
   projectName String @map("project_name")
   clientName String @map("client_name")
-  hours Int
-  amount Int
+  hours String
+  amount Decimal
   status String @default("Pending")
   date DateTime
   employeeReportId String @unique @map("employee_report_id")
   employeeReport   EmployeeReport @relation(fields: [employeeReportId], references: [id], onDelete: Cascade)
 
   @@map("project_income")
+}
+
+model ProjectManagerReport {
+  id             String   @id @default(uuid())
+  projectManagerId String @map("project_manager_id")
+  projectManager  ProjectManager @relation(fields: [projectManagerId], references: [id], onDelete: Cascade)
+  date            DateTime
+  text            String
+
+  @@map("project_manager_reports")
+}
+
+model SalesReport {
+  id            String   @id @default(uuid())
+  salesId       String   @map("sales_id")
+  sales         Sales    @relation(fields: [salesId], references: [id], onDelete: Cascade)
+  date          DateTime
+  text          String
+
+  @@map("sales_reports")
 }

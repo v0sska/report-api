@@ -46,7 +46,7 @@ export class UserRepository extends BaseRepository<
   public async findById(
     id: string,
   ): Promise<
-    Omit<User, 'password' | 'inviteToken' | 'status' | 'role' | 'salary'>
+    Omit<User, 'password' | 'inviteToken' | 'status' | 'salary'>
   > {
     return await this.prismaService.user
       .findUnique({
@@ -58,6 +58,7 @@ export class UserRepository extends BaseRepository<
           firstName: true,
           lastName: true,
           email: true,
+          role: true,
           position: true,
           dateOfBirth: true,
           firstDayInCompany: true,
