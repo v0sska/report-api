@@ -47,6 +47,7 @@ model Sales {
     userId            String? @unique 
     user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
     project           Project[]
+    salesReport       SalesReport[]
 
 	@@map("sales")
 }
@@ -153,4 +154,14 @@ model ProjectManagerReport {
   text            String
 
   @@map("project_manager_reports")
+}
+
+model SalesReport {
+  id            String   @id @default(uuid())
+  salesId       String   @map("sales_id")
+  sales         Sales    @relation(fields: [salesId], references: [id], onDelete: Cascade)
+  date          DateTime
+  text          String
+
+  @@map("sales_reports")
 }
