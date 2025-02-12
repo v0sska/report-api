@@ -20,6 +20,7 @@ import { REPORT_STATUS } from '@/common/constants/report.status.constants';
 import { NOTIFICATION_STATUS } from '@/common/constants/notification-status.constants';
 
 import { differenceInMinutes, addDays } from 'date-fns';
+import { ProjectIncomeService } from '../project-income/project-income.service';
 
 @Injectable()
 export class EmployeeReportService {
@@ -29,6 +30,7 @@ export class EmployeeReportService {
     private readonly salesService: SalesService,
     private readonly employeeService: EmployeeService,
     private readonly notificationService: NotificationService,
+    private readonly projectIncomeService: ProjectIncomeService,
   ) {}
 
   public async create(
@@ -55,7 +57,14 @@ export class EmployeeReportService {
     }
 
     const minutesWorked = differenceInMinutes(endTime, startTime);
-    const hoursWorked = minutesWorked / 60;
+    const hours = Math.floor(minutesWorked / 60);
+    const minutes = minutesWorked % 60;
+
+    const hoursWorked = `${hours}:${minutes.toString().padStart(2, '0')}`;
+
+    console.log(hoursWorked, 'hoursWorked');
+
+    console.log(dto, 'dto');
 
     return await this.employeeReportRepository.create({
       ...dto,
@@ -165,9 +174,12 @@ export class EmployeeReportService {
           if (updates.endTime) {
             const endTime = new Date(`1970-01-01T${updates.endTime}:00`);
             const startTime = new Date(`1970-01-01T${report.startTime}:00`);
+
             const minutesWorked = differenceInMinutes(endTime, startTime);
-            const hoursWorked = minutesWorked / 60;
-            updates.hoursWorked = hoursWorked;
+            const hours = Math.floor(minutesWorked / 60);
+            const minutes = minutesWorked % 60;
+
+            updates.hoursWorked = `${hours}:${minutes.toString().padStart(2, '0')}`;
           }
           return await this.employeeReportRepository.update(id, {
             ...updates,

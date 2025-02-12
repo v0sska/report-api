@@ -10,8 +10,8 @@ export class SalesStatiscticResponseDto {
     projects: Array<{
       id: string;
       name: string;
-      amount: number;
+      amount: string;
     }>;
-    projectAmountSum: number;
+    projectAmountSum: string;
   }>;
 }
