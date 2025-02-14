@@ -151,6 +151,7 @@ export class ProjectIncomeRepository extends BaseRepository<
           clientName: incomes[0]?.employeeReport.project.clientName,
           totalAmount: totalAmountFormatted,
           totalHours: totalHoursFormatted,
+          projectHours: totalHours,
           totalIncomeAccepted: totalIncomeAcceptedFormatted,
           employees: Array.from(employeeMap.values()),
         };
@@ -256,6 +257,7 @@ export class ProjectIncomeRepository extends BaseRepository<
           ...project,
           totalAmount: project.totalAmount.toFixed(2),
           totalHours: convertDecimalToTime(project.totalHours),
+          projectHours: project.totalHours,
           totalIncomeAccepted: project.totalIncomeAccepted.toFixed(2),
           employees: Array.from(project.employees.values()),
         }));

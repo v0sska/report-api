@@ -4,6 +4,7 @@ export class StatisticResponseDto {
   clientName: string;
   totalAmount: string;
   totalHours: string;
+  projectHours: number;
   totalIncomeAccepted: string;
   employees: Array<{
     id: string;
