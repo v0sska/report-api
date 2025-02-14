@@ -151,7 +151,7 @@ export class ProjectIncomeRepository extends BaseRepository<
           clientName: incomes[0]?.employeeReport.project.clientName,
           totalAmount: totalAmountFormatted,
           totalHours: totalHoursFormatted,
-          projectHours: totalHours,
+          projectHours: incomes[0]?.employeeReport.project.hoursInWeek,
           totalIncomeAccepted: totalIncomeAcceptedFormatted,
           employees: Array.from(employeeMap.values()),
         };
@@ -194,6 +194,7 @@ export class ProjectIncomeRepository extends BaseRepository<
               clientName: income.employeeReport.project.clientName,
               totalAmount: 0,
               totalHours: 0,
+              projectHours: income.employeeReport.project.hoursInWeek,
               totalIncomeAccepted: 0,
               employees: new Map(),
             });
@@ -257,7 +258,7 @@ export class ProjectIncomeRepository extends BaseRepository<
           ...project,
           totalAmount: project.totalAmount.toFixed(2),
           totalHours: convertDecimalToTime(project.totalHours),
-          projectHours: project.totalHours,
+          projectHours: project.projectHours,
           totalIncomeAccepted: project.totalIncomeAccepted.toFixed(2),
           employees: Array.from(project.employees.values()),
         }));
