@@ -320,6 +320,19 @@ export class ProjectRepository extends BaseRepository<
     return tx;
   }
 
+  public async findProjectBySalesId(salesId: string): Promise<Project[]> {
+    return await this.prismaService.project
+      .findMany({
+        where: {
+          salesId,
+        },
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
   public async findProjectByEmployeeId(employeeId: string): Promise<Project[]> {
     const tx = await this.prismaService
       .$transaction(async (tx) => {

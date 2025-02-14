@@ -62,10 +62,6 @@ export class EmployeeReportService {
 
     const hoursWorked = `${hours}:${minutes.toString().padStart(2, '0')}`;
 
-    console.log(hoursWorked, 'hoursWorked');
-
-    console.log(dto, 'dto');
-
     return await this.employeeReportRepository.create({
       ...dto,
       hoursWorked,

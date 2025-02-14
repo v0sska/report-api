@@ -16,9 +16,21 @@ import {
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
 
+import { EmployeeService } from '../employee/employee.service';
+import { SalesService } from '../sales/sales.service';
+import { ProjectManagerService } from '../project-manager/project-manager.service';
+import { UserService } from '../user/user.service';
+import { ROLE } from '@/common/constants/role.constants';
+
 @Injectable()
 export class ProjectService {
-  public constructor(private readonly projectRepository: ProjectRepository) {}
+  public constructor(
+    private readonly projectRepository: ProjectRepository,
+    private readonly employeeService: EmployeeService,
+    private readonly salesService: SalesService,
+    private readonly projectManagerService: ProjectManagerService,
+    private readonly userService: UserService,
+  ) {}
 
   public async create(dto: CreateProjectDto): Promise<Project> {
     return await this.projectRepository.create(dto);
@@ -48,6 +60,24 @@ export class ProjectService {
     }
 
     return team;
+  }
+
+  public async findByUserId(userId: string): Promise<Project[]> {
+    const user = await this.userService.findById(userId);
+    switch (user.role) {
+      case ROLE.EMPLOYEE:
+        const employee = await this.employeeService.findByUserId(userId);
+        return await this.projectRepository.findProjectByEmployeeId(employee.id);
+      case ROLE.SALES:
+        const sales = await this.salesService.findByUserId(userId);
+        return await this.projectRepository.findProjectBySalesId(sales.id);
+      case ROLE.PROJECT_MANAGER:
+        const projectManager =
+          await this.projectManagerService.findByUserId(userId);
+        return await this.projectRepository.findProjectByProjectManagerId(projectManager.id);
+      default:
+        throw new BadRequestException(EXCEPTION.REPORT_NOT_FOUND);
+    }
   }
 
   public async removeMembersFromProject(
@@ -103,8 +133,11 @@ export class ProjectService {
   }
 
   public async findProjectByEmployeeId(employeeId: string): Promise<Project[]> {
-    const projects =
-      await this.projectRepository.findProjectByEmployeeId(employeeId);
+    const employee = await this.employeeService.findByUserId(employeeId);
+
+    const projects = await this.projectRepository.findProjectByEmployeeId(
+      employee.id,
+    );
 
     if (!projects) {
       throw new BadRequestException(EXCEPTION.PROJECT_NOT_FOUND);

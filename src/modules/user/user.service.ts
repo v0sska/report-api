@@ -64,9 +64,7 @@ export class UserService {
 
   public async findById(
     id: string,
-  ): Promise<
-    Omit<User, 'password' | 'inviteToken' | 'status' | 'salary'>
-  > {
+  ): Promise<Omit<User, 'password' | 'inviteToken' | 'status' | 'salary'>> {
     const user = await this.userRepository.findById(id);
 
     if (!user) {

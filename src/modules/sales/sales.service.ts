@@ -34,7 +34,7 @@ export class SalesService {
 
   public async findByUserId(userId: string): Promise<Sales> {
     const sale = await this.saleRepository.findByUserId(userId);
-
+    
     if (!sale) {
       throw new NotFoundException(EXCEPTION.SALE_NOT_FOUND);
     }
