@@ -121,30 +121,15 @@ export class ProjectController {
     };
   }
 
-  @Get('employee/:employeeId')
-  public async findProjectsByEmployeeId(
-    @Param('employeeId') employeeId: string,
+  @Get('user/:userId')
+  public async findProjectByUserId(
+    @Param('userId') userId: string,
   ): Promise<DataResponse<Project[]>> {
-    const projects =
-      await this.projectService.findProjectByEmployeeId(employeeId);
+    const project = await this.projectService.findByUserId(userId);
 
     return {
       message: MESSAGES.FETCHED,
-      data: projects,
-      status: HttpStatus.OK,
-    };
-  }
-
-  @Get('project-manager/:projectManagerId')
-  public async findProjectsByProjectManagerId(
-    @Param('projectManagerId') projectManagerId: string,
-  ): Promise<DataResponse<Project[]>> {
-    const projects =
-      await this.projectService.findProjectByProjectManagerId(projectManagerId);
-
-    return {
-      message: MESSAGES.FETCHED,
-      data: projects,
+      data: project,
       status: HttpStatus.OK,
     };
   }

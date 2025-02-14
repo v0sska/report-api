@@ -91,7 +91,6 @@ export class ProjectIncomeRepository extends BaseRepository<
           (acc, income) => acc + income.amount.toNumber(),
           0,
         );
-        console.log(totalAmount, 'totalAmount');
         const totalAmountFormatted = totalAmount.toFixed(2);
 
         const totalHours = incomes.reduce((acc, income) => {

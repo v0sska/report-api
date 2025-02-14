@@ -35,18 +35,20 @@ export class SalesReportRepository extends BaseRepository<
   }
 
   public async find(): Promise<SalesReport[]> {
-    return await this.prismaService.salesReport.findMany({
-      include: {
-        sales: {
-          include: {
-            user: true,
-          }
-        }
-      }
-    }).catch((error) => {
-      this.logger.error(error.message);
-      throw new InternalServerErrorException(error.message);
-    });
+    return await this.prismaService.salesReport
+      .findMany({
+        include: {
+          sales: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   public async findById(id: string): Promise<SalesReport> {
