@@ -16,9 +16,14 @@ import {
 
 import { EXCEPTION } from '@/common/constants/exception.constants';
 
+import { EmployeeService } from '../employee/employee.service';
+
 @Injectable()
 export class ProjectService {
-  public constructor(private readonly projectRepository: ProjectRepository) {}
+  public constructor(
+    private readonly projectRepository: ProjectRepository,
+    private readonly employeeService: EmployeeService,
+  ) {}
 
   public async create(dto: CreateProjectDto): Promise<Project> {
     return await this.projectRepository.create(dto);
@@ -103,8 +108,11 @@ export class ProjectService {
   }
 
   public async findProjectByEmployeeId(employeeId: string): Promise<Project[]> {
+
+    const employee = await this.employeeService.findByUserId(employeeId);
+
     const projects =
-      await this.projectRepository.findProjectByEmployeeId(employeeId);
+      await this.projectRepository.findProjectByEmployeeId(employee.id);
 
     if (!projects) {
       throw new BadRequestException(EXCEPTION.PROJECT_NOT_FOUND);
