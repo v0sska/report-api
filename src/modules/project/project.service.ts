@@ -67,14 +67,18 @@ export class ProjectService {
     switch (user.role) {
       case ROLE.EMPLOYEE:
         const employee = await this.employeeService.findByUserId(userId);
-        return await this.projectRepository.findProjectByEmployeeId(employee.id);
+        return await this.projectRepository.findProjectByEmployeeId(
+          employee.id,
+        );
       case ROLE.SALES:
         const sales = await this.salesService.findByUserId(userId);
         return await this.projectRepository.findProjectBySalesId(sales.id);
       case ROLE.PROJECT_MANAGER:
         const projectManager =
           await this.projectManagerService.findByUserId(userId);
-        return await this.projectRepository.findProjectByProjectManagerId(projectManager.id);
+        return await this.projectRepository.findProjectByProjectManagerId(
+          projectManager.id,
+        );
       default:
         throw new BadRequestException(EXCEPTION.REPORT_NOT_FOUND);
     }
