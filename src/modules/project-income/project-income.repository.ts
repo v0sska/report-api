@@ -161,7 +161,12 @@ export class ProjectIncomeRepository extends BaseRepository<
       });
   }
 
-  public async getAllProjectsStatistics(): Promise<StatisticResponseDto[]> {
+  public async getAllProjectsStatistics(): Promise<{
+    statistics: StatisticResponseDto[];
+    totalAllProjectsHours: string;
+    totalAllProjectsIncome: string;
+    totalAllProjectsAcceptedIncome: string;
+  }> {
     return await this.prismaService
       .$transaction(async (tx) => {
         const incomes = await tx.projectIncome.findMany({
@@ -181,6 +186,10 @@ export class ProjectIncomeRepository extends BaseRepository<
         });
 
         const projectMap = new Map();
+
+        let totalAllProjectsHours = 0;
+        let totalAllProjectsIncome = 0;
+        let totalAllProjectsAcceptedIncome = 0;
 
         incomes.forEach((income) => {
           const projectId = income.employeeReport.projectId;
@@ -214,9 +223,12 @@ export class ProjectIncomeRepository extends BaseRepository<
 
           project.totalAmount += amount;
           project.totalHours += hoursInDecimal;
+          totalAllProjectsIncome += amount;
+          totalAllProjectsHours += hoursInDecimal;
 
           if (income.status === INCOME_STATUS.ACCEPTED) {
             project.totalIncomeAccepted += amount;
+            totalAllProjectsAcceptedIncome += amount;
           }
 
           if (!project.employees.has(employeeId)) {
@@ -253,14 +265,20 @@ export class ProjectIncomeRepository extends BaseRepository<
           return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
         };
 
-        return Array.from(projectMap.values()).map((project) => ({
-          ...project,
-          totalAmount: project.totalAmount.toFixed(2),
-          totalHours: convertDecimalToTime(project.totalHours),
-          projectHours: project.projectHours,
-          totalIncomeAccepted: project.totalIncomeAccepted.toFixed(2),
-          employees: Array.from(project.employees.values()),
-        }));
+        return {
+          statistics: Array.from(projectMap.values()).map((project) => ({
+            ...project,
+            totalAmount: project.totalAmount.toFixed(2),
+            totalHours: convertDecimalToTime(project.totalHours),
+            projectHours: project.projectHours,
+            totalIncomeAccepted: project.totalIncomeAccepted.toFixed(2),
+            employees: Array.from(project.employees.values()),
+          })),
+          totalAllProjectsHours: convertDecimalToTime(totalAllProjectsHours),
+          totalAllProjectsIncome: totalAllProjectsIncome.toFixed(2),
+          totalAllProjectsAcceptedIncome:
+            totalAllProjectsAcceptedIncome.toFixed(2),
+        };
       })
       .catch((error) => {
         this.logger.error(error.message);

@@ -56,7 +56,12 @@ export class ProjectIncomeController {
 
   @Get('statistics')
   public async getAllProjectsStatistics(): Promise<
-    DataResponse<StatisticResponseDto[]>
+    DataResponse<{
+      statistics: StatisticResponseDto[];
+      totalAllProjectsHours: string;
+      totalAllProjectsIncome: string;
+      totalAllProjectsAcceptedIncome: string;
+    }>
   > {
     const statistics =
       await this.projectIncomeService.getAllProjectsStatistics();

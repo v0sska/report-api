@@ -47,7 +47,12 @@ export class ProjectIncomeService {
     return statistics;
   }
 
-  public async getAllProjectsStatistics(): Promise<StatisticResponseDto[]> {
+  public async getAllProjectsStatistics(): Promise<{
+    statistics: StatisticResponseDto[];
+    totalAllProjectsHours: string;
+    totalAllProjectsIncome: string;
+    totalAllProjectsAcceptedIncome: string;
+  }> {
     return await this.projectIncomeRepository.getAllProjectsStatistics();
   }
 
