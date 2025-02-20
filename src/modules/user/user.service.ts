@@ -7,7 +7,11 @@ import { User } from '@prisma/client';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { userMapper } from '@/common/utils/user-mapper.util';
 
@@ -102,13 +106,23 @@ export class UserService {
   }
 
   public async update(id: string, updates: UpdateUserDto): Promise<User> {
-    const user = await this.userRepository.update(id, updates);
+    const userForUpdate = await this.userRepository.findByIdForUpdate(id);
 
-    if (!user) {
+    if (!userForUpdate) {
       throw new NotFoundException(EXCEPTION.USER_NOT_FOUND);
     }
 
-    return user;
+    if (updates.password) {
+      const decryptPassword = CryptoUtil.decrypt(userForUpdate.password);
+
+      if (decryptPassword === updates.password) {
+        throw new BadRequestException(EXCEPTION.PASSWORD_SAME);
+      }
+
+      updates.password = CryptoUtil.encrypt(updates.password);
+    }
+
+    return await this.userRepository.update(id, updates);
   }
 
   public async delete(id: string): Promise<User> {

@@ -13,5 +13,8 @@ export const userMapper = (user: User) => {
     firstDayInCompany: user.firstDayInCompany,
     phone: user.phone,
     salary: user.salary,
+    stack: user.stack,
+    social: user.social,
+    bio: user.bio,
   };
 };

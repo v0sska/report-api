@@ -43,6 +43,19 @@ export class UserRepository extends BaseRepository<
     });
   }
 
+  public async findByIdForUpdate(id: string): Promise<User> {
+    return await this.prismaService.user
+      .findUnique({
+        where: {
+          id,
+        },
+      })
+      .catch((error) => {
+        this.logger.error(error.message);
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
   public async findById(
     id: string,
   ): Promise<Omit<User, 'password' | 'inviteToken' | 'status' | 'salary'>> {
@@ -61,6 +74,9 @@ export class UserRepository extends BaseRepository<
           dateOfBirth: true,
           firstDayInCompany: true,
           phone: true,
+          stack: true,
+          social: true,
+          bio: true,
         },
       })
       .catch((error) => {

@@ -18,6 +18,9 @@ model User {
     position    String
     salary      Int
     phone      String?
+    bio         String?
+    stack       String[]
+    social      String[]
     firstDayInCompany DateTime @default(now()) @map("first_day_in_company")
     dateOfBirth DateTime? @map("date_of_birth")
     inviteToken String?
