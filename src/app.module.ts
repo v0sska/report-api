@@ -11,9 +11,11 @@ import { EmployeeModule } from './modules/employee/employee.module';
 import { ProjectManagerModule } from './modules/project-manager/project-manager.module';
 import { EmployeeReportModule } from './modules/employee-reports/employee-report.module';
 import { ProjectIncomeModule } from './modules/project-income/project-income.module';
+import { NotificationGatewayModule } from './web-socket/notification/notification.module';
 
 @Module({
   imports: [
+    NotificationGatewayModule,
     SalesReportModule,
     ProjectManagerReportModule,
     ProjectIncomeModule,
