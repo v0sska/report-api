@@ -463,6 +463,11 @@ export class EmployeeReportRepository extends BaseRepository<
             text: `${user.firstName} ${user.lastName}(${user.email}) has requested to ${actionText} the report.`,
             reportId: report.id,
           },
+          include: {
+            fromUser: true,
+            toUser: true,
+            report: true,
+          },
         });
 
         this.notificationService.sendReportNotification(
