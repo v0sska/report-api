@@ -10,6 +10,7 @@ import { SalesModule } from '../sales/sales.module';
 import { ProjectManagerModule } from '../project-manager/project-manager.module';
 import { NotificationModule } from '../notification/notification.module';
 import { ProjectIncomeModule } from '../project-income/project-income.module';
+import { NotificationGatewayModule } from '@/web-socket/notification/notification.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProjectIncomeModule } from '../project-income/project-income.module';
     ProjectManagerModule,
     NotificationModule,
     ProjectIncomeModule,
+    NotificationGatewayModule,
   ],
   controllers: [EmployeeReportController],
   providers: [EmployeeReportRepository, EmployeeReportService, PrismaService],

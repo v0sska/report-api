@@ -15,6 +15,7 @@ import { REPORT_STATUS } from '@/common/constants/report.status.constants';
 import { NOTIFICATION_REQUEST } from '@/common/constants/notification-request.constants';
 import { MODIFY_REPORT_REQUEST } from '@/common/constants/modify-report-request';
 import { ClassLoggerService } from '@/common/utils/loger.util';
+import { NotificationService } from '@/web-socket/notification/notification.service';
 
 @Injectable()
 export class EmployeeReportRepository extends BaseRepository<
@@ -23,7 +24,10 @@ export class EmployeeReportRepository extends BaseRepository<
   UpdateEmployeeReportDto
 > {
   private readonly logger: ClassLoggerService;
-  public constructor(private readonly prismaService: PrismaService) {
+  public constructor(
+    private readonly prismaService: PrismaService,
+    private readonly notificationService: NotificationService,
+  ) {
     super();
     this.logger = new ClassLoggerService(EmployeeReportRepository.name);
   }
@@ -448,7 +452,7 @@ export class EmployeeReportRepository extends BaseRepository<
         const actionText =
           dto.requestType === MODIFY_REPORT_REQUEST.EDIT ? 'edit' : 'delete';
 
-        await tx.notification.create({
+        const notification = await tx.notification.create({
           data: {
             fromUserId: user.id,
             toUserId: projectManager.userId,
@@ -460,6 +464,11 @@ export class EmployeeReportRepository extends BaseRepository<
             reportId: report.id,
           },
         });
+
+        this.notificationService.sendReportNotification(
+          notification,
+          projectManager.userId,
+        );
 
         return report;
       })
