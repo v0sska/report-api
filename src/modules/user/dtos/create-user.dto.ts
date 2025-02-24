@@ -47,6 +47,21 @@ export class CreateUserDto {
   @ApiProperty()
   salary: number;
 
+  @IsOptional()
+  @IsString({ each: true })
+  @ApiPropertyOptional({ isArray: true })
+  stack?: string[];
+
+  @IsOptional()
+  @IsString({ each: true })
+  @ApiPropertyOptional({ isArray: true })
+  social?: string[];
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional()
+  bio?: string;
+
   @IsNotEmpty()
   @IsString()
   @ApiPropertyOptional()

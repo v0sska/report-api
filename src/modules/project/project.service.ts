@@ -62,7 +62,7 @@ export class ProjectService {
     return team;
   }
 
-  public async findByUserId(userId: string): Promise<Project[]> {
+  public async findByUserId(userId: string): Promise<Project[] | Object[]> {
     const user = await this.userService.findById(userId);
     switch (user.role) {
       case ROLE.EMPLOYEE:
@@ -80,7 +80,7 @@ export class ProjectService {
           projectManager.id,
         );
       default:
-        throw new BadRequestException(EXCEPTION.REPORT_NOT_FOUND);
+       return await this.projectRepository.find(userId);
     }
   }
 

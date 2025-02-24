@@ -124,7 +124,7 @@ export class ProjectController {
   @Get('user/:userId')
   public async findProjectByUserId(
     @Param('userId') userId: string,
-  ): Promise<DataResponse<Project[]>> {
+  ): Promise<DataResponse<Project[] | Object[]>> {
     const project = await this.projectService.findByUserId(userId);
 
     return {
