@@ -80,7 +80,7 @@ export class ProjectService {
           projectManager.id,
         );
       default:
-       return await this.projectRepository.find(userId);
+        return await this.projectRepository.find(userId);
     }
   }
 
