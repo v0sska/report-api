@@ -102,6 +102,9 @@ export class UserRepository extends BaseRepository<
             firstDayInCompany: true,
             phone: true,
             dateOfBirth: true,
+            stack: true,
+            social: true,
+            bio: true,
           },
         });
 
